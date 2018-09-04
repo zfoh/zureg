@@ -1,0 +1,126 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  SourceS3Bucket:
+    Type: 'String'
+  SourceS3Key:
+    Type: 'String'
+
+Resources:
+  # This table stores participant registration using event sourcing: we only
+  # store events.
+  RegDatabase:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: 'Retain'
+    Properties:
+      TableName: 'registrants'
+      AttributeDefinitions:
+      - AttributeName: 'uuid'
+        AttributeType: 'S'
+      - AttributeName: 'version'
+        AttributeType: 'N'
+      KeySchema:
+      - AttributeName: 'uuid'
+        KeyType: 'HASH'
+      - AttributeName: 'version'
+        KeyType: 'RANGE'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 10
+        WriteCapacityUnits: 10
+
+  # This table maps email addresses to UUIDs.
+  EmailDatabase:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: 'Retain'
+    Properties:
+      TableName: 'emails'
+      AttributeDefinitions:
+      - AttributeName: 'email'
+        AttributeType: 'S'
+      KeySchema:
+      - AttributeName: 'email'
+        KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 10
+        WriteCapacityUnits: 10
+
+  # This is the lambda we deploy.  It says Python but it's really just a
+  # simple wrapper around a Haskell binary.
+  RegToolLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: 'test02'
+      Handler: 'main.handler'
+      Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
+      Runtime: 'python2.7'
+      Timeout: 10
+      MemorySize: 512  # If not, requests to DDB time out...
+      Code:
+        S3Bucket: {'Ref': 'SourceS3Bucket'}
+        S3Key: {'Ref': 'SourceS3Key'}
+
+  # This is the role of the lambda: the permissions it needs.  We need access to
+  # logs, and to the database.
+  LambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: 'Allow'
+          Principal: {'Service': ['lambda.amazonaws.com']}
+          Action: ['sts:AssumeRole']
+      Path: '/'
+      Policies:
+      - PolicyName: 'root'
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: 'Allow'
+            Action: ['logs:*']
+            Resource: 'arn:aws:logs:*:*:*'
+          - Effect: 'Allow'
+            Action: ['dynamodb:PutItem', 'dynamodb:Query']
+            Resource: {'Fn::GetAtt': ['RegDatabase', 'Arn']}
+          - Effect: 'Allow'
+            Action: ['dynamodb:PutItem', 'dynamodb:Query']
+            Resource: {'Fn::GetAtt': ['EmailDatabase', 'Arn']}
+
+  # Allow ApiGateway to invoke the function
+  LambdaPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      FunctionName: {'Fn::GetAtt': ['RegToolLambda', 'Arn']}
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: {'Fn::Sub': 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*'}
+
+  Api:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: 'test02'
+
+  ProxyResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      ParentId: {'Fn::GetAtt': ['Api', 'RootResourceId']}
+      PathPart: '{proxy+}'
+      RestApiId: {'Ref': 'Api'}
+
+  ProxyMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      HttpMethod: 'ANY'
+      ResourceId: {'Ref': 'ProxyResource'}
+      RestApiId: {'Ref': 'Api'}
+      AuthorizationType: 'NONE'
+      Integration:
+        Type: 'AWS_PROXY'
+        IntegrationHttpMethod: 'POST'
+        Uri: {'Fn::Sub': 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegToolLambda.Arn}/invocations'}
+
+  MyDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    DependsOn: ['ProxyMethod']
+    Properties:
+      RestApiId: {'Ref': 'Api'}
+      StageName: 'beta'
