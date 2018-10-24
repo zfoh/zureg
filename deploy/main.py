@@ -29,6 +29,8 @@ class Process:
     print('Served {} requests'.format(self.__requests), file=sys.stderr)
     return response
 
-hsmain = Process([os.environ['LAMBDA_TASK_ROOT'] + '/hsmain'])
+if __name__ == '__main__':
+  hsmain = Process([os.environ['LAMBDA_TASK_ROOT'] + '/hsmain'])
+
 def handler(event, context):
   return hsmain.handler(event)

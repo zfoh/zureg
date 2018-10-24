@@ -38,13 +38,15 @@ instance Show ReCaptchaException where
 instance Exception ReCaptchaException
 
 data Config = Config
-    { cSiteKey   :: !T.Text
+    { cEnabled   :: !Bool
+    , cSiteKey   :: !T.Text
     , cSecretKey :: !T.Text
     } deriving (Show)
 
 defaultConfig :: Config
 defaultConfig = Config
-    { cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
+    { cEnabled   = True
+    , cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
     , cSecretKey = T.decodeUtf8 $(Embed.embedFile "deploy/recaptcha")
     }
 
@@ -64,10 +66,12 @@ data ClientHtml = ClientHtml
     }
 
 clientHtml :: Handle -> ClientHtml
-clientHtml Handle {..} = ClientHtml
-    (H.script H.! A.src "https://www.google.com/recaptcha/api.js" $ "")
-    (H.div H.! A.class_ "g-recaptcha"
-        H.! H.dataAttribute "sitekey" (H.toValue $ cSiteKey hConfig) $ "")
+clientHtml Handle {..}
+    | not (cEnabled hConfig) = ClientHtml mempty mempty
+    | otherwise              = ClientHtml
+        (H.script H.! A.src "https://www.google.com/recaptcha/api.js" $ "")
+        (H.div H.! A.class_ "g-recaptcha"
+            H.! H.dataAttribute "sitekey" (H.toValue $ cSiteKey hConfig) $ "")
 
 data ApiResponse = ApiResponse
     { arSuccess    :: !Bool
@@ -82,6 +86,7 @@ instance A.FromJSON ApiResponse where
         <*> o A..:? "error-code" A..!= []
 
 verify :: Handle -> Maybe T.Text -> IO ()
+verify Handle {..} _ | not (cEnabled hConfig) = return ()
 verify Handle {..} mbRequestBody = do
     requestBody <- maybe bail return mbRequestBody
     params <- UrlEncoded.importString (T.unpack requestBody)

@@ -27,7 +27,7 @@ html = return .  Serverless.responseHtml .
 main :: IO ()
 main =
     Database.withHandle dbConfig $ \db ->
-    ReCaptcha.withHandle ReCaptcha.defaultConfig $ \recaptcha ->
+    ReCaptcha.withHandle rcConfig $ \recaptcha ->
     Serverless.main IO.stdin IO.stdout $ \req@Serverless.Request {..} ->
     case Serverless.requestPath req of
         ["register"] -> do
@@ -74,6 +74,7 @@ main =
             T.unpack reqPath ++ " not found"
   where
     dbConfig = Database.Config "registrants" "emails"
+    rcConfig = ReCaptcha.defaultConfig {ReCaptcha.cEnabled = False}
 
     lookupUuidParam :: Serverless.Request -> Maybe E.UUID
     lookupUuidParam =
