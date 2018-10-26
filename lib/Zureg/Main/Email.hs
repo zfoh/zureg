@@ -14,8 +14,9 @@ import           System.Environment (getArgs, getProgName)
 import           System.Exit        (exitFailure)
 import qualified System.IO          as IO
 import qualified Text.Mustache      as Mustache
+import qualified Zureg.Config       as Config
 import           Zureg.Model
-import qualified Zureg.SendEmail as SendEmail
+import qualified Zureg.SendEmail    as SendEmail
 
 withStateFile
     :: FilePath -> (HS.HashSet T.Text -> (T.Text -> IO ()) -> IO a) -> IO a
@@ -37,6 +38,10 @@ main :: IO ()
 main = do
     progName <- getProgName
     args     <- getArgs
+
+    config          <- Config.load "zureg.json"
+    sendEmailConfig <- Config.section config "sendEmail"
+
     case args of
         [exportPath, templatePath, statefile, subject] -> do
             templateOrError <- Mustache.localAutomaticCompile templatePath
@@ -87,6 +92,3 @@ main = do
                 , "subject is the subject of the email."
                 ]
             exitFailure
-
-  where
-    sendEmailConfig = SendEmail.Config "ec2@jaspervdj.be"

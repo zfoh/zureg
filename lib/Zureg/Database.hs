@@ -1,6 +1,7 @@
 -- | Storing the registrants in a DynamoDB table.  Uses the `Eventful` library.
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 {-# LANGUAGE TypeFamilies      #-}
 module Zureg.Database
     ( Config (..)
@@ -18,6 +19,7 @@ import           Control.Lens            ((&), (.~), (^.))
 import           Control.Monad           (forM, void, when)
 import           Control.Monad.Trans     (liftIO)
 import qualified Data.Aeson              as A
+import qualified Data.Aeson.TH.Extended  as A
 import qualified Data.HashMap.Strict     as HMS
 import           Data.Maybe              (listToMaybe)
 import qualified Data.Text               as T
@@ -132,3 +134,5 @@ itemUuid item = do
     uuid <- HMS.lookup "uuid" item
     text <- uuid ^. DynamoDB.avS
     E.uuidFromText text
+
+$(A.deriveJSON A.options ''Config)

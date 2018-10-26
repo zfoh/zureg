@@ -4,7 +4,6 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module Zureg.ReCaptcha
     ( Config (..)
-    , defaultConfig
 
     , Handle (..)
     , withHandle
@@ -17,7 +16,7 @@ module Zureg.ReCaptcha
 
 import           Control.Exception           (Exception, throwIO)
 import qualified Data.Aeson                  as A
-import qualified Data.FileEmbed              as Embed
+import qualified Data.Aeson.TH.Extended      as A
 import qualified Data.Text                   as T
 import qualified Data.Text.Encoding          as T
 import qualified Data.URLEncoded             as UrlEncoded
@@ -42,13 +41,6 @@ data Config = Config
     , cSiteKey   :: !T.Text
     , cSecretKey :: !T.Text
     } deriving (Show)
-
-defaultConfig :: Config
-defaultConfig = Config
-    { cEnabled   = True
-    , cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
-    , cSecretKey = T.decodeUtf8 $(Embed.embedFile "deploy/recaptcha")
-    }
 
 data Handle = Handle
     { hConfig  :: !Config
@@ -108,3 +100,5 @@ verify Handle {..} mbRequestBody = do
   where
     bail      = throwIO $ VerificationFailed []
     paramName = "g-recaptcha-response" :: String
+
+$(A.deriveJSON A.options ''Config)

@@ -24,6 +24,7 @@ Library
   Ghc-options:      -Wall
 
   Exposed-modules:
+    Zureg.Config
     Zureg.Database
     Zureg.Form
     Zureg.Main.Email
