@@ -31,10 +31,12 @@ class Process:
 
 hsmain = None
 
-if __name__ == '__main__':
-  binary = os.environ['LAMBDA_TASK_ROOT'] + '/hsmain'
-  config = os.environ['LAMBDA_TASK_ROOT'] + '/zureg.json'
-  hsmain = Process([binary, config])
-
 def handler(event, context):
+  global hsmain
+
+  if not hsmain:
+    binary = os.environ['LAMBDA_TASK_ROOT'] + '/hsmain'
+    config = os.environ['LAMBDA_TASK_ROOT'] + '/zureg.json'
+    hsmain = Process([binary, config])
+
   return hsmain.handler(event)
