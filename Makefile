@@ -45,6 +45,7 @@ lambda: build
 	mkdir -p dist/zureg-lambda
 	ln -fs $(LAMBDA_BIN) $(LAMBDA_DIR)/hsmain
 	ln -fs $(PWD)/deploy/main.py $(LAMBDA_DIR)/main.py
+	ln -fs $(PWD)/zureg.json $(LAMBDA_DIR)/zureg.json
 	zip $(LAMBDA_ZIP) -j $(LAMBDA_DIR)/*
 	ls -lh $(LAMBDA_ZIP)
 

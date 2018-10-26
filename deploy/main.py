@@ -29,8 +29,14 @@ class Process:
     print('Served {} requests'.format(self.__requests), file=sys.stderr)
     return response
 
-if __name__ == '__main__':
-  hsmain = Process([os.environ['LAMBDA_TASK_ROOT'] + '/hsmain'])
+hsmain = None
 
 def handler(event, context):
+  global hsmain
+
+  if not hsmain:
+    binary = os.environ['LAMBDA_TASK_ROOT'] + '/hsmain'
+    config = os.environ['LAMBDA_TASK_ROOT'] + '/zureg.json'
+    hsmain = Process([binary, config])
+
   return hsmain.handler(event)

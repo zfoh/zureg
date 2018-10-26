@@ -1,0 +1,14 @@
+{
+  "sendEmail": {
+    "from": "ec2@jaspervdj.be"
+  },
+  "database": {
+    "registrantTable": "registrants",
+    "emailTable": "emails"
+  },
+  "recaptcha": {
+    "enabled": false,
+    "siteKey": "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7",
+    "secretKey": "secret!"
+  }
+}

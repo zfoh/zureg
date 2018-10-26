@@ -10,12 +10,17 @@ import           System.Directory           (doesFileExist)
 import           System.Environment         (getArgs, getProgName)
 import           System.Exit                (exitFailure)
 import qualified System.IO                  as IO
+import qualified Zureg.Config               as Config
 import qualified Zureg.Database             as Database
 
 main :: IO ()
 main = do
     progName <- getProgName
     args     <- getArgs
+
+    config   <- Config.load "zureg.json"
+    dbConfig <- Config.section config "database"
+
     case args of
         [path] -> do
             exists <- doesFileExist path
@@ -32,5 +37,3 @@ main = do
                 , "Export registrants from the database into a JSON file"
                 ]
             exitFailure
-  where
-    dbConfig = Database.Config "registrants" "emails"

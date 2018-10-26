@@ -1,6 +1,7 @@
 -- | Sending an email.
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Zureg.SendEmail
     ( Config (..)
     , Handle
@@ -8,11 +9,12 @@ module Zureg.SendEmail
     , sendEmail
     ) where
 
-import           Control.Lens    ((&), (.~))
-import           Control.Monad   (void)
-import qualified Data.Text       as T
-import qualified Network.AWS     as Aws
-import qualified Network.AWS.SES as SES
+import           Control.Lens           ((&), (.~))
+import           Control.Monad          (void)
+import qualified Data.Aeson.TH.Extended as A
+import qualified Data.Text              as T
+import qualified Network.AWS            as Aws
+import qualified Network.AWS.SES        as SES
 
 data Config = Config
     { cFrom :: !T.Text
@@ -41,3 +43,5 @@ sendEmail Handle {..} to subject body =
         (SES.message
             (SES.content subject)
             (SES.body & SES.bText .~ Just (SES.content body)))
+
+$(A.deriveJSON A.options ''Config)
