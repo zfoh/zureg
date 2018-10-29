@@ -36,8 +36,8 @@ nuke-docker:
 STACK_INSTALL_ROOT="$(shell stack path --allow-different-user --local-install-root)"
 
 LAMBDA_BIN="$(STACK_INSTALL_ROOT)/bin/zureg-lambda"
-LAMBDA_ZIP="dist/zureg-lambda.zip"
-LAMBDA_DIR="dist/zureg-lambda"
+LAMBDA_ZIP=dist/zureg-lambda.zip
+LAMBDA_DIR=dist/zureg-lambda
 
 # Put all code in a zip file we can run on AWS lambda.
 .PHONY: lambda
@@ -60,7 +60,7 @@ deploy/bucket:
 # A text file with the name of the zip file with the lambda's code.  Similarly
 # to `deploy/bucket` above, we just put the zipfile with a random name and then
 # write that to the the file.
-deploy/zip: deploy/bucket
+deploy/zip: $(LAMBDA_ZIP)
 	$(eval ZIP := $(shell od -vAn -N4 -tx4 </dev/random | tr -d ' ').zip)
 	aws s3api put-object \
 		--bucket $(shell cat deploy/bucket) \
