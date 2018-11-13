@@ -24,8 +24,8 @@ Resources:
       - AttributeName: 'version'
         KeyType: 'RANGE'
       ProvisionedThroughput:
-        ReadCapacityUnits: 10
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 
   # This table maps email addresses to UUIDs.
   EmailDatabase:
@@ -40,15 +40,15 @@ Resources:
       - AttributeName: 'email'
         KeyType: 'HASH'
       ProvisionedThroughput:
-        ReadCapacityUnits: 10
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 
   # This is the lambda we deploy.  It says Python but it's really just a
   # simple wrapper around a Haskell binary.
   RegToolLambda:
     Type: 'AWS::Lambda::Function'
     Properties:
-      FunctionName: 'test02'
+      FunctionName: 'zureg-lambda'
       Handler: 'main.handler'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
       Runtime: 'python2.7'
@@ -97,7 +97,7 @@ Resources:
   Api:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: 'test02'
+      Name: 'zureg'
 
   ProxyResource:
     Type: 'AWS::ApiGateway::Resource'

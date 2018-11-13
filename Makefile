@@ -1,3 +1,6 @@
+AWS_PROFILE=zfoh
+AWS_REGION=eu-west-1
+
 # Build the executables.
 .PHONY: build
 build:
@@ -54,7 +57,11 @@ lambda: build
 # name and write that to the file.
 deploy/bucket:
 	$(eval BUCKET := $(shell od -vAn -N4 -tx4 </dev/random | sed 's/ */zureg-/'))
-	aws s3api create-bucket --bucket $(BUCKET)
+	aws s3api create-bucket \
+		--profile $(AWS_PROFILE) \
+		--region $(AWS_REGION) \
+		--create-bucket-configuration LocationConstraint=$(AWS_REGION) \
+		--bucket $(BUCKET)
 	echo $(BUCKET) >deploy/bucket
 
 # A text file with the name of the zip file with the lambda's code.  Similarly
@@ -63,6 +70,8 @@ deploy/bucket:
 deploy/zip: $(LAMBDA_ZIP)
 	$(eval ZIP := $(shell od -vAn -N4 -tx4 </dev/random | tr -d ' ').zip)
 	aws s3api put-object \
+		--profile $(AWS_PROFILE) \
+		--region $(AWS_REGION) \
 		--bucket $(shell cat deploy/bucket) \
 		--key $(ZIP) \
 		--body $(LAMBDA_ZIP)
@@ -72,6 +81,8 @@ deploy/zip: $(LAMBDA_ZIP)
 .PHONY: deploy
 deploy: deploy/zip deploy/bucket
 	aws cloudformation deploy \
+		--profile $(AWS_PROFILE) \
+		--region $(AWS_REGION) \
 		--stack-name stacky03 \
 		--template-file deploy/template.yaml \
 		--capabilities CAPABILITY_IAM \
