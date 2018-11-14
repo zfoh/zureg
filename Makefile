@@ -1,5 +1,5 @@
 AWS_PROFILE=zfoh
-AWS_REGION=eu-west-1
+AWS_REGION=us-east-1
 
 # Build the executables.
 .PHONY: build
@@ -60,7 +60,6 @@ deploy/bucket:
 	aws s3api create-bucket \
 		--profile $(AWS_PROFILE) \
 		--region $(AWS_REGION) \
-		--create-bucket-configuration LocationConstraint=$(AWS_REGION) \
 		--bucket $(BUCKET)
 	echo $(BUCKET) >deploy/bucket
 
@@ -83,7 +82,7 @@ deploy: deploy/zip deploy/bucket
 	aws cloudformation deploy \
 		--profile $(AWS_PROFILE) \
 		--region $(AWS_REGION) \
-		--stack-name stacky03 \
+		--stack-name zureg-stack \
 		--template-file deploy/template.yaml \
 		--capabilities CAPABILITY_IAM \
 		--parameter-overrides \
