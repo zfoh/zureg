@@ -55,7 +55,7 @@ template head' body = H.docTypeHtml $ do
             "}"
             "input.checkbox {"
             "    display: inline;"
-            "    margin: 6px 10px; 20px 0px;"
+            "    margin: 0px 10px 0px 0px;"
             "    width: inherit;"
             "    float: left;"
             "}"
@@ -123,8 +123,6 @@ registrantInfo Registrant {..} = H.div $ do
         Just RegisterInfo {..} -> H.p $ do
             H.strong (H.toHtml riName ) <> H.br
             H.toHtml riEmail <> H.br
-            maybe mempty (<> H.br) (H.toHtml <$> riBadgeLine1)
-            maybe mempty (<> H.br) (H.toHtml <$> riBadgeLine2)
         Nothing ->
             mempty
 
