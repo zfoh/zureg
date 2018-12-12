@@ -109,13 +109,13 @@ sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
     "ZuriHac 2019 Registration Confirmation" $ T.unlines
-    [ "Hello " ++ riName info ++ ","
+    [ "Hello " <> riName info <> ","
     , ""
     , "Your registration for ZuriHac 2019 was successful."
     , ""
     , "We look forward to seeing you there!"
     , ""
-    , "You can view (and cancel) your registration here:",
+    , "You can view (and cancel) your registration here:"
     , ""
     , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
     , ""

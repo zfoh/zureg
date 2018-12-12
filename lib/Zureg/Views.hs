@@ -77,10 +77,10 @@ register recaptcha view =
     Form.registerView recaptcha view
 
 registerSuccess :: E.UUID -> RegisterInfo -> H.Html
-registerSuccess uuid RegisterInfo {..} = template mempty $ do
+registerSuccess _uuid RegisterInfo {..} = template mempty $ do
     H.p $ H.toHtml riName <> ", your registration was successful."
     H.p $ "You will receive a confirmation mail at " <> H.toHtml riEmail <>
-        " (TODO: this email is currently not sent)"
+        " soon."
 
 ticket :: Registrant -> H.Html
 ticket r@Registrant {..} = template
