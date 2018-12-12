@@ -62,6 +62,10 @@ template head' body = H.docTypeHtml $ do
             "div.g-recaptcha {"
             "    margin-bottom: 20px;"
             "}"
+            ".errors {"
+            "    font-weight: bold;"
+            "    color: red;"
+            "}"
 
             "div.danger {"
             "    margin: 20px 0px 20px 0px;"
