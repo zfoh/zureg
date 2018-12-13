@@ -23,7 +23,7 @@ import qualified Data.Array                  as Array
 import qualified Data.ByteString             as B
 import qualified Data.ByteString.Base64.Lazy as Base64
 import qualified Data.FileEmbed              as Embed
-import           Data.Maybe                  (fromMaybe, isJust)
+import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
 import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
@@ -100,22 +100,32 @@ ticket r@Registrant {..} = template
         "  -ms-interpolation-mode: nearest-neighbor;"
         "}")
     (do
-        when (isJust rInfo && not rCancelled) $
+        when (rState == Just Confirmed) $
             qrimg $ T.unpack $ E.uuidToText rUuid
 
         registrantInfo r
 
-        unless rCancelled $ H.form H.! A.method "GET" H.! A.action "cancel" $ do
-            H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                H.! A.value (H.toValue (E.uuidToText rUuid))
-            H.input H.! A.type_ "submit" H.! A.value "Cancel my registration")
+        unless (rState == Just Confirmed) $
+            H.form H.! A.method "GET" H.! A.action "confirm" $ do
+                H.input H.! A.type_ "hidden" H.! A.name "uuid"
+                    H.! A.value (H.toValue (E.uuidToText rUuid))
+                H.input H.! A.type_ "submit"
+                    H.! A.value "Confirm my registration and access ticket"
+
+        unless (rState == Just Cancelled) $
+            H.form H.! A.method "GET" H.! A.action "cancel" $ do
+                H.input H.! A.type_ "hidden" H.! A.name "uuid"
+                    H.! A.value (H.toValue (E.uuidToText rUuid))
+                H.input H.! A.type_ "submit"
+                    H.! A.value "Cancel my registration")
 
 registrantInfo :: Registrant -> H.Html
 registrantInfo Registrant {..} = H.div $ do
-    H.h1 $ case rInfo of
-        _ | rCancelled -> "❌ Cancelled"
-        Nothing        -> "❌ Not registered"
-        Just _         -> "✅ Registered"
+    H.h1 $ case rState of
+        Nothing         -> "❌ Not registered"
+        Just Cancelled  -> "❌ Cancelled"
+        Just Registered -> "✅ Registered"
+        Just Confirmed  -> "✅ Confirmed"
     case rInfo of
         Just RegisterInfo {..} -> H.p $ do
             H.strong (H.toHtml riName ) <> H.br

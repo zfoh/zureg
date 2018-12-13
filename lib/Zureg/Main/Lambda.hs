@@ -78,6 +78,12 @@ main = do
                 registrant <- Database.getRegistrant db uuid
                 html $ Views.scan registrant
 
+            ["confirm"] -> do
+                uuid <- getUuidParam req
+                Database.writeEvents db uuid [Confirm]
+                return $ Serverless.response302 $
+                    "ticket?uuid=" <> E.uuidToText uuid
+
             ["cancel"] -> do
                 (view, mbCancel) <- Serverless.runForm req "cancel" $
                     cancelForm (lookupUuidParam req)
