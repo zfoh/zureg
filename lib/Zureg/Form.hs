@@ -130,11 +130,19 @@ registerView recaptcha view = DH.form view "?" $ do
     H.br
 
     H.p $ H.strong "T-Shirt"
+
+    H.p $ do
+        "The sizes should be fairly standard. "
+        "You can see the "
+        H.a H.! A.href "https://zfoh.ch/images/zurihac2019/tshirts-sizing.png"
+            H.! A.target "_blank" $
+            "specifications here"
+        "."
+
     DH.label "tshirt.cut" view "Cut"
     DH.inputSelect "tshirt.cut" view
     H.br
-
-    DH.label "tshirt.size" view "Size: (TODO link sizing chart)"
+    DH.label "tshirt.size" view "Size"
     DH.inputSelect "tshirt.size" view
     H.br
 
