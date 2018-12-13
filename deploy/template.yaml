@@ -84,6 +84,9 @@ Resources:
           - Effect: 'Allow'
             Action: ['dynamodb:PutItem', 'dynamodb:Query']
             Resource: {'Fn::GetAtt': ['EmailDatabase', 'Arn']}
+          - Effect: 'Allow'
+            Action: ['ses:SendEmail']
+            Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/zureg@zfoh.ch'}
 
   # Allow ApiGateway to invoke the function
   LambdaPermission:
