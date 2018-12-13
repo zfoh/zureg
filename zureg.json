@@ -1,4 +1,7 @@
 {
+  "scanner": {
+    "secret": "endofunctor"
+  },
   "sendEmail": {
     "from": "ZuriHac Registration Bot <zureg@zfoh.ch>"
   },
