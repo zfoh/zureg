@@ -29,13 +29,14 @@ import qualified Data.HashMap.Strict        as HMS
 import qualified Data.Text                  as T
 import qualified Data.Text.Lazy             as TL
 import qualified Data.URLEncoded            as UrlEncoded
+import qualified Data.Vector                as V
 import qualified System.IO                  as IO
 import qualified Text.Digestive             as D
 
 data Request = Request
     { reqHttpMethod            :: !T.Text
     , reqPath                  :: !T.Text
-    , reqQueryStringParameters :: !(Maybe (HMS.HashMap T.Text T.Text))
+    , reqQueryStringParameters :: !(Maybe (HMS.HashMap T.Text A.Value))
     , reqBody                  :: !(Maybe T.Text)
     } deriving (Show)
 
@@ -45,7 +46,11 @@ requestPath = filter (not . T.null) . T.splitOn "/" . reqPath
 requestLookupQueryStringParameter :: T.Text -> Request -> Maybe T.Text
 requestLookupQueryStringParameter k req = do
     params <- reqQueryStringParameters req
-    HMS.lookup k params
+    val    <- HMS.lookup k params
+    case val of
+        A.Array xs | not (V.null xs), A.String t <- V.head xs -> Just t
+        A.String t                                            -> Just t
+        _                                                     -> Nothing
 
 data Response = Response
     { rspStatusCode :: !Int

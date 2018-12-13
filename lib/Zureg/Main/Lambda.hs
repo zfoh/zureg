@@ -20,6 +20,7 @@ import qualified Zureg.Database                as Database
 import           Zureg.Form
 import           Zureg.Model
 import qualified Zureg.ReCaptcha               as ReCaptcha
+import qualified Zureg.SendEmail               as SendEmail
 import qualified Zureg.Serverless              as Serverless
 import qualified Zureg.Views                   as Views
 
@@ -38,11 +39,13 @@ main = do
             IO.hPutStr IO.stderr $ "Usage: " ++ progName ++ " config.json"
             exitFailure
 
-    dbConfig <- Config.section config "database"
-    rcConfig <- Config.section config "recaptcha"
+    dbConfig    <- Config.section config "database"
+    rcConfig    <- Config.section config "recaptcha"
+    emailConfig <- Config.section config "sendEmail"
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->
+        SendEmail.withHandle emailConfig $ \sendEmail ->
         Serverless.main IO.stdin IO.stdout $ \req@Serverless.Request {..} ->
         case Serverless.requestPath req of
             ["register"] -> do
@@ -60,6 +63,7 @@ main = do
                         uuid <- E.uuidNextRandom
                         Database.writeEvents db uuid [Register info]
                         Database.putEmail db (riEmail info) uuid
+                        sendRegisterSuccessEmail sendEmail info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
@@ -98,3 +102,33 @@ main = do
         (throwIO $ Serverless.ServerlessException 400 "Missing uuid")
         return
         (lookupUuidParam req)
+
+sendRegisterSuccessEmail
+    :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
+sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
+    sendEmail
+    (riEmail info)
+    "ZuriHac 2019 Registration Confirmation" $ T.unlines
+    [ "Hello " <> riName info <> ","
+    , ""
+    , "Your registration for ZuriHac 2019 was successful."
+    , ""
+    , "We look forward to seeing you there!"
+    , ""
+    , "You can view (and cancel) your registration here:"
+    , ""
+    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
+    , ""
+    , "If you have any concerns, you can find our contact info here:"
+    , ""
+    , "    https://zfoh.ch/zurihac2019/#contact"
+    , ""
+    , "For various questions, or socializing with other attendees,"
+    , "you can join our Slack organisation:"
+    , ""
+    , "    https://slack.zurihac.info/"
+    , ""
+    , "Warm regards"
+    , "The ZuriHac Registration Bot"
+    ]
+
