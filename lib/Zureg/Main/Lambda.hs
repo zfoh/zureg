@@ -1,11 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Main.Lambda
     ( main
     ) where
 
 import           Control.Exception             (throwIO)
 import           Control.Monad                 (when)
+import qualified Data.Aeson.TH.Extended        as A
 import           Data.Maybe                    (isNothing)
 import qualified Data.Text                     as T
 import qualified Eventful                      as E
@@ -24,6 +26,12 @@ import qualified Zureg.SendEmail               as SendEmail
 import qualified Zureg.Serverless              as Serverless
 import qualified Zureg.Views                   as Views
 
+data ScannerConfig = ScannerConfig
+    { scSecret :: !T.Text
+    } deriving (Show)
+
+$(A.deriveJSON A.options ''ScannerConfig)
+
 html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
     Serverless.response200 . RenderHtml.renderHtml
@@ -39,9 +47,10 @@ main = do
             IO.hPutStr IO.stderr $ "Usage: " ++ progName ++ " config.json"
             exitFailure
 
-    dbConfig    <- Config.section config "database"
-    rcConfig    <- Config.section config "recaptcha"
-    emailConfig <- Config.section config "sendEmail"
+    dbConfig      <- Config.section config "database"
+    rcConfig      <- Config.section config "recaptcha"
+    emailConfig   <- Config.section config "sendEmail"
+    scannerConfig <- Config.section config "scanner"
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->
@@ -71,12 +80,15 @@ main = do
                 registrant <- Database.getRegistrant db uuid
                 html $ Views.ticket registrant
 
-            ["scanner"] | reqHttpMethod == "GET" -> html $ Views.scanner
+            ["scanner"] | reqHttpMethod == "GET" ->
+                scannerAuthorized req scannerConfig $
+                html $ Views.scanner
 
-            ["scan"] | reqHttpMethod == "GET" -> do
-                uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db uuid
-                html $ Views.scan registrant
+            ["scan"] | reqHttpMethod == "GET" ->
+                scannerAuthorized req scannerConfig $ do
+                    uuid <- getUuidParam req
+                    registrant <- Database.getRegistrant db uuid
+                    html $ Views.scan registrant
 
             ["cancel"] -> do
                 (view, mbCancel) <- Serverless.runForm req "cancel" $
@@ -102,6 +114,13 @@ main = do
         (throwIO $ Serverless.ServerlessException 400 "Missing uuid")
         return
         (lookupUuidParam req)
+
+    scannerAuthorized request sc m =
+        case Serverless.requestLookupQueryStringParameter "secret" request of
+            Just s | s == scSecret sc -> m
+            _                         -> throwIO $
+                Serverless.ServerlessException 403
+                "Wrong or missing secret for scanner access"
 
 sendRegisterSuccessEmail
     :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
