@@ -9,7 +9,6 @@ module Zureg.Form
     , cancelView
     ) where
 
-import           Data.Maybe                  (fromMaybe, isNothing)
 import qualified Data.Text                   as T
 import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
@@ -42,7 +41,7 @@ registerForm = RegisterInfo
                     [(Nothing, "I don't want a T-Shirt")])
                     Nothing))
     <*> ("mentor" D..: D.bool Nothing)
-    <*> ("project" D..: (mkProject
+    <*> ("project" D..: (Project
             <$> "name" D..: optionalText
             <*> "website" D..: optionalText
             <*> "description" D..: optionalText
@@ -68,15 +67,6 @@ registerForm = RegisterInfo
     optionalText =
         (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
         (D.text Nothing)
-
-    mkProject name website description contributorLevel
-        | isNothing name && isNothing website && isNothing description =
-            Nothing
-        | otherwise = Just $ Project
-            (fromMaybe "" name)
-            (fromMaybe "" website)
-            (fromMaybe "" description)
-            contributorLevel
 
 registerView :: ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 registerView recaptcha view = DH.form view "?" $ do

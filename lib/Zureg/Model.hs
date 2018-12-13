@@ -38,9 +38,9 @@ data ContributorLevel = ContributorLevel
     } deriving (Show)
 
 data Project = Project
-    { pName             :: !T.Text
-    , pWebsite          :: !T.Text
-    , pShortDescription :: !T.Text
+    { pName             :: !(Maybe T.Text)
+    , pWebsite          :: !(Maybe T.Text)
+    , pShortDescription :: !(Maybe T.Text)
     , pContributorLevel :: !ContributorLevel
     } deriving (Show)
 
@@ -52,7 +52,7 @@ data RegisterInfo = RegisterInfo
     , tiTrackInterest       :: !TrackInterest
     , riTShirt              :: !(Maybe (TShirtCut, TShirtSize))
     , riMentor              :: !Bool
-    , riProject             :: !(Maybe Project)
+    , riProject             :: !Project
     } deriving (Show)
 
 data Event
