@@ -37,6 +37,10 @@ template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
     H.head $ do
         H.title "Registration"
+        H.meta
+            H.! A.name "viewport"
+            H.! A.content "width=device-width, initial-scale=1"
+
         H.style $ do
             "body {"
             "    font-family: sans-serif;"
