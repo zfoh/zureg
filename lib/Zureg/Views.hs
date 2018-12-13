@@ -37,6 +37,10 @@ template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
     H.head $ do
         H.title "Registration"
+        H.meta
+            H.! A.name "viewport"
+            H.! A.content "width=device-width, initial-scale=1"
+
         H.style $ do
             "body {"
             "    font-family: sans-serif;"
@@ -55,12 +59,16 @@ template head' body = H.docTypeHtml $ do
             "}"
             "input.checkbox {"
             "    display: inline;"
-            "    margin: 6px 10px; 20px 0px;"
+            "    margin: 0px 10px 0px 0px;"
             "    width: inherit;"
             "    float: left;"
             "}"
             "div.g-recaptcha {"
             "    margin-bottom: 20px;"
+            "}"
+            ".errors {"
+            "    font-weight: bold;"
+            "    color: red;"
             "}"
 
             "div.danger {"
@@ -130,8 +138,6 @@ registrantInfo Registrant {..} = H.div $ do
         Just RegisterInfo {..} -> H.p $ do
             H.strong (H.toHtml riName ) <> H.br
             H.toHtml riEmail <> H.br
-            maybe mempty (<> H.br) (H.toHtml <$> riBadgeLine1)
-            maybe mempty (<> H.br) (H.toHtml <$> riBadgeLine2)
         Nothing ->
             mempty
 
