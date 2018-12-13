@@ -1,6 +1,9 @@
 {
+  "scanner": {
+    "secret": "endofunctor"
+  },
   "sendEmail": {
-    "from": "ec2@jaspervdj.be"
+    "from": "ZuriHac Registration Bot <zureg@zfoh.ch>"
   },
   "database": {
     "registrantTable": "registrants",

@@ -9,6 +9,7 @@ module Zureg.Model
     , RegisterInfo (..)
     , Event (..)
 
+    , RegisterState (..)
     , Registrant (..)
     , registrantProjection
     ) where
@@ -56,24 +57,29 @@ data RegisterInfo = RegisterInfo
 
 data Event
     = Register RegisterInfo
+    | Confirm
     | Cancel
     deriving (Show)
 
 --------------------------------------------------------------------------------
 -- State
 
+data RegisterState = Registered | Confirmed | Cancelled
+    deriving (Eq, Show)
+
 data Registrant = Registrant
-    { rUuid      :: E.UUID
-    , rInfo      :: Maybe RegisterInfo
-    , rCancelled :: Bool
+    { rUuid  :: E.UUID
+    , rInfo  :: Maybe RegisterInfo
+    , rState :: Maybe RegisterState
     } deriving (Show)
 
 registrantProjection :: E.UUID -> E.Projection Registrant Event
 registrantProjection uuid = E.Projection
-    { E.projectionSeed         = Registrant uuid Nothing False
+    { E.projectionSeed         = Registrant uuid Nothing Nothing
     , E.projectionEventHandler = \registrant event -> case event of
-        Cancel     -> registrant {rCancelled = True}
-        Register i -> registrant {rInfo = Just i}
+        Cancel     -> registrant {rState = Just Cancelled}
+        Confirm    -> registrant {rState = Just Confirmed}
+        Register i -> registrant {rInfo = Just i, rState = Just Registered}
     }
 
 $(A.deriveJSON A.options ''TShirtSize)
@@ -83,4 +89,5 @@ $(A.deriveJSON A.options ''ContributorLevel)
 $(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegisterInfo)
 $(A.deriveJSON A.options ''Event)
+$(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)

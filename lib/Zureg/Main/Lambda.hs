@@ -1,11 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Main.Lambda
     ( main
     ) where
 
 import           Control.Exception             (throwIO)
 import           Control.Monad                 (when)
+import qualified Data.Aeson.TH.Extended        as A
 import           Data.Maybe                    (isNothing)
 import qualified Data.Text                     as T
 import qualified Eventful                      as E
@@ -20,8 +22,15 @@ import qualified Zureg.Database                as Database
 import           Zureg.Form
 import           Zureg.Model
 import qualified Zureg.ReCaptcha               as ReCaptcha
+import qualified Zureg.SendEmail               as SendEmail
 import qualified Zureg.Serverless              as Serverless
 import qualified Zureg.Views                   as Views
+
+data ScannerConfig = ScannerConfig
+    { scSecret :: !T.Text
+    } deriving (Show)
+
+$(A.deriveJSON A.options ''ScannerConfig)
 
 html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
@@ -38,11 +47,14 @@ main = do
             IO.hPutStr IO.stderr $ "Usage: " ++ progName ++ " config.json"
             exitFailure
 
-    dbConfig <- Config.section config "database"
-    rcConfig <- Config.section config "recaptcha"
+    dbConfig      <- Config.section config "database"
+    rcConfig      <- Config.section config "recaptcha"
+    emailConfig   <- Config.section config "sendEmail"
+    scannerConfig <- Config.section config "scanner"
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->
+        SendEmail.withHandle emailConfig $ \sendEmail ->
         Serverless.main IO.stdin IO.stdout $ \req@Serverless.Request {..} ->
         case Serverless.requestPath req of
             ["register"] -> do
@@ -60,6 +72,7 @@ main = do
                         uuid <- E.uuidNextRandom
                         Database.writeEvents db uuid [Register info]
                         Database.putEmail db (riEmail info) uuid
+                        sendRegisterSuccessEmail sendEmail info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
@@ -67,12 +80,21 @@ main = do
                 registrant <- Database.getRegistrant db uuid
                 html $ Views.ticket registrant
 
-            ["scanner"] | reqHttpMethod == "GET" -> html $ Views.scanner
+            ["scanner"] | reqHttpMethod == "GET" ->
+                scannerAuthorized req scannerConfig $
+                html $ Views.scanner
 
-            ["scan"] | reqHttpMethod == "GET" -> do
+            ["scan"] | reqHttpMethod == "GET" ->
+                scannerAuthorized req scannerConfig $ do
+                    uuid <- getUuidParam req
+                    registrant <- Database.getRegistrant db uuid
+                    html $ Views.scan registrant
+
+            ["confirm"] -> do
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db uuid
-                html $ Views.scan registrant
+                Database.writeEvents db uuid [Confirm]
+                return $ Serverless.response302 $
+                    "ticket?uuid=" <> E.uuidToText uuid
 
             ["cancel"] -> do
                 (view, mbCancel) <- Serverless.runForm req "cancel" $
@@ -98,3 +120,40 @@ main = do
         (throwIO $ Serverless.ServerlessException 400 "Missing uuid")
         return
         (lookupUuidParam req)
+
+    scannerAuthorized request sc m =
+        case Serverless.requestLookupQueryStringParameter "secret" request of
+            Just s | s == scSecret sc -> m
+            _                         -> throwIO $
+                Serverless.ServerlessException 403
+                "Wrong or missing secret for scanner access"
+
+sendRegisterSuccessEmail
+    :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
+sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
+    sendEmail
+    (riEmail info)
+    "ZuriHac 2019 Registration Confirmation" $ T.unlines
+    [ "Hello " <> riName info <> ","
+    , ""
+    , "Your registration for ZuriHac 2019 was successful."
+    , ""
+    , "We look forward to seeing you there!"
+    , ""
+    , "You can view (and cancel) your registration here:"
+    , ""
+    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
+    , ""
+    , "If you have any concerns, you can find our contact info here:"
+    , ""
+    , "    https://zfoh.ch/zurihac2019/#contact"
+    , ""
+    , "For various questions, or socializing with other attendees,"
+    , "you can join our Slack organisation:"
+    , ""
+    , "    https://slack.zurihac.info/"
+    , ""
+    , "Warm regards"
+    , "The ZuriHac Registration Bot"
+    ]
+

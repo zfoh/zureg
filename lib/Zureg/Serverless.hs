@@ -10,6 +10,7 @@ module Zureg.Serverless
     , Response (..)
     , response
     , response200
+    , response302
     , responseHtml
 
     , ServerlessException (..)
@@ -63,6 +64,13 @@ response c b = Response c b HMS.empty
 
 response200 :: TL.Text -> Response
 response200 = response 200
+
+response302 :: T.Text -> Response
+response302 loc = Response
+    { rspStatusCode = 302
+    , rspBody       = ""
+    , rspHeaders    = HMS.singleton "Location" loc
+    }
 
 responseHtml :: Response -> Response
 responseHtml rsp = rsp

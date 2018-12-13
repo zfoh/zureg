@@ -1,3 +1,14 @@
+function getParameterByName(name, url) {
+  /* <https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript> */
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  var results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
 function scanner() {
   var video = document.createElement("video");
   var canvas = document.createElement("canvas");
@@ -12,6 +23,7 @@ function scanner() {
   var output = document.createElement("div");
   document.body.appendChild(output);
 
+  var secret = getParameterByName('secret');
   var code = null;
 
   function scanned(uuid) {
@@ -25,7 +37,7 @@ function scanner() {
         output.innerText = '';
       }
     }
-    xhttp.open("GET", 'scan?uuid=' + uuid, true);
+    xhttp.open("GET", 'scan?uuid=' + uuid + '&secret=' + secret, true);
     xhttp.send();
   }
 
