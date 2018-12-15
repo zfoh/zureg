@@ -11,6 +11,7 @@ module Zureg.Database
     , getRegistrant
     , getRegistrantUuids
     , putEmail
+    , deleteEmail
     , lookupEmail
     ) where
 
@@ -118,6 +119,12 @@ putEmail Handle {..} email uuid = Aws.runResourceT $ Aws.runAWS hAwsEnv $
             , ("uuid",  DynamoDB.attributeValue &
                 DynamoDB.avS .~ Just (E.uuidToText uuid))
             ]
+
+deleteEmail :: Handle -> T.Text -> IO ()
+deleteEmail Handle {..} email = Aws.runResourceT $ Aws.runAWS hAwsEnv $
+    void $ Aws.send $ DynamoDB.deleteItem (cEmailTable hConfig)
+        & DynamoDB.diKey .~ HMS.fromList 
+        [ ("email", DynamoDB.attributeValue & DynamoDB.avS .~ Just email)]
 
 lookupEmail :: Handle -> T.Text -> IO (Maybe E.UUID)
 lookupEmail Handle {..} email = Aws.runResourceT $ Aws.runAWS hAwsEnv $ do
