@@ -43,7 +43,7 @@ template head' body = H.docTypeHtml $ do
 
         H.style $ do
             "body {"
-            "    font-family: sans-serif;"
+            "    font-family: Helvetica neue, Helvetica, sans-serif;"
             "    font-size: 16px;"
             "    width: 800px;"
             "    padding: 10px;"
@@ -70,7 +70,10 @@ template head' body = H.docTypeHtml $ do
             "    font-weight: bold;"
             "    color: red;"
             "}"
-
+            "h1, h2, h3 {"
+            "    color: #258bcd;"
+            "    font-weight: 700;"
+            "}"
             "div.danger {"
             "    margin: 20px 0px 20px 0px;"
             "    border: 5px solid red;"
