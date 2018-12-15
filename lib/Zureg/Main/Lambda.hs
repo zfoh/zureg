@@ -101,8 +101,12 @@ main = do
                     cancelForm (lookupUuidParam req)
                 case mbCancel of
                     Just (uuid, True) -> do
+                        registrant <- Database.getRegistrant db uuid
                         -- TODO: Check that not yet cancelled?
                         Database.writeEvents db uuid [Cancel]
+                        case rInfo registrant of
+                            Nothing -> return ()
+                            Just info ->  Database.deleteEmail db $ riEmail info
                         html Views.cancelSuccess
                     _ -> html $
                         Views.cancel view
