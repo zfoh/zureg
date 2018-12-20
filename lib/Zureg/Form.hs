@@ -20,7 +20,9 @@ import qualified Zureg.ReCaptcha             as ReCaptcha
 
 registerForm :: Monad m => D.Form H.Html m RegisterInfo
 registerForm = RegisterInfo
-    <$> "name" D..: D.text Nothing
+    <$> "name" D..: (D.check "Name is required"
+            (not . T.null . T.strip)
+            (D.text Nothing))
     <*> (D.validate confirmEmailCheck $ (,)
             <$> "email" D..: simpleEmailCheck (T.strip <$> D.text Nothing)
             <*> "confirmEmail" D..: (T.strip <$> D.text Nothing))
@@ -73,7 +75,7 @@ registerView recaptcha view = DH.form view "?" $ do
     H.h1 "ZuriHac registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
-    DH.label "name" view $ H.strong "Name"
+    DH.label "name" view $ H.strong "Full name"
     DH.inputText "name" view
     H.br
 
@@ -104,7 +106,7 @@ registerView recaptcha view = DH.form view "?" $ do
     DH.inputText "affiliation" view
     H.br
 
-    H.p $ H.strong "Track Interest"
+    H.p $ H.strong "Track Interest (optional)"
     H.p $ do
         "Let us know which track(s) you would participate in.  Note that we "
         "are still in the process of organizing these, so this serves as an "
@@ -120,6 +122,8 @@ registerView recaptcha view = DH.form view "?" $ do
     H.br
 
     H.p $ H.strong "T-Shirt"
+
+    H.p $ "In what size would you like the free ZuriHac T-Shirt?"
 
     H.p $ do
         "The sizes should be fairly standard. "
