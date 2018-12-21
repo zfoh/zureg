@@ -116,7 +116,12 @@ ticket r@Registrant {..} = template
 
         registrantInfo r
 
-        unless (rState == Just Confirmed) $
+        when (rState == Just Cancelled) $
+            H.form H.! A.method "GET" H.! A.action "register" $ do
+                H.input H.! A.type_ "submit"
+                    H.! A.value "Take me back to the registration"
+
+        unless (rState == Just Confirmed || rState == Just Cancelled) $
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
                     H.! A.value (H.toValue (E.uuidToText rUuid))
