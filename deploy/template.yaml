@@ -82,7 +82,7 @@ Resources:
             Action: ['dynamodb:PutItem', 'dynamodb:Query']
             Resource: {'Fn::GetAtt': ['RegDatabase', 'Arn']}
           - Effect: 'Allow'
-            Action: ['dynamodb:PutItem', 'dynamodb:Query']
+            Action: ['dynamodb:PutItem', 'dynamodb:Query', 'dynamodb:DeleteItem']
             Resource: {'Fn::GetAtt': ['EmailDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['ses:SendEmail']
