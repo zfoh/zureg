@@ -140,7 +140,7 @@ registerView recaptcha view = DH.form view "?" $ do
     DH.inputSelect "tshirt.size" view
     H.br
 
-    H.p $ H.strong "Mentors"
+    H.p $ H.strong "Mentors (optional)"
     H.p $ do
         "Every year, we are looking for volunteers to help Haskell newcomers "
         "with questions. The idea is that people can call on your help if you "
