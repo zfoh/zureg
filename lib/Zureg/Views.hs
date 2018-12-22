@@ -45,7 +45,7 @@ template head' body = H.docTypeHtml $ do
             "body {"
             "    font-family: Helvetica neue, Helvetica, sans-serif;"
             "    font-size: 16px;"
-            "    width: 800px;"
+            "    max-width: 800px;"
             "    padding: 10px;"
             "}"
             "label {"
@@ -89,14 +89,13 @@ register recaptcha view =
 
 registerSuccess :: E.UUID -> RegisterInfo -> H.Html
 registerSuccess _uuid RegisterInfo {..} = template mempty $ do
+    H.h1 "Registration successful"
     H.p $ H.toHtml riName <> ", your registration was successful."
     H.p $ "You will receive a confirmation mail at " <> H.toHtml riEmail <>
         " soon."
 
 ticket :: Registrant -> H.Html
 ticket r@Registrant {..} = template
-    -- We don't use `template` since this page is supposed to be somewhat
-    -- printable.
     (H.style $ do
         "img.qr {"
         "  display: block;"
