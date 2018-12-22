@@ -194,7 +194,7 @@ cancelView view = DH.form view "cancel?" $ do
     DH.inputCheckbox "confirm" view H.! A.class_ "checkbox"
     DH.label         "confirm" view "I am sure"
     DH.inputText "uuid" view H.! A.style "display: none"
-    DH.inputSubmit "Cancel"
+    DH.inputSubmit "Cancel Registration"
 
 validateUuid :: T.Text -> D.Result H.Html E.UUID
 validateUuid txt = case E.uuidFromText txt of
