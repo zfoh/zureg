@@ -189,12 +189,16 @@ cancelForm uuid = (,)
     <*> "confirm" D..: D.bool Nothing
 
 cancelView :: D.View H.Html -> H.Html
-cancelView view = DH.form view "cancel?" $ do
-    DH.childErrorList "" view
-    DH.inputCheckbox "confirm" view H.! A.class_ "checkbox"
-    DH.label         "confirm" view "I am sure"
-    DH.inputText "uuid" view H.! A.style "display: none"
-    DH.inputSubmit "Cancel Registration"
+cancelView view = do
+    DH.form view "cancel?" $ do
+        DH.childErrorList "" view
+        DH.inputCheckbox "confirm" view H.! A.class_ "checkbox"
+        DH.label         "confirm" view "I am sure"
+        DH.inputText "uuid" view H.! A.style "display: none"
+        DH.inputSubmit "Cancel Registration"
+    H.form H.! A.method "GET" H.! A.action "register" $ do
+        H.input H.! A.type_ "submit"
+            H.! A.value "Take me back to the registration"
 
 validateUuid :: T.Text -> D.Result H.Html E.UUID
 validateUuid txt = case E.uuidFromText txt of
