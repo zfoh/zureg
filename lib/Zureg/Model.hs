@@ -28,6 +28,7 @@ data TShirtSize = S | M | L | XL | XXL deriving (Bounded, Enum, Eq, Show)
 data TrackInterest = TrackInterest
     { tiBeginner     :: !Bool
     , tiIntermediate :: !Bool
+    , tiAdvanced     :: !Bool
     , tiGhcDevOps    :: !Bool
     } deriving (Show)
 
