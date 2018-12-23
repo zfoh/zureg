@@ -64,6 +64,11 @@ template head' body = H.docTypeHtml $ do
             "    margin: 0px 10px 0px 0px;"
             "    width: inherit;"
             "    float: left;"
+            --   Double-sized Checkboxes
+            "    -ms-transform: scale(2);"      -- IE
+            "    -moz-transform: scale(2);"     -- FF
+            "    -webkit-transform: scale(2);"  -- Safari and Chrome
+            "    -o-transform: scale(2);"       -- Opera
             "}"
             "div.g-recaptcha {"
             "    margin-bottom: 20px;"
