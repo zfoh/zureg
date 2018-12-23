@@ -23,6 +23,7 @@ registerForm = RegisterInfo
     <$> "name" D..: (D.check "Name is required"
             (not . T.null . T.strip)
             (D.text Nothing))
+    <*> "badgeName" D..: optionalText
     <*> (D.validate confirmEmailCheck $ (,)
             <$> "email" D..: simpleEmailCheck (T.strip <$> D.text Nothing)
             <*> "confirmEmail" D..: (T.strip <$> D.text Nothing))
@@ -77,6 +78,13 @@ registerView recaptcha view = DH.form view "?" $ do
 
     DH.label "name" view $ H.strong "Full name"
     DH.inputText "name" view
+    H.br
+
+    DH.label "badgeName" view $ H.strong "Name on badge (optional)"
+    H.p $ do
+        "Fill in this field if you would rather use a nickname on your badge. "
+        "By default we will use your full name."
+    DH.inputText "badgeName" view
     H.br
 
     DH.label "email" view $ H.strong "Email"

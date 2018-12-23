@@ -46,6 +46,7 @@ data Project = Project
 
 data RegisterInfo = RegisterInfo
     { riName                :: !T.Text
+    , riBadgeName           :: !(Maybe T.Text)
     , riEmail               :: !T.Text
     , riAffiliation         :: !(Maybe T.Text)
     , riAskMeAbout          :: !(Maybe T.Text)
