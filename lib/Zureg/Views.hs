@@ -24,6 +24,7 @@ import qualified Data.ByteString             as B
 import qualified Data.ByteString.Base64.Lazy as Base64
 import qualified Data.FileEmbed              as Embed
 import           Data.Maybe                  (fromMaybe)
+import           Data.List                   (intercalate)
 import qualified Data.Text                   as T
 import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
@@ -160,6 +161,21 @@ registrantInfo Registrant {..} = H.div $ do
         Just RegisterInfo {..} -> H.p $ do
             H.strong (H.toHtml riName ) <> H.br
             H.toHtml riEmail <> H.br
+            case riTShirt of 
+                Just rTShirt -> 
+                    "T-Shirt: " 
+                    <> (H.toHtml.show $ fst rTShirt) <> ", "
+                    <> (H.toHtml.show $ snd rTShirt)
+                    <>  case riMentor of
+                            True -> ", Mentorshirt"  <> H.br
+                            False -> H.br
+                Nothing -> mempty
+            "Track interest(s): " 
+            H.toHtml $ intercalate ", " $
+                ["Beginner" | tiBeginner tiTrackInterest] 
+                ++ ["Intermediate" | tiIntermediate tiTrackInterest]
+                ++ ["Advanced" | tiAdvanced tiTrackInterest]
+                ++ ["GHC DevOps" | tiGhcDevOps tiTrackInterest] 
         Nothing ->
             mempty
 
