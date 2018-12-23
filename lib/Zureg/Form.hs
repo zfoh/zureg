@@ -36,14 +36,14 @@ registerForm = RegisterInfo
             <*> "ghcDevOps" D..: D.bool Nothing)
     <*> ("tshirt" D..: (D.validate tshirtCheck $ (,)
             <$> "cut" D..: D.choice
-                    [ (Just Female, "Female")
+                    [ (Nothing,     "I don't want a T-Shirt")
+                    , (Just Female, "Female")
                     , (Just Male,   "Male")
-                    , (Nothing,     "I don't want a T-Shirt")
-                    ] Nothing
+                    ] (Just (Just Male))
             <*> "size" D..: D.choice (
                     [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]] ++
                     [(Nothing, "I don't want a T-Shirt")])
-                    Nothing))
+                    (Just (Just M))))
     <*> ("mentor" D..: D.bool Nothing)
     <*> ("project" D..: (Project
             <$> "name" D..: optionalText
