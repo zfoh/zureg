@@ -109,7 +109,7 @@ main = do
                             Just info ->  Database.deleteEmail db $ riEmail info
                         html Views.cancelSuccess
                     _ -> html $
-                        Views.cancel view
+                        Views.cancel (lookupUuidParam req) view
 
             _ -> throwIO $ Serverless.ServerlessException 404 $
                 T.unpack reqPath ++ " not found"

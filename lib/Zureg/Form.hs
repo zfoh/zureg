@@ -203,17 +203,25 @@ cancelForm uuid = (,)
             validateUuid (D.text (fmap E.uuidToText uuid))
     <*> "confirm" D..: D.bool Nothing
 
-cancelView :: D.View H.Html -> H.Html
-cancelView view = do
+cancelView :: Maybe E.UUID -> D.View H.Html -> H.Html
+cancelView mbUuid view = do
     DH.form view "cancel?" $ do
         DH.childErrorList "" view
         DH.inputCheckbox "confirm" view H.! A.class_ "checkbox"
         DH.label         "confirm" view "I am sure"
         DH.inputText "uuid" view H.! A.style "display: none"
         DH.inputSubmit "Cancel Registration"
-    H.form H.! A.method "GET" H.! A.action "register" $ do
+
+    -- Simple button that acts like a "back to ticket".  That is why we need the
+    -- UUID here.
+    H.form H.! A.method "GET" H.! A.action "ticket" $ do
+        H.input
+            H.! A.style "display: none"
+            H.! A.type_ "text"
+            H.! A.name "uuid"
+            H.! A.value (maybe "" (H.toValue . E.uuidToText) mbUuid)
         H.input H.! A.type_ "submit"
-            H.! A.value "Take me back to the registration"
+            H.! A.value "Take me back to my ticket"
 
 validateUuid :: T.Text -> D.Result H.Html E.UUID
 validateUuid txt = case E.uuidFromText txt of

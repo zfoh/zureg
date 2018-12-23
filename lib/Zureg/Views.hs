@@ -155,9 +155,9 @@ registrantInfo Registrant {..} = H.div $ do
         Nothing ->
             mempty
 
-cancel :: D.View H.Html -> H.Html
-cancel view = template mempty $
-    H.div H.! A.class_ "danger" $ Form.cancelView view
+cancel :: Maybe E.UUID -> D.View H.Html -> H.Html
+cancel mbUuid view = template mempty $
+    H.div H.! A.class_ "danger" $ Form.cancelView mbUuid view
 
 cancelSuccess :: H.Html
 cancelSuccess = template mempty $ do
