@@ -16,6 +16,7 @@ module Zureg.Model
 
 import qualified Data.Aeson.TH.Extended as A
 import qualified Data.Text              as T
+import qualified Data.Time              as Time
 import qualified Eventful               as E
 
 --------------------------------------------------------------------------------
@@ -46,15 +47,18 @@ data Project = Project
     } deriving (Show)
 
 data RegisterInfo = RegisterInfo
-    { riName                :: !T.Text
-    , riBadgeName           :: !(Maybe T.Text)
-    , riEmail               :: !T.Text
-    , riAffiliation         :: !(Maybe T.Text)
-    , riAskMeAbout          :: !(Maybe T.Text)
-    , tiTrackInterest       :: !TrackInterest
-    , riTShirt              :: !(Maybe (TShirtCut, TShirtSize))
-    , riMentor              :: !Bool
-    , riProject             :: !Project
+    { riName          :: !T.Text
+    , riBadgeName     :: !(Maybe T.Text)
+    , riEmail         :: !T.Text
+    , riAffiliation   :: !(Maybe T.Text)
+    , riAskMeAbout    :: !(Maybe T.Text)
+    , tiTrackInterest :: !TrackInterest
+    , riTShirt        :: !(Maybe (TShirtCut, TShirtSize))
+    , riMentor        :: !Bool
+    , riProject       :: !Project
+    -- | This field is optional because we only added after registration had
+    -- been opened.
+    , riRegisteredAt  :: !(Maybe Time.UTCTime)
     } deriving (Show)
 
 data Event

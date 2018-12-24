@@ -10,6 +10,7 @@ module Zureg.Form
     ) where
 
 import qualified Data.Text                   as T
+import qualified Data.Time                   as Time
 import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -18,7 +19,9 @@ import qualified Text.Digestive.Blaze.Html5  as DH
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
 
-registerForm :: Monad m => D.Form H.Html m RegisterInfo
+-- | The 'IO' in this type signature is because we want to get the registration
+-- time.
+registerForm :: D.Form H.Html IO RegisterInfo
 registerForm = RegisterInfo
     <$> "name" D..: (D.check "Name is required"
             (not . T.null . T.strip)
@@ -53,6 +56,7 @@ registerForm = RegisterInfo
                     <$> "beginner" D..: D.bool Nothing
                     <*> "intermediate" D..: D.bool Nothing
                     <*> "advanced" D..: D.bool Nothing))))
+    <*> (Just <$> D.monadic (Time.getCurrentTime >>= return . pure))
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
         case T.split (== '@') email of
