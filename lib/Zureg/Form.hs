@@ -78,7 +78,7 @@ registerForm = RegisterInfo
 
 registerView :: ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 registerView recaptcha view = DH.form view "?" $ do
-    H.h1 $ "ZuriHac registration" <> H.sup (H.small "beta")
+    H.h1 $ "ZuriHac registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
     DH.label "name" view $ H.strong "Full name"
