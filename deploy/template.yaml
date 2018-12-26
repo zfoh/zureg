@@ -24,8 +24,8 @@ Resources:
       - AttributeName: 'version'
         KeyType: 'RANGE'
       ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
 
   # This table maps email addresses to UUIDs.
   EmailDatabase:
@@ -40,8 +40,8 @@ Resources:
       - AttributeName: 'email'
         KeyType: 'HASH'
       ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
 
   # This is the lambda we deploy.  It says Python but it's really just a
   # simple wrapper around a Haskell binary.
