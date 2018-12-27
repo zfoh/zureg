@@ -43,6 +43,41 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
 
+  # Dev Versions of Email and Registrants databases
+  EmailDatabaseDev:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: 'Retain'
+    Properties:
+      TableName: 'emails-dev'
+      AttributeDefinitions:
+      - AttributeName: 'email'
+        AttributeType: 'S'
+      KeySchema:
+      - AttributeName: 'email'
+        KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  RegDatabaseDev:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: 'Retain'
+    Properties:
+      TableName: 'registrants-dev'
+      AttributeDefinitions:
+      - AttributeName: 'uuid'
+        AttributeType: 'S'
+      - AttributeName: 'version'
+        AttributeType: 'N'
+      KeySchema:
+      - AttributeName: 'uuid'
+        KeyType: 'HASH'
+      - AttributeName: 'version'
+        KeyType: 'RANGE'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
   # This is the lambda we deploy.  It says Python but it's really just a
   # simple wrapper around a Haskell binary.
   ZuregLambda:
