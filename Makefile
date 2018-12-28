@@ -1,4 +1,4 @@
-AWS_PROFILE=zfoh
+AWS_PROFILE=default
 AWS_REGION=us-east-1
 
 # Build the executables.
@@ -56,7 +56,7 @@ lambda: build
 # lambda's code into.  If it doesn't exist, we generate a bucket with a random
 # name and write that to the file.
 deploy/bucket:
-	$(eval BUCKET := $(shell od -vAn -N4 -tx4 </dev/random | sed 's/ */zureg-/'))
+	$(eval BUCKET := $(shell od -vAn -N4 -tx4 </dev/random | tr -d '\n' | sed 's/ */zureg-/'))
 	aws s3api create-bucket \
 		--profile $(AWS_PROFILE) \
 		--region $(AWS_REGION) \
