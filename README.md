@@ -23,7 +23,7 @@ This application needs to be compiled on two different platforms:
 Use `make deploy` to deploy the CloudFormation stack.  This will drop the zip
 file you created using `make lambda` into an S3 bucket, from where it will be
 accessed by AWS Lambda. 
-To select a non default AWS account, use 'make deploy AWS_PROFILE=<profile>', 
+To select a non default AWS account, use `make deploy AWS_PROFILE=<profile>`, 
 where <profile> is the profile name in the aws credentials file.
 
 ### Resources
