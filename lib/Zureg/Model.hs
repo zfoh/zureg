@@ -1,5 +1,6 @@
 -- | Basic datatypes and operations in our event sourcing.
 {-# LANGUAGE TemplateHaskell #-}
+
 module Zureg.Model
     ( TShirtCut (..)
     , TShirtSize (..)
@@ -78,6 +79,8 @@ data Registrant = Registrant
     , rInfo  :: Maybe RegisterInfo
     , rState :: Maybe RegisterState
     } deriving (Show)
+
+
 
 registrantProjection :: E.UUID -> E.Projection Registrant Event
 registrantProjection uuid = E.Projection
