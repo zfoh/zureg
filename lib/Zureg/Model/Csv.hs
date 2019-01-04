@@ -6,6 +6,8 @@
     OverloadedStrings
     #-}
 
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Zureg.Model.Csv
     ( itemHeader
     ) where
