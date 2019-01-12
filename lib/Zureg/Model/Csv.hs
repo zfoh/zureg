@@ -54,16 +54,11 @@ instance ToNamedRecord RegisterInfo where
                     , toNamedRecord riProject
                     ]
 
-instance ToNamedRecord (TShirtCut, TShirtSize) where
-    toNamedRecord (tShirtCut, tShirtSize) 
-        = HM.unions [ namedRecord [ "T-Shirt Cut" .= tShirtCut
-                                  , "T-Shirt Size" .= tShirtSize] 
-                                  ]
-                    
-instance ToNamedRecord (TShirtCut, TShirtSize) => ToNamedRecord (Maybe (TShirtCut, TShirtSize)) where
-    toNamedRecord tShirt = case tShirt of
-        Just tShirt' -> toNamedRecord tShirt'
-        Nothing      -> namedRecord [ "Name" .= ("No T-Shirt info present" :: String) ]
+instance ToNamedRecord (Maybe (TShirtCut, TShirtSize)) where
+    toNamedRecord mbTshirt =
+        namedRecord [ "T-Shirt Cut" .= fmap fst mbTshirt
+                    , "T-Shirt Size" .= fmap snd mbTshirt
+                    ]
 
 instance ToNamedRecord Project where
     toNamedRecord Project {..}
