@@ -10,6 +10,7 @@ import           Control.Monad                 (when)
 import qualified Data.Aeson.TH.Extended        as A
 import           Data.Maybe                    (isNothing)
 import qualified Data.Text                     as T
+import qualified Data.Time                     as Time
 import qualified Eventful                      as E
 import           System.Environment            (getArgs, getProgName)
 import           System.Exit                   (exitFailure)
@@ -64,11 +65,24 @@ main = do
                     "Email address already registered"
                     (fmap isNothing . Database.lookupEmail db . riEmail)
                     registerForm
+                let waitlist = True
 
                 case mbReg of
                     Nothing -> html $
                         Views.register (ReCaptcha.clientHtml recaptcha) view
+
+                    Just info | waitlist -> do
+                        -- You're on the waitlist
+                        uuid <- E.uuidNextRandom
+                        time <- Time.getCurrentTime
+                        let wlinfo = WaitlistInfo time
+                        Database.writeEvents db uuid
+                            [Register info, Waitlist wlinfo]
+                        Database.putEmail db (riEmail info) uuid
+                        sendWaitlistEmail sendEmail info uuid
+                        html $ Views.registerWaitlist uuid info
                     Just info -> do
+                        -- Success registration
                         uuid <- E.uuidNextRandom
                         Database.writeEvents db uuid [Register info]
                         Database.putEmail db (riEmail info) uuid
@@ -165,6 +179,30 @@ sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
     , "you can join our Slack organisation:"
     , ""
     , "    https://slack.zurihac.info/"
+    , ""
+    , "Warm regards"
+    , "The ZuriHac Registration Bot"
+    ]
+
+sendWaitlistEmail
+    :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
+sendWaitlistEmail sendEmail info uuid = SendEmail.sendEmail
+    sendEmail
+    (riEmail info)
+    "ZuriHac 2019: You're on the waitlist" $ T.unlines
+    [ "Hello " <> riName info <> ","
+    , ""
+    , "You have been added to the waitlist for ZuriHac 2019."
+    , ""
+    , "We will let you know when places become available."
+    , ""
+    , "You can view your status here:"
+    , ""
+    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
+    , ""
+    , "If you have any concerns, you can find our contact info here:"
+    , ""
+    , "    https://zfoh.ch/zurihac2019/#contact"
     , ""
     , "Warm regards"
     , "The ZuriHac Registration Bot"

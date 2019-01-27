@@ -5,6 +5,7 @@
 module Zureg.Views
     ( register
     , registerSuccess
+    , registerWaitlist
 
     , ticket
 
@@ -102,6 +103,12 @@ registerSuccess _uuid RegisterInfo {..} = template mempty $ do
     H.p $ "You will receive a confirmation mail at " <> H.toHtml riEmail <>
         " soon."
 
+registerWaitlist :: E.UUID -> RegisterInfo -> H.Html
+registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
+    H.h1 "You are now on the waitlist"
+    H.p $ H.toHtml riName <> ", your have been added to the waitlist."
+    H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
+
 ticket :: Registrant -> H.Html
 ticket r@Registrant {..} = template
     (H.style $ do
@@ -157,6 +164,7 @@ registrantInfo Registrant {..} = H.div $ do
         Just Cancelled  -> "❌ Cancelled"
         Just Registered -> "✅ Registered"
         Just Confirmed  -> "✅ Confirmed"
+        Just Waitlisted -> "⌛ on the waitlist"
     case rInfo of
         Just RegisterInfo {..} -> H.p $ do
             H.strong (H.toHtml riName ) <> H.br

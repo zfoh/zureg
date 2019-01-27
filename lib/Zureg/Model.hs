@@ -8,6 +8,7 @@ module Zureg.Model
     , ContributorLevel (..)
     , Project (..)
     , RegisterInfo (..)
+    , WaitlistInfo (..)
     , Event (..)
 
     , RegisterState (..)
