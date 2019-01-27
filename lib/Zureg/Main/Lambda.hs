@@ -95,6 +95,8 @@ main = do
             NOTE (jaspervdj): We only want to enable this confirmation button
             handler when send out the confirmation email.
 
+            TODO (jaspervdj): Check that they are not waitlisted?
+
             ["confirm"] -> do
                 uuid <- getUuidParam req
                 Database.writeEvents db uuid [Confirm]

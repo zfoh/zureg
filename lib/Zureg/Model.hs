@@ -62,8 +62,13 @@ data RegisterInfo = RegisterInfo
     , riRegisteredAt  :: !(Maybe Time.UTCTime)
     } deriving (Show)
 
+data WaitlistInfo = WaitlistInfo
+    { wiWaitlistedAt :: !Time.UTCTime
+    } deriving (Show)
+
 data Event
     = Register RegisterInfo
+    | Waitlist WaitlistInfo
     | Confirm
     | Cancel
     deriving (Show)
@@ -71,7 +76,7 @@ data Event
 --------------------------------------------------------------------------------
 -- State
 
-data RegisterState = Registered | Confirmed | Cancelled
+data RegisterState = Registered | Confirmed | Cancelled | Waitlisted
     deriving (Eq, Show)
 
 data Registrant = Registrant
@@ -80,8 +85,6 @@ data Registrant = Registrant
     , rState :: Maybe RegisterState
     } deriving (Show)
 
-
-
 registrantProjection :: E.UUID -> E.Projection Registrant Event
 registrantProjection uuid = E.Projection
     { E.projectionSeed         = Registrant uuid Nothing Nothing
@@ -89,6 +92,7 @@ registrantProjection uuid = E.Projection
         Cancel     -> registrant {rState = Just Cancelled}
         Confirm    -> registrant {rState = Just Confirmed}
         Register i -> registrant {rInfo = Just i, rState = Just Registered}
+        Waitlist _ -> registrant {rState = Just Waitlisted}
     }
 
 $(A.deriveJSON A.options ''TShirtSize)
@@ -97,6 +101,7 @@ $(A.deriveJSON A.options ''TrackInterest)
 $(A.deriveJSON A.options ''ContributorLevel)
 $(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegisterInfo)
+$(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''Event)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
