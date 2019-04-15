@@ -67,9 +67,14 @@ data WaitlistInfo = WaitlistInfo
     { wiWaitlistedAt :: !Time.UTCTime
     } deriving (Show)
 
+data PopWaitlistInfo = PopWaitlistInfo
+    { pwiPoppedAt :: !Time.UTCTime
+    } deriving (Show)
+
 data Event
     = Register RegisterInfo
     | Waitlist WaitlistInfo
+    | PopWaitlist PopWaitlistInfo
     | Confirm
     | Cancel
     deriving (Show)
@@ -94,6 +99,9 @@ registrantProjection uuid = E.Projection
         Confirm    -> registrant {rState = Just Confirmed}
         Register i -> registrant {rInfo = Just i, rState = Just Registered}
         Waitlist _ -> registrant {rState = Just Waitlisted}
+        PopWaitlist _ | Just Waitlisted <- rState registrant ->
+            registrant {rState = Just Registered}
+        _ -> registrant
     }
 
 $(A.deriveJSON A.options ''TShirtSize)
@@ -103,6 +111,7 @@ $(A.deriveJSON A.options ''ContributorLevel)
 $(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegisterInfo)
 $(A.deriveJSON A.options ''WaitlistInfo)
+$(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''Event)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
