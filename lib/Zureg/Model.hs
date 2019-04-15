@@ -9,6 +9,7 @@ module Zureg.Model
     , Project (..)
     , RegisterInfo (..)
     , WaitlistInfo (..)
+    , PopWaitlistInfo (..)
     , Event (..)
 
     , RegisterState (..)
