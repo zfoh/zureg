@@ -30,7 +30,7 @@ main = do
             let registrant' = E.projectionEventHandler
                     (registrantProjection uuid) registrant event
             if registrant == registrant'
-                then fail "patch did not apply"
+                then fail "registrant is not waitlisted?"
                 else Database.writeEvents db uuid [event]
         _ -> do
             IO.hPutStr IO.stderr $ unlines
