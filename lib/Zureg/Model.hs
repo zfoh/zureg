@@ -34,20 +34,20 @@ data TrackInterest = TrackInterest
     , tiIntermediate :: !Bool
     , tiAdvanced     :: !Bool
     , tiGhcDevOps    :: !Bool
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 data ContributorLevel = ContributorLevel
     { clBeginner     :: !Bool
     , clIntermediate :: !Bool
     , clAdvanced     :: !Bool
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 data Project = Project
     { pName             :: !(Maybe T.Text)
     , pWebsite          :: !(Maybe T.Text)
     , pShortDescription :: !(Maybe T.Text)
     , pContributorLevel :: !ContributorLevel
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 data RegisterInfo = RegisterInfo
     { riName          :: !T.Text
@@ -62,15 +62,15 @@ data RegisterInfo = RegisterInfo
     -- | This field is optional because we only added after registration had
     -- been opened.
     , riRegisteredAt  :: !(Maybe Time.UTCTime)
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 data WaitlistInfo = WaitlistInfo
     { wiWaitlistedAt :: !Time.UTCTime
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 data PopWaitlistInfo = PopWaitlistInfo
     { pwiPoppedAt :: !Time.UTCTime
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 data Event
     = Register RegisterInfo
@@ -78,7 +78,7 @@ data Event
     | PopWaitlist PopWaitlistInfo
     | Confirm
     | Cancel
-    deriving (Show)
+    deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
 -- State
@@ -90,7 +90,7 @@ data Registrant = Registrant
     { rUuid  :: E.UUID
     , rInfo  :: Maybe RegisterInfo
     , rState :: Maybe RegisterState
-    } deriving (Show)
+    } deriving (Eq, Show)
 
 registrantProjection :: E.UUID -> E.Projection Registrant Event
 registrantProjection uuid = E.Projection
