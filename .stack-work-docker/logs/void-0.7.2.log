@@ -1,6 +1,0 @@
-Configuring void-0.7.2...
-Preprocessing library for void-0.7.2..
-Building library for void-0.7.2..
-[1 of 1] Compiling Data.Void.Unsafe ( src/Data/Void/Unsafe.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Void/Unsafe.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/void-0.7.2-25eAk552UtQA9vusJY0zCu
-Registering library for void-0.7.2..

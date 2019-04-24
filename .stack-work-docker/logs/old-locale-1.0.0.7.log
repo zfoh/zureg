@@ -1,6 +1,0 @@
-Configuring old-locale-1.0.0.7...
-Preprocessing library for old-locale-1.0.0.7..
-Building library for old-locale-1.0.0.7..
-[1 of 1] Compiling System.Locale    ( System/Locale.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/Locale.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/old-locale-1.0.0.7-D4Rn5zPhtMJBwwirPJNu78
-Registering library for old-locale-1.0.0.7..

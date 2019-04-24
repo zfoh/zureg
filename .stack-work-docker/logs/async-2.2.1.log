@@ -1,6 +1,0 @@
-Configuring async-2.2.1...
-Preprocessing library for async-2.2.1..
-Building library for async-2.2.1..
-[1 of 1] Compiling Control.Concurrent.Async ( Control/Concurrent/Async.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Concurrent/Async.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/async-2.2.1-4fWSSJ8SFccIxQJVItkRnX
-Registering library for async-2.2.1..

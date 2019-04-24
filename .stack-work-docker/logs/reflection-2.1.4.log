@@ -1,6 +1,0 @@
-Configuring reflection-2.1.4...
-Preprocessing library for reflection-2.1.4..
-Building library for reflection-2.1.4..
-[1 of 1] Compiling Data.Reflection  ( fast/Data/Reflection.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Reflection.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/reflection-2.1.4-E9VXTbXoqHZ5rulgGPZOrF
-Registering library for reflection-2.1.4..

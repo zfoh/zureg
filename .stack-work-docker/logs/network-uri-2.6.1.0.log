@@ -1,6 +1,0 @@
-Configuring network-uri-2.6.1.0...
-Preprocessing library for network-uri-2.6.1.0..
-Building library for network-uri-2.6.1.0..
-[1 of 1] Compiling Network.URI      ( Network/URI.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/URI.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/network-uri-2.6.1.0-K75fCYvLQE41EntOQ30cqK
-Registering library for network-uri-2.6.1.0..

@@ -1,8 +1,0 @@
-Configuring case-insensitive-1.2.0.11...
-Preprocessing library for case-insensitive-1.2.0.11..
-Building library for case-insensitive-1.2.0.11..
-[1 of 3] Compiling Data.CaseInsensitive.Internal ( Data/CaseInsensitive/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/CaseInsensitive/Internal.o )
-[2 of 3] Compiling Data.CaseInsensitive ( Data/CaseInsensitive.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/CaseInsensitive.o )
-[3 of 3] Compiling Data.CaseInsensitive.Unsafe ( Data/CaseInsensitive/Unsafe.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/CaseInsensitive/Unsafe.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/case-insensitive-1.2.0.11-GGYU9CY9cs88wywgwHVKC6
-Registering library for case-insensitive-1.2.0.11..

@@ -1,8 +1,0 @@
-Configuring uuid-types-1.0.3...
-Preprocessing library for uuid-types-1.0.3..
-Building library for uuid-types-1.0.3..
-[1 of 3] Compiling Data.UUID.Types.Internal.Builder ( Data/UUID/Types/Internal/Builder.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/Types/Internal/Builder.o )
-[2 of 3] Compiling Data.UUID.Types.Internal ( Data/UUID/Types/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/Types/Internal.o )
-[3 of 3] Compiling Data.UUID.Types  ( Data/UUID/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/Types.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/uuid-types-1.0.3-Awdp9gd30rf4a5QKzt7fjH
-Registering library for uuid-types-1.0.3..

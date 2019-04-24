@@ -1,7 +1,0 @@
-Configuring base-orphans-0.8...
-Preprocessing library for base-orphans-0.8..
-Building library for base-orphans-0.8..
-[1 of 2] Compiling Data.Orphans     ( src/Data/Orphans.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Orphans.o )
-[2 of 2] Compiling Data.Orphans.Prelude ( src/Data/Orphans/Prelude.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Orphans/Prelude.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/base-orphans-0.8-9c3aMxqS7QbGl4Ot5i8lwK
-Registering library for base-orphans-0.8..

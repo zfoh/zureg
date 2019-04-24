@@ -1,6 +1,0 @@
-Configuring semigroups-0.18.5...
-Preprocessing library for semigroups-0.18.5..
-Building library for semigroups-0.18.5..
-[1 of 1] Compiling Data.Semigroup.Generic ( src/Data/Semigroup/Generic.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Semigroup/Generic.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/semigroups-0.18.5-6T2lH5F6zyQIdwR3JYKMO3
-Registering library for semigroups-0.18.5..

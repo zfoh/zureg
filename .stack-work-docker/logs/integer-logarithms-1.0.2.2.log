@@ -1,9 +1,0 @@
-Configuring integer-logarithms-1.0.2.2...
-Preprocessing library for integer-logarithms-1.0.2.2..
-Building library for integer-logarithms-1.0.2.2..
-[1 of 4] Compiling GHC.Integer.Logarithms.Compat ( src/GHC/Integer/Logarithms/Compat.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/GHC/Integer/Logarithms/Compat.o )
-[2 of 4] Compiling Math.NumberTheory.Logarithms ( src/Math/NumberTheory/Logarithms.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Math/NumberTheory/Logarithms.o )
-[3 of 4] Compiling Math.NumberTheory.Powers.Integer ( src/Math/NumberTheory/Powers/Integer.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Math/NumberTheory/Powers/Integer.o )
-[4 of 4] Compiling Math.NumberTheory.Powers.Natural ( src/Math/NumberTheory/Powers/Natural.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Math/NumberTheory/Powers/Natural.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/integer-logarithms-1.0.2.2-IT1M1moCo0mIobW8LfdrSC
-Registering library for integer-logarithms-1.0.2.2..

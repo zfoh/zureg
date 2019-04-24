@@ -1,6 +1,0 @@
-Configuring data-default-class-0.1.2.0...
-Preprocessing library for data-default-class-0.1.2.0..
-Building library for data-default-class-0.1.2.0..
-[1 of 1] Compiling Data.Default.Class ( Data/Default/Class.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Default/Class.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/data-default-class-0.1.2.0-FeIQ5tLoVZBHMSgrT9zptQ
-Registering library for data-default-class-0.1.2.0..

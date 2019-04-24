@@ -1,9 +1,0 @@
-Configuring pem-0.2.4...
-Preprocessing library for pem-0.2.4..
-Building library for pem-0.2.4..
-[1 of 4] Compiling Data.PEM.Types   ( Data/PEM/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/PEM/Types.o )
-[2 of 4] Compiling Data.PEM.Parser  ( Data/PEM/Parser.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/PEM/Parser.o )
-[3 of 4] Compiling Data.PEM.Writer  ( Data/PEM/Writer.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/PEM/Writer.o )
-[4 of 4] Compiling Data.PEM         ( Data/PEM.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/PEM.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/pem-0.2.4-EezZdV4k2PdHGw4BoKDCIz
-Registering library for pem-0.2.4..

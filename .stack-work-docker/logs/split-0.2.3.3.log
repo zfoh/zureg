@@ -1,7 +1,0 @@
-Configuring split-0.2.3.3...
-Preprocessing library for split-0.2.3.3..
-Building library for split-0.2.3.3..
-[1 of 2] Compiling Data.List.Split.Internals ( src/Data/List/Split/Internals.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/List/Split/Internals.o )
-[2 of 2] Compiling Data.List.Split  ( src/Data/List/Split.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/List/Split.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/split-0.2.3.3-6n1iQ0JLFvkeXvJXsAqQc
-Registering library for split-0.2.3.3..

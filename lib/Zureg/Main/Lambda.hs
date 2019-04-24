@@ -108,9 +108,11 @@ main = do
                 uuid <- getUuidParam req
                 registrant <- Database.getRegistrant db uuid
                 case rState registrant of 
-                  Just Registered -> Database.writeEvents db uuid [Confirm]
-                  _               -> return ()
-                return $ Serverless.response302 $ "ticket?uuid=" <> E.uuidToText uuid
+                  Just Registered -> do Database.writeEvents db uuid [Confirm]
+                                        return $ Serverless.response302 $
+                                          "ticket?uuid=" <> E.uuidToText uuid
+                  _               -> return $ Serverless.response302 $
+                                          "ticket?uuid=" <> E.uuidToText uuid
                    
             ["cancel"] -> do
                 (view, mbCancel) <- Serverless.runForm req "cancel" $

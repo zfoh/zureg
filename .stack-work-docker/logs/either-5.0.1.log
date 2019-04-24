@@ -1,7 +1,0 @@
-Configuring either-5.0.1...
-Preprocessing library for either-5.0.1..
-Building library for either-5.0.1..
-[1 of 2] Compiling Data.Either.Combinators ( src/Data/Either/Combinators.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Either/Combinators.o )
-[2 of 2] Compiling Data.Either.Validation ( src/Data/Either/Validation.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Either/Validation.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/either-5.0.1-H3Ar1MJzpApJxdi2aTGBkU
-Registering library for either-5.0.1..

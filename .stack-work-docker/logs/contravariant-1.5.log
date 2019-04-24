@@ -1,8 +1,0 @@
-Configuring contravariant-1.5...
-Preprocessing library for contravariant-1.5..
-Building library for contravariant-1.5..
-[1 of 3] Compiling Data.Functor.Contravariant.Divisible ( src/Data/Functor/Contravariant/Divisible.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Contravariant/Divisible.o )
-[2 of 3] Compiling Data.Functor.Contravariant.Compose ( src/Data/Functor/Contravariant/Compose.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Contravariant/Compose.o )
-[3 of 3] Compiling Data.Functor.Contravariant.Generic ( src/Data/Functor/Contravariant/Generic.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Contravariant/Generic.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/contravariant-1.5-FpGwhn5fmC2IfBjNJ4PaUQ
-Registering library for contravariant-1.5..

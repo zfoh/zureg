@@ -1,6 +1,0 @@
-Configuring ini-0.3.6...
-Preprocessing library for ini-0.3.6..
-Building library for ini-0.3.6..
-[1 of 1] Compiling Data.Ini         ( src/Data/Ini.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Ini.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/ini-0.3.6-H5GoUDssMkR4qf7z9OR3k6
-Registering library for ini-0.3.6..

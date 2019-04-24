@@ -1,8 +1,0 @@
-Configuring http-conduit-2.3.4...
-Preprocessing library for http-conduit-2.3.4..
-Building library for http-conduit-2.3.4..
-[1 of 3] Compiling Network.HTTP.Client.Conduit ( Network/HTTP/Client/Conduit.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Client/Conduit.o )
-[2 of 3] Compiling Network.HTTP.Conduit ( Network/HTTP/Conduit.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Conduit.o )
-[3 of 3] Compiling Network.HTTP.Simple ( Network/HTTP/Simple.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Simple.o )
-Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/http-conduit-2.3.4-GpjLhRcW5xU5JWjVZG8hCd
-Registering library for http-conduit-2.3.4..
