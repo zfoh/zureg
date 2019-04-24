@@ -103,13 +103,7 @@ main = do
                     uuid <- getUuidParam req
                     registrant <- Database.getRegistrant db uuid
                     html $ Views.scan registrant
-                    
-            {-
-            NOTE (jaspervdj): We only want to enable this confirmation button
-            handler when send out the confirmation email.
 
-            TODO (jaspervdj): Check that they are not waitlisted?
-            -}
             ["confirm"] -> do
                 uuid <- getUuidParam req
                 registrant <- Database.getRegistrant db uuid

@@ -135,12 +135,6 @@ ticket r@Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Take me back to the registration"
 
-        {-
-        NOTE (jaspervdj): The following snippet of code shows the "confirmation"
-        button.  We will want to enable this as soon we as we send out the
-        confirmation reminder to all attendees.
-        -}
-        
         when (rState == Just Registered) $
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
