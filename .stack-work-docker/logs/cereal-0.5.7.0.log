@@ -1,0 +1,16 @@
+Configuring cereal-0.5.7.0...
+Preprocessing library for cereal-0.5.7.0..
+Building library for cereal-0.5.7.0..
+[1 of 4] Compiling Data.Serialize.Get ( src/Data/Serialize/Get.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Serialize/Get.o )
+[2 of 4] Compiling Data.Serialize.Put ( src/Data/Serialize/Put.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Serialize/Put.o )
+[3 of 4] Compiling Data.Serialize.IEEE754 ( src/Data/Serialize/IEEE754.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Serialize/IEEE754.o )
+[4 of 4] Compiling Data.Serialize   ( src/Data/Serialize.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Serialize.o )
+
+[;1msrc/Data/Serialize.hs:290:9: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wincomplete-patterns[0m[0m[;1m][0m[0m[;1m
+    Pattern match(es) are non-exhaustive
+    In an equation for `findNr': Patterns not matched: _ _[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m290 |[0m[0m         [;1m[35mfindNr lo hi[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m         ^^^^^^^^^^^^...[0m[0m
+[0m[0m[0mInstalling library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/cereal-0.5.7.0-FQK96FKtVCb14kvriaZEBb
+Registering library for cereal-0.5.7.0..

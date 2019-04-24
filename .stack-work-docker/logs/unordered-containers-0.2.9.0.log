@@ -1,0 +1,122 @@
+Configuring unordered-containers-0.2.9.0...
+Preprocessing library for unordered-containers-0.2.9.0..
+Building library for unordered-containers-0.2.9.0..
+[1 of 8] Compiling Data.HashMap.List ( Data/HashMap/List.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashMap/List.o )
+[2 of 8] Compiling Data.HashMap.Unsafe ( Data/HashMap/Unsafe.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashMap/Unsafe.o )
+[3 of 8] Compiling Data.HashMap.Array ( Data/HashMap/Array.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashMap/Array.o )
+
+[;1mData/HashMap/Array.hs:89:1-9: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      newArray# :: ghc-prim-0.5.3:GHC.Prim.Int#
+                   -> a
+                   -> ghc-prim-0.5.3:GHC.Prim.State# d
+                   -> (# ghc-prim-0.5.3:GHC.Prim.State# d, SmallMutableArray# d a #)[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m89 |[0m[0m [;1m[35mnewArray#[0m[0m = newSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:90:1-10: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      readArray# :: SmallMutableArray# d a
+                    -> ghc-prim-0.5.3:GHC.Prim.Int#
+                    -> ghc-prim-0.5.3:GHC.Prim.State# d
+                    -> (# ghc-prim-0.5.3:GHC.Prim.State# d, a #)[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m90 |[0m[0m [;1m[35mreadArray#[0m[0m = readSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:91:1-11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      writeArray# :: SmallMutableArray# d a
+                     -> ghc-prim-0.5.3:GHC.Prim.Int#
+                     -> a
+                     -> ghc-prim-0.5.3:GHC.Prim.State# d
+                     -> ghc-prim-0.5.3:GHC.Prim.State# d[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m91 |[0m[0m [;1m[35mwriteArray#[0m[0m = writeSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:92:1-11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      indexArray# :: SmallArray# a
+                     -> ghc-prim-0.5.3:GHC.Prim.Int# -> (# a #)[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m92 |[0m[0m [;1m[35mindexArray#[0m[0m = indexSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:93:1-18: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      unsafeFreezeArray# :: SmallMutableArray# d a
+                            -> ghc-prim-0.5.3:GHC.Prim.State# d
+                            -> (# ghc-prim-0.5.3:GHC.Prim.State# d, SmallArray# a #)[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m93 |[0m[0m [;1m[35munsafeFreezeArray#[0m[0m = unsafeFreezeSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:94:1-16: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      unsafeThawArray# :: SmallArray# a
+                          -> ghc-prim-0.5.3:GHC.Prim.State# d
+                          -> (# ghc-prim-0.5.3:GHC.Prim.State# d, SmallMutableArray# d a #)[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m94 |[0m[0m [;1m[35munsafeThawArray#[0m[0m = unsafeThawSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:95:1-12: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      sizeofArray# :: SmallArray# a -> ghc-prim-0.5.3:GHC.Prim.Int#[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m95 |[0m[0m [;1m[35msizeofArray#[0m[0m = sizeofSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:96:1-10: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      copyArray# :: SmallArray# a
+                    -> ghc-prim-0.5.3:GHC.Prim.Int#
+                    -> SmallMutableArray# d a
+                    -> ghc-prim-0.5.3:GHC.Prim.Int#
+                    -> ghc-prim-0.5.3:GHC.Prim.Int#
+                    -> ghc-prim-0.5.3:GHC.Prim.State# d
+                    -> ghc-prim-0.5.3:GHC.Prim.State# d[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m96 |[0m[0m [;1m[35mcopyArray#[0m[0m = copySmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:97:1-10: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      thawArray# :: SmallArray# a
+                    -> ghc-prim-0.5.3:GHC.Prim.Int#
+                    -> ghc-prim-0.5.3:GHC.Prim.Int#
+                    -> ghc-prim-0.5.3:GHC.Prim.State# d
+                    -> (# ghc-prim-0.5.3:GHC.Prim.State# d, SmallMutableArray# d a #)[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m97 |[0m[0m [;1m[35mthawArray#[0m[0m = thawSmallArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:98:1-19: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      sizeofMutableArray# :: SmallMutableArray# d a
+                             -> ghc-prim-0.5.3:GHC.Prim.Int#[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m98 |[0m[0m [;1m[35msizeofMutableArray#[0m[0m = sizeofSmallMutableArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mData/HashMap/Array.hs:99:1-17: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-signatures[0m[0m[;1m][0m[0m[;1m
+    Top-level binding with no type signature:
+      copyMutableArray# :: SmallMutableArray# d a
+                           -> ghc-prim-0.5.3:GHC.Prim.Int#
+                           -> SmallMutableArray# d a
+                           -> ghc-prim-0.5.3:GHC.Prim.Int#
+                           -> ghc-prim-0.5.3:GHC.Prim.Int#
+                           -> ghc-prim-0.5.3:GHC.Prim.State# d
+                           -> ghc-prim-0.5.3:GHC.Prim.State# d[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m99 |[0m[0m [;1m[35mcopyMutableArray#[0m[0m = copySmallMutableArray#
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[4 of 8] Compiling Data.HashMap.UnsafeShift ( Data/HashMap/UnsafeShift.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashMap/UnsafeShift.o )
+[5 of 8] Compiling Data.HashMap.Base ( Data/HashMap/Base.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashMap/Base.o )
+[6 of 8] Compiling Data.HashMap.Strict ( Data/HashMap/Strict.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashMap/Strict.o )
+[7 of 8] Compiling Data.HashMap.Lazy ( Data/HashMap/Lazy.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashMap/Lazy.o )
+[8 of 8] Compiling Data.HashSet     ( Data/HashSet.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/HashSet.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/unordered-containers-0.2.9.0-BRWkoSTuML1cQdpep6Oin
+Registering library for unordered-containers-0.2.9.0..

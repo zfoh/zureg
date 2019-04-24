@@ -1,0 +1,11 @@
+Configuring blaze-markup-0.8.2.2...
+Preprocessing library for blaze-markup-0.8.2.2..
+Building library for blaze-markup-0.8.2.2..
+[1 of 6] Compiling Text.Blaze.Internal ( src/Text/Blaze/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Blaze/Internal.o )
+[2 of 6] Compiling Text.Blaze       ( src/Text/Blaze.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Blaze.o )
+[3 of 6] Compiling Text.Blaze.Renderer.String ( src/Text/Blaze/Renderer/String.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Blaze/Renderer/String.o )
+[4 of 6] Compiling Text.Blaze.Renderer.Pretty ( src/Text/Blaze/Renderer/Pretty.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Blaze/Renderer/Pretty.o )
+[5 of 6] Compiling Text.Blaze.Renderer.Text ( src/Text/Blaze/Renderer/Text.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Blaze/Renderer/Text.o )
+[6 of 6] Compiling Text.Blaze.Renderer.Utf8 ( src/Text/Blaze/Renderer/Utf8.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Blaze/Renderer/Utf8.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/blaze-markup-0.8.2.2-IwLwNWRUxfsEuYbkQ0Gv5Q
+Registering library for blaze-markup-0.8.2.2..

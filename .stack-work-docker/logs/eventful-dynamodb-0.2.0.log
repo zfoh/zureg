@@ -1,0 +1,23 @@
+Configuring eventful-dynamodb-0.2.0...
+Preprocessing library for eventful-dynamodb-0.2.0..
+Building library for eventful-dynamodb-0.2.0..
+[1 of 2] Compiling Eventful.Store.DynamoDB.DynamoJSON ( src/Eventful/Store/DynamoDB/DynamoJSON.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Eventful/Store/DynamoDB/DynamoJSON.o )
+[2 of 2] Compiling Eventful.Store.DynamoDB ( src/Eventful/Store/DynamoDB.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Eventful/Store/DynamoDB.o )
+
+[;1msrc/Eventful/Store/DynamoDB.hs:79:39: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$='
+    (imported from Data.Conduit, but defined in conduit-1.3.1:Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m79 |[0m[0m     paginate (queryBase config range) [;1m[35m=$=[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m                                       ^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Eventful/Store/DynamoDB.hs:80:34: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `$$'
+    (imported from Data.Conduit, but defined in conduit-1.3.1:Data.Conduit.Internal.Conduit):
+    Deprecated: "Use runConduit and .|"[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m80 |[0m[0m     CL.concatMap (view qrsItems) [;1m[35m$$[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m                                  ^^[0m[0m
+[0m[0m[0mInstalling library in /root/app/.stack-work-docker/install/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/eventful-dynamodb-0.2.0-8xi9KlYEAGK4nIpsBBeGC1
+Registering library for eventful-dynamodb-0.2.0..

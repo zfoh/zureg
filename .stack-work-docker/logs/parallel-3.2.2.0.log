@@ -1,0 +1,8 @@
+Configuring parallel-3.2.2.0...
+Preprocessing library for parallel-3.2.2.0..
+Building library for parallel-3.2.2.0..
+[1 of 3] Compiling Control.Parallel ( Control/Parallel.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Parallel.o )
+[2 of 3] Compiling Control.Seq      ( Control/Seq.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Seq.o )
+[3 of 3] Compiling Control.Parallel.Strategies ( Control/Parallel/Strategies.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Parallel/Strategies.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/parallel-3.2.2.0-EGl5SOk48TWHAD161C93aQ
+Registering library for parallel-3.2.2.0..

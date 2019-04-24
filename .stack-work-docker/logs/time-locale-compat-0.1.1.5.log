@@ -1,0 +1,6 @@
+Configuring time-locale-compat-0.1.1.5...
+Preprocessing library for time-locale-compat-0.1.1.5..
+Building library for time-locale-compat-0.1.1.5..
+[1 of 1] Compiling Data.Time.Locale.Compat ( src/Data/Time/Locale/Compat.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Time/Locale/Compat.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/time-locale-compat-0.1.1.5-4Kz46WDKPmGDmYVdO1w5q7
+Registering library for time-locale-compat-0.1.1.5..

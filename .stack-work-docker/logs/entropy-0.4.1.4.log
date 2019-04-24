@@ -1,0 +1,11 @@
+[1 of 2] Compiling Main             ( /tmp/stack23/entropy-0.4.1.4/Setup.hs, /tmp/stack23/entropy-0.4.1.4/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/Main.o )
+[2 of 2] Compiling StackSetupShim   ( /root/.stack/setup-exe-src/setup-shim-mPHDZzAJ.hs, /tmp/stack23/entropy-0.4.1.4/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/StackSetupShim.o )
+Linking /tmp/stack23/entropy-0.4.1.4/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/setup ...
+Configuring entropy-0.4.1.4...
+Result of RDRAND Test: True
+Preprocessing library for entropy-0.4.1.4..
+Building library for entropy-0.4.1.4..
+[1 of 2] Compiling System.EntropyNix ( System/EntropyNix.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/EntropyNix.o )
+[2 of 2] Compiling System.Entropy   ( System/Entropy.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/Entropy.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/entropy-0.4.1.4-23NMAjgKyCo3F1ZCvvDJOh
+Registering library for entropy-0.4.1.4..

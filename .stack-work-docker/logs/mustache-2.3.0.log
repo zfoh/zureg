@@ -1,0 +1,25 @@
+Configuring mustache-2.3.0...
+Preprocessing library for mustache-2.3.0..
+Building library for mustache-2.3.0..
+[1 of 8] Compiling Paths_mustache   ( .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/autogen/Paths_mustache.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Paths_mustache.o )
+[2 of 8] Compiling Text.Mustache.Internal ( src/Text/Mustache/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Mustache/Internal.o )
+[3 of 8] Compiling Text.Mustache.Internal.Types ( src/Text/Mustache/Internal/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Mustache/Internal/Types.o )
+[4 of 8] Compiling Text.Mustache.Types ( src/Text/Mustache/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Mustache/Types.o )
+[5 of 8] Compiling Text.Mustache.Render ( src/Text/Mustache/Render.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Mustache/Render.o )
+[6 of 8] Compiling Text.Mustache.Parser ( src/Text/Mustache/Parser.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Mustache/Parser.o )
+[7 of 8] Compiling Text.Mustache.Compile ( src/Text/Mustache/Compile.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Mustache/Compile.o )
+[8 of 8] Compiling Text.Mustache    ( src/Text/Mustache.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Mustache.o )
+Preprocessing executable 'haskell-mustache' for mustache-2.3.0..
+Building executable 'haskell-mustache' for mustache-2.3.0..
+[1 of 1] Compiling Main             ( app/Main.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/haskell-mustache/haskell-mustache-tmp/Main.o )
+
+[;1mapp/Main.hs:47:17: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `decodeEither' (imported from Data.Yaml):
+    Deprecated: "Please use decodeEither' or decodeThrow, which provide more useful failures"[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m47 |[0m[0m readYAML = fmap [;1m[35mdecodeEither[0m[0m . B.readFile
+[;1m[34m   |[0m[0m[;1m[35m                 ^^^^^^^^^^^^[0m[0m
+[0m[0m[0mLinking .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/haskell-mustache/haskell-mustache ...
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/mustache-2.3.0-Lx5cVsfVKCb9M8WNiHxl2o
+Installing executable haskell-mustache in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/bin
+Registering library for mustache-2.3.0..

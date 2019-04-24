@@ -1,0 +1,20 @@
+Configuring bifunctors-5.5.3...
+Preprocessing library for bifunctors-5.5.3..
+Building library for bifunctors-5.5.3..
+[ 1 of 15] Compiling Data.Biapplicative ( src/Data/Biapplicative.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Biapplicative.o )
+[ 2 of 15] Compiling Data.Bifunctor.Biff ( src/Data/Bifunctor/Biff.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Biff.o )
+[ 3 of 15] Compiling Data.Bifunctor.Clown ( src/Data/Bifunctor/Clown.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Clown.o )
+[ 4 of 15] Compiling Data.Bifunctor.Fix ( src/Data/Bifunctor/Fix.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Fix.o )
+[ 5 of 15] Compiling Data.Bifunctor.Functor ( src/Data/Bifunctor/Functor.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Functor.o )
+[ 6 of 15] Compiling Data.Bifunctor.Flip ( src/Data/Bifunctor/Flip.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Flip.o )
+[ 7 of 15] Compiling Data.Bifunctor.Join ( src/Data/Bifunctor/Join.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Join.o )
+[ 8 of 15] Compiling Data.Bifunctor.Joker ( src/Data/Bifunctor/Joker.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Joker.o )
+[ 9 of 15] Compiling Data.Bifunctor.Product ( src/Data/Bifunctor/Product.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Product.o )
+[10 of 15] Compiling Data.Bifunctor.Sum ( src/Data/Bifunctor/Sum.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Sum.o )
+[11 of 15] Compiling Data.Bifunctor.TH.Internal ( src/Data/Bifunctor/TH/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/TH/Internal.o )
+[12 of 15] Compiling Data.Bifunctor.TH ( src/Data/Bifunctor/TH.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/TH.o )
+[13 of 15] Compiling Data.Bifunctor.Tannen ( src/Data/Bifunctor/Tannen.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Tannen.o )
+[14 of 15] Compiling Data.Bifunctor.Wrapped ( src/Data/Bifunctor/Wrapped.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Bifunctor/Wrapped.o )
+[15 of 15] Compiling Paths_bifunctors ( .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/autogen/Paths_bifunctors.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Paths_bifunctors.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/bifunctors-5.5.3-DNms2pwsLzcJEdMjaHGChR
+Registering library for bifunctors-5.5.3..

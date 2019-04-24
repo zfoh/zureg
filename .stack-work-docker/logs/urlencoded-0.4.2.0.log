@@ -1,0 +1,6 @@
+Configuring urlencoded-0.4.2.0...
+Preprocessing library for urlencoded-0.4.2.0..
+Building library for urlencoded-0.4.2.0..
+[1 of 1] Compiling Data.URLEncoded  ( src/Data/URLEncoded.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/URLEncoded.o )
+Installing library in /root/app/.stack-work-docker/install/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/urlencoded-0.4.2.0-5diDpzLQ8FiO3uUHn72W4
+Registering library for urlencoded-0.4.2.0..

@@ -1,0 +1,12 @@
+Configuring http-types-0.12.2...
+Preprocessing library for http-types-0.12.2..
+Building library for http-types-0.12.2..
+[1 of 7] Compiling Network.HTTP.Types.Header ( Network/HTTP/Types/Header.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Types/Header.o )
+[2 of 7] Compiling Network.HTTP.Types.Method ( Network/HTTP/Types/Method.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Types/Method.o )
+[3 of 7] Compiling Network.HTTP.Types.Status ( Network/HTTP/Types/Status.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Types/Status.o )
+[4 of 7] Compiling Network.HTTP.Types.URI ( Network/HTTP/Types/URI.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Types/URI.o )
+[5 of 7] Compiling Network.HTTP.Types.QueryLike ( Network/HTTP/Types/QueryLike.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Types/QueryLike.o )
+[6 of 7] Compiling Network.HTTP.Types.Version ( Network/HTTP/Types/Version.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Types/Version.o )
+[7 of 7] Compiling Network.HTTP.Types ( Network/HTTP/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/HTTP/Types.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/http-types-0.12.2-3GI9ZSQctllDxYJpnDXS0X
+Registering library for http-types-0.12.2..

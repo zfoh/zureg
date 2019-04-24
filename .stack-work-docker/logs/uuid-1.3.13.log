@@ -1,0 +1,13 @@
+Configuring uuid-1.3.13...
+Preprocessing library for uuid-1.3.13..
+Building library for uuid-1.3.13..
+[1 of 8] Compiling Data.UUID        ( Data/UUID.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID.o )
+[2 of 8] Compiling Data.UUID.Named  ( Data/UUID/Named.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/Named.o )
+[3 of 8] Compiling Data.UUID.V1     ( Data/UUID/V1.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/V1.o )
+[4 of 8] Compiling Data.UUID.V3     ( Data/UUID/V3.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/V3.o )
+[5 of 8] Compiling Data.UUID.V4     ( Data/UUID/V4.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/V4.o )
+[6 of 8] Compiling Data.UUID.V5     ( Data/UUID/V5.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/V5.o )
+[7 of 8] Compiling Data.Word.Util   ( Data/Word/Util.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Word/Util.o )
+[8 of 8] Compiling Data.UUID.Util   ( Data/UUID/Util.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/UUID/Util.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/uuid-1.3.13-GuNeglF7UENHpML44e38uE
+Registering library for uuid-1.3.13..

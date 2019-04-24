@@ -1,0 +1,14 @@
+Configuring asn1-parse-0.9.4...
+Preprocessing library for asn1-parse-0.9.4..
+Building library for asn1-parse-0.9.4..
+[1 of 1] Compiling Data.ASN1.Parse  ( Data/ASN1/Parse.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/ASN1/Parse.o )
+
+[;1mData/ASN1/Parse.hs:30:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Applicative' is redundant
+      except perhaps to import instances from `Control.Applicative'
+    To import instances alone, use: import Control.Applicative()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m30 |[0m[0m [;1m[35mimport Control.Applicative[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0mInstalling library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/asn1-parse-0.9.4-1ptrYxjirNQ7Stcbq9nKwE
+Registering library for asn1-parse-0.9.4..

@@ -4,12 +4,12 @@ AWS_REGION=us-east-1
 # Build the executables.
 .PHONY: build
 build:
-	stack build --allow-different-user
+	stack build --allow-different-user -j1
 
 # For development.
 .PHONY: watch
 watch:
-	stack build --allow-different-user --file-watch --pedantic
+	stack build --allow-different-user -j1 --file-watch --pedantic
 
 # We need docker to build binaries that run on amazon's linux version.  This
 # makefile target launches a docker shell so you can just use `make build`
@@ -56,7 +56,7 @@ lambda: build
 # lambda's code into.  If it doesn't exist, we generate a bucket with a random
 # name and write that to the file.
 deploy/bucket:
-	$(eval BUCKET := $(shell od -vAn -N4 -tx4 </dev/random | tr -d '\n' | sed 's/ */zureg-/'))
+	$(eval BUCKET := $(shell od -vAn -N4 -tx4 </dev/random | sed 's/ */zureg-/'))
 	aws s3api create-bucket \
 		--profile $(AWS_PROFILE) \
 		--region $(AWS_REGION) \

@@ -1,0 +1,6 @@
+Configuring transformers-base-0.4.5.2...
+Preprocessing library for transformers-base-0.4.5.2..
+Building library for transformers-base-0.4.5.2..
+[1 of 1] Compiling Control.Monad.Base ( src/Control/Monad/Base.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Monad/Base.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/transformers-base-0.4.5.2-JUlqsL73OImGGUE2DcC4Q8
+Registering library for transformers-base-0.4.5.2..

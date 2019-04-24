@@ -1,0 +1,401 @@
+Configuring conduit-1.3.1...
+Preprocessing library for conduit-1.3.1..
+Building library for conduit-1.3.1..
+[ 1 of 14] Compiling Data.Conduit.Internal.Pipe ( src/Data/Conduit/Internal/Pipe.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Internal/Pipe.o )
+
+[;1msrc/Data/Conduit/Internal/Pipe.hs:215:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: CI.await >>= maybe" may never fire
+      because `maybe' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `maybe'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m215 |[0m[0m {-# RULES [;1m[35m"conduit: CI.await >>= maybe" forall x y. await >>= maybe x y = NeedInput y (const x)[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Pipe.hs:224:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: awaitE >>= either" may never fire
+      because `either' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `either'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m224 |[0m[0m {-# RULES [;1m[35m"conduit: awaitE >>= either" forall x y. awaitE >>= either x y = NeedInput y x[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 2 of 14] Compiling Data.Conduit.Internal.Conduit ( src/Data/Conduit/Internal/Conduit.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Internal/Conduit.o )
+
+[;1msrc/Data/Conduit/Internal/Conduit.hs:841:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: await >>= maybe" may never fire
+      because `maybe' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `maybe'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m841 |[0m[0m {-# RULES [;1m[35m"conduit: await >>= maybe" forall x y. await >>= maybe x y = await' x y[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 3 of 14] Compiling Data.Conduit.Internal.Fusion ( src/Data/Conduit/Internal/Fusion.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Internal/Fusion.o )
+
+[;1msrc/Data/Conduit/Internal/Fusion.hs:71:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: fuseStream (.|)" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m71 |[0m[0m {-# RULES [;1m[35m"conduit: fuseStream (.|)" forall left right.[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:74:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: fuseStream (fuse)" may never fire
+      because `fuse' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `fuse'[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m74 |[0m[0m {-# RULES [;1m[35m"conduit: fuseStream (fuse)" forall left right.[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:78:23: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$=' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m78 |[0m[0m         unstream left [;1m[35m=$=[0m[0m unstream right = unstream (fuseStream left right)
+[;1m[34m   |[0m[0m[;1m[35m                       ^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:102:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: runStream (pure)" may never fire
+      because `runConduitPure' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitPure'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m102 |[0m[0m {-# RULES [;1m[35m"conduit: runStream (pure)" forall stream.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:105:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: runStream (ResourceT)" may never fire
+      because `runConduitRes' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitRes'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m105 |[0m[0m {-# RULES [;1m[35m"conduit: runStream (ResourceT)" forall stream.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:129:23: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `$$' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use runConduit and .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m129 |[0m[0m         unstream left [;1m[35m$$[0m[0m unstream right = connectStream left right
+[;1m[34m    |[0m[0m[;1m[35m                       ^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:154:23: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `$$' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use runConduit and .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m154 |[0m[0m         unstream left [;1m[35m$$[0m[0m right = connectStream1 left right
+[;1m[34m    |[0m[0m[;1m[35m                       ^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:157:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduit/.|)" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m157 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduit/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:161:35: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$=' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m161 |[0m[0m         runConduit (unstream left [;1m[35m=$=[0m[0m right) = connectStream1 left right
+[;1m[34m    |[0m[0m[;1m[35m                                   ^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:163:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduit/fuse)" may never fire
+      because `fuse' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `fuse'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m163 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduit/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:167:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitPure/.|)" may never fire
+      because `runConduitPure' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitPure'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m167 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitPure/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:167:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitPure/.|)" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m167 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitPure/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:170:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitPure/=$=)" may never fire
+      because `runConduitPure' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitPure'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m170 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitPure/=$=)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:171:39: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$=' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m171 |[0m[0m         runConduitPure (unstream left [;1m[35m=$=[0m[0m right) = runIdentity (connectStream1 left right)
+[;1m[34m    |[0m[0m[;1m[35m                                       ^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:173:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitPure/fuse)" may never fire
+      because `runConduitPure' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitPure'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m173 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitPure/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:173:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitPure/fuse)" may never fire
+      because `fuse' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `fuse'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m173 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitPure/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:177:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitRes/.|)" may never fire
+      because `runConduitRes' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitRes'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m177 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitRes/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:177:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitRes/.|)" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m177 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitRes/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:180:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitRes/=$=)" may never fire
+      because `runConduitRes' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitRes'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m180 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitRes/=$=)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:181:38: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$=' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m181 |[0m[0m         runConduitRes (unstream left [;1m[35m=$=[0m[0m right) = runResourceT (connectStream1 left right)
+[;1m[34m    |[0m[0m[;1m[35m                                      ^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:183:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitRes/fuse)" may never fire
+      because `runConduitRes' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitRes'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m183 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitRes/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:183:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream1 (runConduitRes/fuse)" may never fire
+      because `fuse' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `fuse'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m183 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream1 (runConduitRes/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:214:14: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `$$' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use runConduit and .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m214 |[0m[0m         left [;1m[35m$$[0m[0m unstream right = connectStream2 left right
+[;1m[34m    |[0m[0m[;1m[35m              ^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:217:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduit/.|)" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m217 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduit/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:220:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduit/fuse)" may never fire
+      because `fuse' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `fuse'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m220 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduit/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:224:26: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$=' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m224 |[0m[0m         runConduit (left [;1m[35m=$=[0m[0m unstream right) = connectStream2 left right
+[;1m[34m    |[0m[0m[;1m[35m                          ^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:227:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitPure/.|)" may never fire
+      because `runConduitPure' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitPure'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m227 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitPure/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:227:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitPure/.|)" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m227 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitPure/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:230:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitPure/fuse)" may never fire
+      because `runConduitPure' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitPure'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m230 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitPure/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:230:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitPure/fuse)" may never fire
+      because `fuse' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `fuse'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m230 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitPure/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:233:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitPure/=$=)" may never fire
+      because `runConduitPure' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitPure'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m233 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitPure/=$=)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:234:30: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$=' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m234 |[0m[0m         runConduitPure (left [;1m[35m=$=[0m[0m unstream right) = runIdentity (connectStream2 left right)
+[;1m[34m    |[0m[0m[;1m[35m                              ^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:237:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitRes/.|)" may never fire
+      because `runConduitRes' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitRes'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m237 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitRes/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:237:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitRes/.|)" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m237 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitRes/.|)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:240:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitRes/fuse)" may never fire
+      because `runConduitRes' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitRes'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m240 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitRes/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:240:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitRes/fuse)" may never fire
+      because `fuse' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `fuse'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m240 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitRes/fuse)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:243:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connectStream2 (runConduitRes/=$=)" may never fire
+      because `runConduitRes' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `runConduitRes'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m243 |[0m[0m {-# RULES [;1m[35m"conduit: connectStream2 (runConduitRes/=$=)" forall left right.[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/Internal/Fusion.hs:244:29: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `=$=' (imported from Data.Conduit.Internal.Conduit):
+    Deprecated: "Use .|"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m244 |[0m[0m         runConduitRes (left [;1m[35m=$=[0m[0m unstream right) = runResourceT (connectStream2 left right)
+[;1m[34m    |[0m[0m[;1m[35m                             ^^^[0m[0m
+[0m[0m[0m[ 4 of 14] Compiling Data.Conduit.Internal.List.Stream ( src/Data/Conduit/Internal/List/Stream.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Internal/List/Stream.o )
+[ 5 of 14] Compiling Data.Conduit.Combinators.Stream ( src/Data/Conduit/Combinators/Stream.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Combinators/Stream.o )
+[ 6 of 14] Compiling Data.Conduit     ( src/Data/Conduit.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit.o )
+
+[;1msrc/Data/Conduit.hs:104:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Functor.Identity' is redundant
+      except perhaps to import instances from `Data.Functor.Identity'
+    To import instances alone, use: import Data.Functor.Identity()[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m104 |[0m[0m [;1m[35mimport Data.Functor.Identity (Identity, runIdentity)[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit.hs:105:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Monad.Trans.Resource' is redundant
+      except perhaps to import instances from `Control.Monad.Trans.Resource'
+    To import instances alone, use: import Control.Monad.Trans.Resource()[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m105 |[0m[0m [;1m[35mimport Control.Monad.Trans.Resource (ResourceT, runResourceT)[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit.hs:106:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Monad.IO.Unlift' is redundant
+      except perhaps to import instances from `Control.Monad.IO.Unlift'
+    To import instances alone, use: import Control.Monad.IO.Unlift()[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m106 |[0m[0m [;1m[35mimport Control.Monad.IO.Unlift (MonadUnliftIO)[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 7 of 14] Compiling Data.Conduit.Internal ( src/Data/Conduit/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Internal.o )
+[ 8 of 14] Compiling Data.Conduit.Lift ( src/Data/Conduit/Lift.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Lift.o )
+[ 9 of 14] Compiling Data.Conduit.List ( src/Data/Conduit/List.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/List.o )
+
+[;1msrc/Data/Conduit/List.hs:304:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: $$ fold" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m304 |[0m[0m {-# RULES [;1m[35m"conduit: $$ fold" forall src f b. runConduit (src .| fold f b) = connectFold src f b[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/List.hs:320:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: $$ foldM" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m320 |[0m[0m {-# RULES [;1m[35m"conduit: $$ foldM" forall src f b. runConduit (src .| foldM f b) = connectFoldM src f b[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/List.hs:363:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connect to mapM_" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m363 |[0m[0m {-# RULES [;1m[35m"conduit: connect to mapM_" [2] forall f src. runConduit (src .| mapM_ f) = srcMapM_ src f[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/List.hs:797:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: source/filter fusion .|" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m797 |[0m[0m {-# RULES [;1m[35m"conduit: source/filter fusion .|" forall f src. src .| filter f = filterFuseRight src f[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Data/Conduit/List.hs:821:11: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "conduit: connect to sinkNull" may never fire
+      because `.|' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `.|'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m821 |[0m[0m {-# RULES [;1m[35m"conduit: connect to sinkNull" forall src. runConduit (src .| sinkNull) = srcSinkNull src[0m[0m #-}
+[;1m[34m    |[0m[0m[;1m[35m           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[10 of 14] Compiling Data.Streaming.FileRead ( src/Data/Streaming/FileRead.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Streaming/FileRead.o )
+[11 of 14] Compiling Data.Streaming.Filesystem ( src/Data/Streaming/Filesystem.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Streaming/Filesystem.o )
+[12 of 14] Compiling Data.Conduit.Combinators ( src/Data/Conduit/Combinators.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Combinators.o )
+[13 of 14] Compiling Data.Conduit.Combinators.Unqualified ( src/Data/Conduit/Combinators/Unqualified.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Conduit/Combinators/Unqualified.o )
+[14 of 14] Compiling Conduit          ( src/Conduit.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Conduit.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/conduit-1.3.1-EzeGDsAxmad51vTgyOcC3s
+Registering library for conduit-1.3.1..

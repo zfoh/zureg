@@ -1,0 +1,46 @@
+Configuring hourglass-0.2.12...
+Preprocessing library for hourglass-0.2.12..
+Building library for hourglass-0.2.12..
+[ 1 of 17] Compiling Data.Hourglass.Utils ( Data/Hourglass/Utils.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Utils.o )
+[ 2 of 17] Compiling Data.Hourglass.Zone ( Data/Hourglass/Zone.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Zone.o )
+[ 3 of 17] Compiling Time.Types       ( Time/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Time/Types.o )
+[ 4 of 17] Compiling Data.Hourglass.Types ( Data/Hourglass/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Types.o )
+[ 5 of 17] Compiling Data.Hourglass.Internal.Unix ( Data/Hourglass/Internal/Unix.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Internal/Unix.o )
+
+[;1mData/Hourglass/Internal/Unix.hs:24:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Applicative' is redundant
+      except perhaps to import instances from `Control.Applicative'
+    To import instances alone, use: import Control.Applicative()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m24 |[0m[0m [;1m[35mimport Control.Applicative[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 6 of 17] Compiling Data.Hourglass.Internal ( Data/Hourglass/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Internal.o )
+[ 7 of 17] Compiling Data.Hourglass.Calendar ( Data/Hourglass/Calendar.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Calendar.o )
+[ 8 of 17] Compiling Data.Hourglass.Diff ( Data/Hourglass/Diff.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Diff.o )
+
+[;1mData/Hourglass/Diff.hs:23:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m23 |[0m[0m [;1m[35mimport Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 9 of 17] Compiling Data.Hourglass.Time ( Data/Hourglass/Time.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Time.o )
+[10 of 17] Compiling Data.Hourglass.Epoch ( Data/Hourglass/Epoch.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Epoch.o )
+[11 of 17] Compiling Data.Hourglass.Local ( Data/Hourglass/Local.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Local.o )
+[12 of 17] Compiling Time.System      ( Time/System.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Time/System.o )
+
+[;1mTime/System.hs:23:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Applicative' is redundant
+      except perhaps to import instances from `Control.Applicative'
+    To import instances alone, use: import Control.Applicative()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m23 |[0m[0m [;1m[35mimport Control.Applicative[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[13 of 17] Compiling System.Hourglass ( System/Hourglass.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/Hourglass.o )
+[14 of 17] Compiling Data.Hourglass.Format ( Data/Hourglass/Format.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Format.o )
+[15 of 17] Compiling Data.Hourglass   ( Data/Hourglass.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass.o )
+[16 of 17] Compiling Time.Compat      ( Time/Compat.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Time/Compat.o )
+[17 of 17] Compiling Data.Hourglass.Compat ( Data/Hourglass/Compat.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hourglass/Compat.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/hourglass-0.2.12-333qxqQQ3eK9Jo0nKcpgW5
+Registering library for hourglass-0.2.12..

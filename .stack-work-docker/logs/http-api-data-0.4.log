@@ -1,0 +1,12 @@
+[1 of 2] Compiling Main             ( /tmp/stack23/http-api-data-0.4/Setup.lhs, /tmp/stack23/http-api-data-0.4/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/Main.o )
+[2 of 2] Compiling StackSetupShim   ( /root/.stack/setup-exe-src/setup-shim-mPHDZzAJ.hs, /tmp/stack23/http-api-data-0.4/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/StackSetupShim.o )
+Linking /tmp/stack23/http-api-data-0.4/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/setup ...
+Configuring http-api-data-0.4...
+Preprocessing library for http-api-data-0.4..
+Building library for http-api-data-0.4..
+[1 of 4] Compiling Web.Internal.HttpApiData ( src/Web/Internal/HttpApiData.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Web/Internal/HttpApiData.o )
+[2 of 4] Compiling Web.Internal.FormUrlEncoded ( src/Web/Internal/FormUrlEncoded.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Web/Internal/FormUrlEncoded.o )
+[3 of 4] Compiling Web.FormUrlEncoded ( src/Web/FormUrlEncoded.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Web/FormUrlEncoded.o )
+[4 of 4] Compiling Web.HttpApiData  ( src/Web/HttpApiData.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Web/HttpApiData.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/http-api-data-0.4-670MUt2jUcrHT5Cko5euWU
+Registering library for http-api-data-0.4..

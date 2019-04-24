@@ -1,0 +1,6 @@
+Configuring cookie-0.4.4...
+Preprocessing library for cookie-0.4.4..
+Building library for cookie-0.4.4..
+[1 of 1] Compiling Web.Cookie       ( Web/Cookie.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Web/Cookie.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/cookie-0.4.4-KpjAlIew5oQDgqXiPeQJ63
+Registering library for cookie-0.4.4..

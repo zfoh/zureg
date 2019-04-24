@@ -1,0 +1,6 @@
+Configuring monad-control-1.0.2.3...
+Preprocessing library for monad-control-1.0.2.3..
+Building library for monad-control-1.0.2.3..
+[1 of 1] Compiling Control.Monad.Trans.Control ( Control/Monad/Trans/Control.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Monad/Trans/Control.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/monad-control-1.0.2.3-9EdNo0Je3XxJkzGfiKIVvF
+Registering library for monad-control-1.0.2.3..

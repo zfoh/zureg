@@ -1,0 +1,46 @@
+Configuring aeson-1.4.2.0...
+Preprocessing library for aeson-1.4.2.0..
+Building library for aeson-1.4.2.0..
+[ 1 of 25] Compiling Data.Aeson.Compat ( Data/Aeson/Compat.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Compat.o )
+[ 2 of 25] Compiling Data.Aeson.Internal.Functions ( Data/Aeson/Internal/Functions.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Internal/Functions.o )
+[ 3 of 25] Compiling Data.Aeson.Parser.UnescapePure ( pure/Data/Aeson/Parser/UnescapePure.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Parser/UnescapePure.o )
+[ 4 of 25] Compiling Data.Aeson.Parser.Unescape ( Data/Aeson/Parser/Unescape.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Parser/Unescape.o )
+[ 5 of 25] Compiling Data.Aeson.Types.Generic ( Data/Aeson/Types/Generic.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Types/Generic.o )
+[ 6 of 25] Compiling Data.Aeson.Types.Internal ( Data/Aeson/Types/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Types/Internal.o )
+[ 7 of 25] Compiling Data.Aeson.Parser.Internal ( Data/Aeson/Parser/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Parser/Internal.o )
+[ 8 of 25] Compiling Data.Aeson.Parser ( Data/Aeson/Parser.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Parser.o )
+[ 9 of 25] Compiling Data.Attoparsec.Time.Internal ( attoparsec-iso8601/Data/Attoparsec/Time/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Attoparsec/Time/Internal.o )
+
+[;1mattoparsec-iso8601/Data/Attoparsec/Time/Internal.hs:24:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Unsafe.Coerce' is redundant
+      except perhaps to import instances from `Unsafe.Coerce'
+    To import instances alone, use: import Unsafe.Coerce()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m24 |[0m[0m [;1m[35mimport Unsafe.Coerce (unsafeCoerce)[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[10 of 25] Compiling Data.Attoparsec.Time ( attoparsec-iso8601/Data/Attoparsec/Time.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Attoparsec/Time.o )
+[11 of 25] Compiling Data.Aeson.Parser.Time ( Data/Aeson/Parser/Time.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Parser/Time.o )
+[12 of 25] Compiling Data.Aeson.Types.FromJSON ( Data/Aeson/Types/FromJSON.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Types/FromJSON.o )
+
+[;1mData/Aeson/Types/FromJSON.hs:479:3: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Winline-rule-shadowing[0m[0m[;1m][0m[0m[;1m
+    Rule "FromJSONKeyCoerce: fmap id" may never fire
+      because `id' might inline first
+    Probable fix: add an INLINE[n] or NOINLINE[n] pragma for `id'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m479 |[0m[0m   [;1m[35m"FromJSONKeyCoerce: fmap id"     forall (x :: FromJSONKeyFunction a).[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...[0m[0m
+[0m[0m[0m[13 of 25] Compiling Data.Aeson.Internal ( Data/Aeson/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Internal.o )
+[14 of 25] Compiling Data.Aeson.Internal.Time ( Data/Aeson/Internal/Time.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Internal/Time.o )
+[15 of 25] Compiling Data.Aeson.Encoding.Builder ( Data/Aeson/Encoding/Builder.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Encoding/Builder.o )
+[16 of 25] Compiling Data.Aeson.Encoding.Internal ( Data/Aeson/Encoding/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Encoding/Internal.o )
+[17 of 25] Compiling Data.Aeson.Encoding ( Data/Aeson/Encoding.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Encoding.o )
+[18 of 25] Compiling Data.Aeson.Types.ToJSON ( Data/Aeson/Types/ToJSON.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Types/ToJSON.o )
+[19 of 25] Compiling Data.Aeson.Types.Class ( Data/Aeson/Types/Class.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Types/Class.o )
+[20 of 25] Compiling Data.Aeson.Types ( Data/Aeson/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Types.o )
+[21 of 25] Compiling Data.Aeson.Text  ( Data/Aeson/Text.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Text.o )
+[22 of 25] Compiling Data.Aeson       ( Data/Aeson.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson.o )
+[23 of 25] Compiling Data.Aeson.TH    ( Data/Aeson/TH.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/TH.o )
+[24 of 25] Compiling Data.Aeson.QQ.Simple ( Data/Aeson/QQ/Simple.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/QQ/Simple.o )
+[25 of 25] Compiling Data.Aeson.Encode ( Data/Aeson/Encode.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Aeson/Encode.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/aeson-1.4.2.0-Dzbo5wshHlhHZyJApR1zxe
+Registering library for aeson-1.4.2.0..

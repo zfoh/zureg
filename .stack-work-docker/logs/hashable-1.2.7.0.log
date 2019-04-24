@@ -1,0 +1,9 @@
+Configuring hashable-1.2.7.0...
+Preprocessing library for hashable-1.2.7.0..
+Building library for hashable-1.2.7.0..
+[1 of 4] Compiling Data.Hashable.Class ( Data/Hashable/Class.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hashable/Class.o )
+[2 of 4] Compiling Data.Hashable.Generic ( Data/Hashable/Generic.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hashable/Generic.o )
+[3 of 4] Compiling Data.Hashable    ( Data/Hashable.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hashable.o )
+[4 of 4] Compiling Data.Hashable.Lifted ( Data/Hashable/Lifted.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Hashable/Lifted.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/hashable-1.2.7.0-CWI8VZuQTAYWIQTQQtqCV
+Registering library for hashable-1.2.7.0..

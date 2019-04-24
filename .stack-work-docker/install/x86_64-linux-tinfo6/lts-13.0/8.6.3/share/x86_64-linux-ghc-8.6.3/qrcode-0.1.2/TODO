@@ -1,0 +1,5 @@
+- ECI modes
+- Strctured append
+- Decoding
+- Automatic mode selection algorithm
+- Improve performance (use ByteString (or BitStream))

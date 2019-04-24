@@ -1,0 +1,6 @@
+Configuring sum-type-boilerplate-0.1.1...
+Preprocessing library for sum-type-boilerplate-0.1.1..
+Building library for sum-type-boilerplate-0.1.1..
+[1 of 1] Compiling SumTypes.TH      ( library/SumTypes/TH.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/SumTypes/TH.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/sum-type-boilerplate-0.1.1-LTAmCIlsfhLEUmaJbGChYT
+Registering library for sum-type-boilerplate-0.1.1..

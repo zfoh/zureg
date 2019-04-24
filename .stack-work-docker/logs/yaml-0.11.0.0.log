@@ -1,0 +1,15 @@
+Configuring yaml-0.11.0.0...
+Preprocessing library for yaml-0.11.0.0..
+Building library for yaml-0.11.0.0..
+[ 1 of 10] Compiling Data.Yaml.Internal ( src/Data/Yaml/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/Internal.o )
+[ 2 of 10] Compiling Data.Yaml.Include ( src/Data/Yaml/Include.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/Include.o )
+[ 3 of 10] Compiling Data.Yaml.Builder ( src/Data/Yaml/Builder.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/Builder.o )
+[ 4 of 10] Compiling Data.Yaml        ( src/Data/Yaml.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml.o )
+[ 5 of 10] Compiling Data.Yaml.Config ( src/Data/Yaml/Config.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/Config.o )
+[ 6 of 10] Compiling Data.Yaml.Aeson  ( src/Data/Yaml/Aeson.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/Aeson.o )
+[ 7 of 10] Compiling Data.Yaml.Parser ( src/Data/Yaml/Parser.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/Parser.o )
+[ 8 of 10] Compiling Data.Yaml.Pretty ( src/Data/Yaml/Pretty.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/Pretty.o )
+[ 9 of 10] Compiling Data.Yaml.TH     ( src/Data/Yaml/TH.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Yaml/TH.o )
+[10 of 10] Compiling Paths_yaml       ( .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/autogen/Paths_yaml.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Paths_yaml.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/yaml-0.11.0.0-GAWf3vpOhGMK7o9d6zMyJu
+Registering library for yaml-0.11.0.0..

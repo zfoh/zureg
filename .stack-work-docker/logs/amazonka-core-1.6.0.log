@@ -1,0 +1,158 @@
+Configuring amazonka-core-1.6.0...
+Preprocessing library for amazonka-core-1.6.0..
+Building library for amazonka-core-1.6.0..
+[ 1 of 33] Compiling Network.AWS.Compat.Locale ( src/Network/AWS/Compat/Locale.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Compat/Locale.o )
+[ 2 of 33] Compiling Network.AWS.Compat.Time ( src/Network/AWS/Compat/Time.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Compat/Time.o )
+[ 3 of 33] Compiling Network.AWS.Data.Crypto ( src/Network/AWS/Data/Crypto.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Crypto.o )
+[ 4 of 33] Compiling Network.AWS.Data.Text ( src/Network/AWS/Data/Text.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Text.o )
+
+[;1msrc/Network/AWS/Data/Text.hs:38:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m38 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 5 of 33] Compiling Network.AWS.Data.JSON ( src/Network/AWS/Data/JSON.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/JSON.o )
+[ 6 of 33] Compiling Network.AWS.Data.ByteString ( src/Network/AWS/Data/ByteString.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/ByteString.o )
+[ 7 of 33] Compiling Network.AWS.Data.Query ( src/Network/AWS/Data/Query.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Query.o )
+[ 8 of 33] Compiling Network.AWS.Data.Path ( src/Network/AWS/Data/Path.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Path.o )
+[ 9 of 33] Compiling Network.AWS.Data.Headers ( src/Network/AWS/Data/Headers.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Headers.o )
+
+[;1msrc/Network/AWS/Data/Headers.hs:24:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m24 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[10 of 33] Compiling Network.AWS.Data.Log ( src/Network/AWS/Data/Log.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Log.o )
+
+[;1msrc/Network/AWS/Data/Log.hs:27:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m27 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[11 of 33] Compiling Network.AWS.Data.XML ( src/Network/AWS/Data/XML.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/XML.o )
+[12 of 33] Compiling Network.AWS.Lens ( src/Network/AWS/Lens.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Lens.o )
+[13 of 33] Compiling Network.AWS.Data.Time ( src/Network/AWS/Data/Time.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Time.o )
+[14 of 33] Compiling Network.AWS.Data.Sensitive ( src/Network/AWS/Data/Sensitive.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Sensitive.o )
+[15 of 33] Compiling Network.AWS.Data.Numeric ( src/Network/AWS/Data/Numeric.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Numeric.o )
+[16 of 33] Compiling Network.AWS.Data.Map ( src/Network/AWS/Data/Map.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Map.o )
+
+[;1msrc/Network/AWS/Data/Map.hs:37:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Semigroup' is redundant
+      except perhaps to import instances from `Data.Semigroup'
+    To import instances alone, use: import Data.Semigroup()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m37 |[0m[0m [;1m[35mimport           Data.Semigroup[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[17 of 33] Compiling Network.AWS.Data.List1 ( src/Network/AWS/Data/List1.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/List1.o )
+
+[;1msrc/Network/AWS/Data/List1.hs:28:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Semigroup' is redundant
+      except perhaps to import instances from `Data.Semigroup'
+    To import instances alone, use: import Data.Semigroup()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m28 |[0m[0m [;1m[35mimport           Data.Semigroup[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[18 of 33] Compiling Network.AWS.Data.Body ( src/Network/AWS/Data/Body.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Body.o )
+
+[;1msrc/Network/AWS/Data/Body.hs:32:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m32 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[19 of 33] Compiling Network.AWS.Data.Base64 ( src/Network/AWS/Data/Base64.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data/Base64.o )
+[20 of 33] Compiling Network.AWS.Sign.V2Header.Base ( src/Network/AWS/Sign/V2Header/Base.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Sign/V2Header/Base.o )
+[21 of 33] Compiling Network.AWS.Types ( src/Network/AWS/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Types.o )
+
+[;1msrc/Network/AWS/Types.hs:144:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m144 |[0m[0m [;1m[35mimport Data.Monoid[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[22 of 33] Compiling Network.AWS.Sign.V2Header ( src/Network/AWS/Sign/V2Header.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Sign/V2Header.o )
+
+[;1msrc/Network/AWS/Sign/V2Header.hs:21:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m21 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[23 of 33] Compiling Network.AWS.Sign.V2 ( src/Network/AWS/Sign/V2.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Sign/V2.o )
+
+[;1msrc/Network/AWS/Sign/V2.hs:20:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m20 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[24 of 33] Compiling Network.AWS.Response ( src/Network/AWS/Response.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Response.o )
+
+[;1msrc/Network/AWS/Response.hs:24:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m24 |[0m[0m [;1m[35mimport Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[25 of 33] Compiling Network.AWS.Request ( src/Network/AWS/Request.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Request.o )
+
+[;1msrc/Network/AWS/Request.hs:50:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m50 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[26 of 33] Compiling Network.AWS.Sign.V4.Base ( src/Network/AWS/Sign/V4/Base.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Sign/V4/Base.o )
+
+[;1msrc/Network/AWS/Sign/V4/Base.hs:25:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m25 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[27 of 33] Compiling Network.AWS.Sign.V4.Chunked ( src/Network/AWS/Sign/V4/Chunked.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Sign/V4/Chunked.o )
+
+[;1msrc/Network/AWS/Sign/V4/Chunked.hs:30:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m30 |[0m[0m [;1m[35mimport Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[28 of 33] Compiling Network.AWS.Sign.V4 ( src/Network/AWS/Sign/V4.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Sign/V4.o )
+
+[;1msrc/Network/AWS/Sign/V4.hs:26:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m26 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[29 of 33] Compiling Network.AWS.Pager ( src/Network/AWS/Pager.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Pager.o )
+[30 of 33] Compiling Network.AWS.Error ( src/Network/AWS/Error.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Error.o )
+[31 of 33] Compiling Network.AWS.Endpoint ( src/Network/AWS/Endpoint.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Endpoint.o )
+
+[;1msrc/Network/AWS/Endpoint.hs:18:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m18 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[32 of 33] Compiling Network.AWS.Prelude ( src/Network/AWS/Prelude.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Prelude.o )
+[33 of 33] Compiling Network.AWS.Waiter ( src/Network/AWS/Waiter.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Waiter.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/amazonka-core-1.6.0-Jcjs6Fo3cJb4pDEYDUJo7d
+Registering library for amazonka-core-1.6.0..

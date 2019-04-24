@@ -1,0 +1,9 @@
+Configuring invariant-0.5.1...
+Preprocessing library for invariant-0.5.1..
+Building library for invariant-0.5.1..
+[1 of 4] Compiling Data.Functor.Invariant ( src/Data/Functor/Invariant.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Invariant.o )
+[2 of 4] Compiling Data.Functor.Invariant.TH.Internal ( src/Data/Functor/Invariant/TH/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Invariant/TH/Internal.o )
+[3 of 4] Compiling Data.Functor.Invariant.TH ( src/Data/Functor/Invariant/TH.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Invariant/TH.o )
+[4 of 4] Compiling Paths_invariant  ( .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/autogen/Paths_invariant.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Paths_invariant.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/invariant-0.5.1-6ocYh5dEkZi6mxeWjj75Hr
+Registering library for invariant-0.5.1..

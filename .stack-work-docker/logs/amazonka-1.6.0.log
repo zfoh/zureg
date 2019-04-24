@@ -1,0 +1,62 @@
+Configuring amazonka-1.6.0...
+Preprocessing library for amazonka-1.6.0..
+Building library for amazonka-1.6.0..
+[ 1 of 10] Compiling Network.AWS.Data ( src/Network/AWS/Data.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Data.o )
+[ 2 of 10] Compiling Network.AWS.EC2.Metadata ( src/Network/AWS/EC2/Metadata.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/EC2/Metadata.o )
+
+[;1msrc/Network/AWS/EC2/Metadata.hs:66:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m66 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 3 of 10] Compiling Network.AWS.Auth ( src/Network/AWS/Auth.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Auth.o )
+
+[;1msrc/Network/AWS/Auth.hs:75:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m75 |[0m[0m [;1m[35mimport Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 4 of 10] Compiling Network.AWS.Internal.Body ( src/Network/AWS/Internal/Body.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Internal/Body.o )
+[ 5 of 10] Compiling Network.AWS.Internal.Logger ( src/Network/AWS/Internal/Logger.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Internal/Logger.o )
+
+[;1msrc/Network/AWS/Internal/Logger.hs:33:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m33 |[0m[0m [;1m[35mimport           Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 6 of 10] Compiling Network.AWS.Env  ( src/Network/AWS/Env.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Env.o )
+[ 7 of 10] Compiling Network.AWS.Internal.HTTP ( src/Network/AWS/Internal/HTTP.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Internal/HTTP.o )
+[ 8 of 10] Compiling Network.AWS.Presign ( src/Network/AWS/Presign.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS/Presign.o )
+[ 9 of 10] Compiling Control.Monad.Trans.AWS ( src/Control/Monad/Trans/AWS.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Monad/Trans/AWS.o )
+
+[;1msrc/Control/Monad/Trans/AWS.hs:211:10: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wmissing-methods[0m[0m[;1m][0m[0m[;1m
+    * No explicit implementation for
+        `generalBracket'
+    * In the instance declaration for `MonadMask (AWST' r m)'[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m211 |[0m[0m instance [;1m[35mMonadMask m => MonadMask (AWST' r m)[0m[0m where
+[;1m[34m    |[0m[0m[;1m[35m          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[10 of 10] Compiling Network.AWS      ( src/Network/AWS.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/AWS.o )
+
+[;1msrc/Network/AWS.hs:163:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    Module `Control.Monad.Trans.List' is deprecated:
+      This transformer is invalid on most monads[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m163 |[0m[0m [;1m[35mimport Control.Monad.Trans.List     (ListT)[0m[0m
+[;1m[34m    |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1msrc/Network/AWS.hs:207:34: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of type constructor or class `ListT'
+    (imported from Control.Monad.Trans.List):
+    Deprecated: "This transformer is invalid on most monads"[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m207 |[0m[0m instance MonadAWS m => MonadAWS ([;1m[35mListT[0m[0m       m) where liftAWS = lift . liftAWS
+[;1m[34m    |[0m[0m[;1m[35m                                  ^^^^^[0m[0m
+[0m[0m[0mInstalling library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/amazonka-1.6.0-1ZAioGp8rYHGeV3mpvp1Na
+Registering library for amazonka-1.6.0..

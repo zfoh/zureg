@@ -1,0 +1,9 @@
+Configuring transformers-compat-0.6.2...
+Preprocessing library for transformers-compat-0.6.2..
+Building library for transformers-compat-0.6.2..
+[1 of 4] Compiling Control.Monad.Trans.Instances ( src/Control/Monad/Trans/Instances.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Control/Monad/Trans/Instances.o )
+[2 of 4] Compiling Data.Functor.Classes.Generic.Internal ( generics/Data/Functor/Classes/Generic/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Classes/Generic/Internal.o )
+[3 of 4] Compiling Data.Functor.Classes.Generic ( generics/Data/Functor/Classes/Generic.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Functor/Classes/Generic.o )
+[4 of 4] Compiling Paths_transformers_compat ( .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/autogen/Paths_transformers_compat.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Paths_transformers_compat.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/transformers-compat-0.6.2-2aGr2H01tr03oYIwD5LYXX
+Registering library for transformers-compat-0.6.2..

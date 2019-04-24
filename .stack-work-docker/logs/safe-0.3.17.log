@@ -1,0 +1,10 @@
+Configuring safe-0.3.17...
+Preprocessing library for safe-0.3.17..
+Building library for safe-0.3.17..
+[1 of 5] Compiling Safe.Partial     ( Safe/Partial.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Safe/Partial.o )
+[2 of 5] Compiling Safe.Util        ( Safe/Util.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Safe/Util.o )
+[3 of 5] Compiling Safe.Foldable    ( Safe/Foldable.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Safe/Foldable.o )
+[4 of 5] Compiling Safe.Exact       ( Safe/Exact.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Safe/Exact.o )
+[5 of 5] Compiling Safe             ( Safe.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Safe.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/safe-0.3.17-43oyx4B630gDZMbTh3Ttji
+Registering library for safe-0.3.17..

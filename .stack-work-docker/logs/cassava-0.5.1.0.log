@@ -1,0 +1,31 @@
+Configuring cassava-0.5.1.0...
+Preprocessing library for cassava-0.5.1.0..
+Building library for cassava-0.5.1.0..
+[ 1 of 10] Compiling Data.Csv.Types   ( Data/Csv/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Types.o )
+[ 2 of 10] Compiling Data.Csv.Util    ( Data/Csv/Util.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Util.o )
+[ 3 of 10] Compiling Data.Csv.Parser  ( Data/Csv/Parser.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Parser.o )
+[ 4 of 10] Compiling Data.Csv.Conversion.Internal ( Data/Csv/Conversion/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Conversion/Internal.o )
+
+[;1mData/Csv/Conversion/Internal.hs:16:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m16 |[0m[0m [;1m[35mimport Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[ 5 of 10] Compiling Data.Csv.Conversion ( Data/Csv/Conversion.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Conversion.o )
+[ 6 of 10] Compiling Data.Csv.Encoding ( Data/Csv/Encoding.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Encoding.o )
+[ 7 of 10] Compiling Data.Csv.Incremental ( Data/Csv/Incremental.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Incremental.o )
+[ 8 of 10] Compiling Data.Csv.Streaming ( Data/Csv/Streaming.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Streaming.o )
+[ 9 of 10] Compiling Data.Csv.Builder ( Data/Csv/Builder.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv/Builder.o )
+
+[;1mData/Csv/Builder.hs:19:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Data.Monoid' is redundant
+      except perhaps to import instances from `Data.Monoid'
+    To import instances alone, use: import Data.Monoid()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m19 |[0m[0m [;1m[35mimport Data.Monoid[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[10 of 10] Compiling Data.Csv         ( Data/Csv.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Csv.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/cassava-0.5.1.0-50eJNjZwBze2K0ErHQqFTV
+Registering library for cassava-0.5.1.0..

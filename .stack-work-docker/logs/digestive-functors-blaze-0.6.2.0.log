@@ -1,0 +1,6 @@
+Configuring digestive-functors-blaze-0.6.2.0...
+Preprocessing library for digestive-functors-blaze-0.6.2.0..
+Building library for digestive-functors-blaze-0.6.2.0..
+[1 of 1] Compiling Text.Digestive.Blaze.Html5 ( src/Text/Digestive/Blaze/Html5.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Text/Digestive/Blaze/Html5.o )
+Installing library in /root/app/.stack-work-docker/install/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/digestive-functors-blaze-0.6.2.0-5jQj1viwAuPAHfKssJ9Tgd
+Registering library for digestive-functors-blaze-0.6.2.0..

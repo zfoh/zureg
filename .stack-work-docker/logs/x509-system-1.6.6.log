@@ -1,0 +1,16 @@
+Configuring x509-system-1.6.6...
+Preprocessing library for x509-system-1.6.6..
+Building library for x509-system-1.6.6..
+[1 of 3] Compiling System.X509.MacOS ( System/X509/MacOS.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/X509/MacOS.o )
+
+[;1mSystem/X509/MacOS.hs:8:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Applicative' is redundant
+      except perhaps to import instances from `Control.Applicative'
+    To import instances alone, use: import Control.Applicative()[0m[0m
+[;1m[34m  |[0m[0m
+[;1m[34m8 |[0m[0m [;1m[35mimport Control.Applicative[0m[0m
+[;1m[34m  |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[2 of 3] Compiling System.X509.Unix ( System/X509/Unix.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/X509/Unix.o )
+[3 of 3] Compiling System.X509      ( System/X509.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/X509.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/x509-system-1.6.6-HNb97JsnRPW2gdKvDBdWd4
+Registering library for x509-system-1.6.6..

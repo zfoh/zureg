@@ -1,0 +1,6 @@
+Configuring dlist-0.8.0.5...
+Preprocessing library for dlist-0.8.0.5..
+Building library for dlist-0.8.0.5..
+[1 of 1] Compiling Data.DList       ( Data/DList.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/DList.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/dlist-0.8.0.5-FMMQwM1hD2kK7b7715Z2vG
+Registering library for dlist-0.8.0.5..

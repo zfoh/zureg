@@ -1,0 +1,10 @@
+Configuring scientific-0.3.6.2...
+Preprocessing library for scientific-0.3.6.2..
+Building library for scientific-0.3.6.2..
+[1 of 5] Compiling GHC.Integer.Compat ( src/GHC/Integer/Compat.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/GHC/Integer/Compat.o )
+[2 of 5] Compiling Utils            ( src/Utils.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Utils.o )
+[3 of 5] Compiling Data.Scientific  ( src/Data/Scientific.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Scientific.o )
+[4 of 5] Compiling Data.Text.Lazy.Builder.Scientific ( src/Data/Text/Lazy/Builder/Scientific.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Text/Lazy/Builder/Scientific.o )
+[5 of 5] Compiling Data.ByteString.Builder.Scientific ( src/Data/ByteString/Builder/Scientific.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/ByteString/Builder/Scientific.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/scientific-0.3.6.2-KIIlODNgUeO9twnHef2PBn
+Registering library for scientific-0.3.6.2..

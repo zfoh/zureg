@@ -1,0 +1,10 @@
+[1 of 2] Compiling Main             ( /tmp/stack23/distributive-0.6/Setup.lhs, /tmp/stack23/distributive-0.6/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/Main.o )
+[2 of 2] Compiling StackSetupShim   ( /root/.stack/setup-exe-src/setup-shim-mPHDZzAJ.hs, /tmp/stack23/distributive-0.6/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/StackSetupShim.o )
+Linking /tmp/stack23/distributive-0.6/.stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/setup/setup ...
+Configuring distributive-0.6...
+Preprocessing library for distributive-0.6..
+Building library for distributive-0.6..
+[1 of 2] Compiling Data.Distributive ( src/Data/Distributive.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Distributive.o )
+[2 of 2] Compiling Data.Distributive.Generic ( src/Data/Distributive/Generic.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/Distributive/Generic.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/distributive-0.6-92l65SKyutnKeo53jXpu6I
+Registering library for distributive-0.6..

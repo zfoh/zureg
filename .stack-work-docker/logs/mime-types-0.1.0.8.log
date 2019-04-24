@@ -1,0 +1,6 @@
+Configuring mime-types-0.1.0.8...
+Preprocessing library for mime-types-0.1.0.8..
+Building library for mime-types-0.1.0.8..
+[1 of 1] Compiling Network.Mime     ( Network/Mime.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Mime.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/mime-types-0.1.0.8-6q25r7cYCrH3CHHtqi62ro
+Registering library for mime-types-0.1.0.8..

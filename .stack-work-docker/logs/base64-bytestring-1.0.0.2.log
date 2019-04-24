@@ -1,0 +1,10 @@
+Configuring base64-bytestring-1.0.0.2...
+Preprocessing library for base64-bytestring-1.0.0.2..
+Building library for base64-bytestring-1.0.0.2..
+[1 of 5] Compiling Data.ByteString.Base64.Internal ( Data/ByteString/Base64/Internal.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/ByteString/Base64/Internal.o )
+[2 of 5] Compiling Data.ByteString.Base64 ( Data/ByteString/Base64.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/ByteString/Base64.o )
+[3 of 5] Compiling Data.ByteString.Base64.Lazy ( Data/ByteString/Base64/Lazy.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/ByteString/Base64/Lazy.o )
+[4 of 5] Compiling Data.ByteString.Base64.URL ( Data/ByteString/Base64/URL.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/ByteString/Base64/URL.o )
+[5 of 5] Compiling Data.ByteString.Base64.URL.Lazy ( Data/ByteString/Base64/URL/Lazy.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Data/ByteString/Base64/URL/Lazy.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/base64-bytestring-1.0.0.2-9zRsxWrEm5zGbLjNlDas
+Registering library for base64-bytestring-1.0.0.2..

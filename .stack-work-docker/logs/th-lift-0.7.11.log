@@ -1,0 +1,6 @@
+Configuring th-lift-0.7.11...
+Preprocessing library for th-lift-0.7.11..
+Building library for th-lift-0.7.11..
+[1 of 1] Compiling Language.Haskell.TH.Lift ( src/Language/Haskell/TH/Lift.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Language/Haskell/TH/Lift.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/th-lift-0.7.11-C5JSx2Nv9w2HNS8sHVEjQ7
+Registering library for th-lift-0.7.11..

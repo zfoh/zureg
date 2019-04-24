@@ -1,0 +1,147 @@
+Configuring socks-0.5.6...
+Preprocessing library for socks-0.5.6..
+Building library for socks-0.5.6..
+[1 of 7] Compiling Network.Socks5.Parse ( Network/Socks5/Parse.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Socks5/Parse.o )
+[2 of 7] Compiling Network.Socks5.Types ( Network/Socks5/Types.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Socks5/Types.o )
+[3 of 7] Compiling Network.Socks5.Conf ( Network/Socks5/Conf.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Socks5/Conf.o )
+[4 of 7] Compiling Network.Socks5.Wire ( Network/Socks5/Wire.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Socks5/Wire.o )
+
+[;1mNetwork/Socks5/Wire.hs:15:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Applicative' is redundant
+      except perhaps to import instances from `Control.Applicative'
+    To import instances alone, use: import Control.Applicative()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m15 |[0m[0m [;1m[35mimport Control.Applicative[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5/Wire.hs:23:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Network.Socks5.Parse' is redundant
+      except perhaps to import instances from `Network.Socks5.Parse'
+    To import instances alone, use: import Network.Socks5.Parse()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m23 |[0m[0m [;1m[35mimport Network.Socks5.Parse as P (anyByte, take)[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[5 of 7] Compiling Network.Socks5.Command ( Network/Socks5/Command.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Socks5/Command.o )
+
+[;1mNetwork/Socks5/Command.hs:25:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wunused-imports[0m[0m[;1m][0m[0m[;1m
+    The import of `Control.Applicative' is redundant
+      except perhaps to import instances from `Control.Applicative'
+    To import instances alone, use: import Control.Applicative()[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m25 |[0m[0m [;1m[35mimport Control.Applicative[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m[6 of 7] Compiling Network.Socks5.Lowlevel ( Network/Socks5/Lowlevel.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Socks5/Lowlevel.o )
+
+[;1mNetwork/Socks5/Lowlevel.hs:10:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    Module `Network.BSD' is deprecated:
+      This platform dependent module is no longer supported.[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m10 |[0m[0m [;1m[35mimport Network.BSD[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5/Lowlevel.hs:21:44: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `getHostByName' (imported from Network.BSD):
+    Deprecated: "This platform dependent module is no longer supported."[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m21 |[0m[0m         SocksAddrDomainName bs -> do he <- [;1m[35mgetHostByName[0m[0m (BC.unpack bs)
+[;1m[34m   |[0m[0m[;1m[35m                                            ^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5/Lowlevel.hs:22:66: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `hostAddress' (imported from Network.BSD):
+    Deprecated: "This platform dependent module is no longer supported."[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m22 |[0m[0m                                      return $ SockAddrInet port ([;1m[35mhostAddress[0m[0m he)
+[;1m[34m   |[0m[0m[;1m[35m                                                                  ^^^^^^^^^^^[0m[0m
+[0m[0m[0m[7 of 7] Compiling Network.Socks5   ( Network/Socks5.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Network/Socks5.o )
+
+[;1mNetwork/Socks5.hs:48:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    Module `Network.BSD' is deprecated:
+      This platform dependent module is no longer supported.[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m48 |[0m[0m [;1m[35mimport Network.BSD[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:49:1: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    Module `Network' is deprecated:
+      The high level Network interface is no longer supported. Please use Network.Socket.[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m49 |[0m[0m [;1m[35mimport Network (PortID(..))[0m[0m
+[;1m[34m   |[0m[0m[;1m[35m ^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:80:5: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `getProtocolNumber' (imported from Network.BSD):
+    Deprecated: "This platform dependent module is no longer supported."[0m[0m
+[;1m[34m   |[0m[0m
+[;1m[34m80 |[0m[0m     [;1m[35mgetProtocolNumber[0m[0m "tcp" >>= \proto ->
+[;1m[34m   |[0m[0m[;1m[35m     ^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:112:21: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of type constructor or class `PortID'
+    (imported from Network):
+    Deprecated: "The high level Network interface is no longer supported. Please use Network.Socket."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m112 |[0m[0m                  -> [;1m[35mPortID[0m[0m    -- ^ destination port
+[;1m[34m    |[0m[0m[;1m[35m                     ^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:116:14: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `getProtocolNumber' (imported from Network.BSD):
+    Deprecated: "This platform dependent module is no longer supported."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m116 |[0m[0m     proto <- [;1m[35mgetProtocolNumber[0m[0m "tcp"
+[;1m[34m    |[0m[0m[;1m[35m              ^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:123:30: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of type constructor or class `PortID'
+    (imported from Network):
+    Deprecated: "The high level Network interface is no longer supported. Please use Network.Socket."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m123 |[0m[0m socksConnectTo' :: String -> [;1m[35mPortID[0m[0m -> String -> PortID -> IO Socket
+[;1m[34m    |[0m[0m[;1m[35m                              ^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:123:50: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of type constructor or class `PortID'
+    (imported from Network):
+    Deprecated: "The high level Network interface is no longer supported. Please use Network.Socket."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m123 |[0m[0m socksConnectTo' :: String -> PortID -> String -> [;1m[35mPortID[0m[0m -> IO Socket
+[;1m[34m    |[0m[0m[;1m[35m                                                  ^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:130:29: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of type constructor or class `PortID'
+    (imported from Network):
+    Deprecated: "The high level Network interface is no longer supported. Please use Network.Socket."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m130 |[0m[0m socksConnectTo :: String -> [;1m[35mPortID[0m[0m -> String -> PortID -> IO Handle
+[;1m[34m    |[0m[0m[;1m[35m                             ^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:130:49: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of type constructor or class `PortID'
+    (imported from Network):
+    Deprecated: "The high level Network interface is no longer supported. Please use Network.Socket."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m130 |[0m[0m socksConnectTo :: String -> PortID -> String -> [;1m[35mPortID[0m[0m -> IO Handle
+[;1m[34m    |[0m[0m[;1m[35m                                                 ^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:137:16: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of data constructor `Service' (imported from Network):
+    Deprecated: "The high level Network interface is no longer supported. Please use Network.Socket."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m137 |[0m[0m resolvePortID ([;1m[35mService[0m[0m serv) = getServicePortNumber serv
+[;1m[34m    |[0m[0m[;1m[35m                ^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:137:32: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of `getServicePortNumber' (imported from Network.BSD):
+    Deprecated: "This platform dependent module is no longer supported."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m137 |[0m[0m resolvePortID (Service serv) = [;1m[35mgetServicePortNumber[0m[0m serv
+[;1m[34m    |[0m[0m[;1m[35m                                ^^^^^^^^^^^^^^^^^^^^[0m[0m
+[0m[0m[0m
+[;1mNetwork/Socks5.hs:138:16: [;1m[35mwarning:[0m[0m[;1m [[;1m[35m-Wdeprecations[0m[0m[;1m][0m[0m[;1m
+    In the use of data constructor `PortNumber'
+    (imported from Network):
+    Deprecated: "The high level Network interface is no longer supported. Please use Network.Socket."[0m[0m
+[;1m[34m    |[0m[0m
+[;1m[34m138 |[0m[0m resolvePortID ([;1m[35mPortNumber[0m[0m n) = return n
+[;1m[34m    |[0m[0m[;1m[35m                ^^^^^^^^^^[0m[0m
+[0m[0m[0mInstalling library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/socks-0.5.6-1V4d5pN4wKV1tAhUfqzGKe
+Registering library for socks-0.5.6..

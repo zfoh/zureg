@@ -1,0 +1,7 @@
+Configuring typed-process-0.2.3.0...
+Preprocessing library for typed-process-0.2.3.0..
+Building library for typed-process-0.2.3.0..
+[1 of 2] Compiling Paths_typed_process ( .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/autogen/Paths_typed_process.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Paths_typed_process.o )
+[2 of 2] Compiling System.Process.Typed ( src/System/Process/Typed.hs, .stack-work-docker/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/System/Process/Typed.o )
+Installing library in /root/.stack/snapshots/x86_64-linux-tinfo6/lts-13.0/8.6.3/lib/x86_64-linux-ghc-8.6.3/typed-process-0.2.3.0-DB3YotUmiF53GO4zJHIe3a
+Registering library for typed-process-0.2.3.0..
