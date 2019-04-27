@@ -1,2 +1,6 @@
 .stack-work/
 dist/
+.stack-work-docker/
+.idea/
+deploy/bucket
+deploy/zip
