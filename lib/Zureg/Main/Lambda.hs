@@ -24,6 +24,7 @@ import           Zureg.Form
 import           Zureg.Model
 import qualified Zureg.ReCaptcha               as ReCaptcha
 import qualified Zureg.SendEmail               as SendEmail
+import           Zureg.SendEmail.Hardcoded
 import qualified Zureg.Serverless              as Serverless
 import qualified Zureg.Views                   as Views
 
@@ -154,57 +155,3 @@ main = do
             _                         -> throwIO $
                 Serverless.ServerlessException 403
                 "Wrong or missing secret for scanner access"
-
-sendRegisterSuccessEmail
-    :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
-sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
-    sendEmail
-    (riEmail info)
-    "ZuriHac 2019 Registration Confirmation" $ T.unlines
-    [ "Hello " <> riName info <> ","
-    , ""
-    , "Your registration for ZuriHac 2019 was successful."
-    , ""
-    , "We look forward to seeing you there!"
-    , ""
-    , "You can view (and cancel) your registration here:"
-    , ""
-    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
-    , ""
-    , "If you have any concerns, you can find our contact info here:"
-    , ""
-    , "    https://zfoh.ch/zurihac2019/#contact"
-    , ""
-    , "For various questions, or socializing with other attendees,"
-    , "you can join our Slack organisation:"
-    , ""
-    , "    https://slack.zurihac.info/"
-    , ""
-    , "Warm regards"
-    , "The ZuriHac Registration Bot"
-    ]
-
-sendWaitlistEmail
-    :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
-sendWaitlistEmail sendEmail info uuid = SendEmail.sendEmail
-    sendEmail
-    (riEmail info)
-    "ZuriHac 2019: You're on the waitlist" $ T.unlines
-    [ "Hello " <> riName info <> ","
-    , ""
-    , "You have been added to the waitlist for ZuriHac 2019."
-    , ""
-    , "We will let you know when places become available."
-    , ""
-    , "You can view your status here:"
-    , ""
-    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
-    , ""
-    , "If you have any concerns, you can find our contact info here:"
-    , ""
-    , "    https://zfoh.ch/zurihac2019/#contact"
-    , ""
-    , "Warm regards"
-    , "The ZuriHac Registration Bot"
-    ]
-

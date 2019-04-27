@@ -34,6 +34,7 @@ Library
     Zureg.Model
     Zureg.ReCaptcha
     Zureg.SendEmail
+    Zureg.SendEmail.Hardcoded
     Zureg.Serverless
     Zureg.Views
     Zureg.Model.Csv
