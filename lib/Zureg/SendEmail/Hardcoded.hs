@@ -3,6 +3,7 @@
 module Zureg.SendEmail.Hardcoded
     ( sendRegisterSuccessEmail
     , sendWaitlistEmail
+    , sendPopWaitlistEmail
     ) where
 
 import qualified Data.Text       as T
@@ -58,6 +59,35 @@ sendWaitlistEmail sendEmail info uuid = SendEmail.sendEmail
     , "If you have any concerns, you can find our contact info here:"
     , ""
     , "    https://zfoh.ch/zurihac2019/#contact"
+    , ""
+    , "Warm regards"
+    , "The ZuriHac Registration Bot"
+    ]
+
+sendPopWaitlistEmail
+    :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
+sendPopWaitlistEmail sendEmail info uuid = SendEmail.sendEmail
+    sendEmail
+    (riEmail info)
+    "ZuriHac 2019: You are now registered!" $ T.unlines
+    [ "Hello " <> riName info <> ","
+    , ""
+    , "Great news!  Some places for ZuriHac 2019 became available."
+    , "You have been removed from the waiting list and are now"
+    , "registered to attend ZuriHac."
+    , ""
+    , "You can view your registration here:"
+    , ""
+    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
+    , ""
+    , "If you have any concerns, you can find our contact info here:"
+    , ""
+    , "    https://zfoh.ch/zurihac2019/#contact"
+    , ""
+    , "For various questions, or socializing with other attendees,"
+    , "you can join our Slack organisation:"
+    , ""
+    , "    https://slack.zurihac.info/"
     , ""
     , "Warm regards"
     , "The ZuriHac Registration Bot"
