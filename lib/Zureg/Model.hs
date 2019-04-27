@@ -97,7 +97,9 @@ registrantProjection uuid = E.Projection
     { E.projectionSeed         = Registrant uuid Nothing Nothing
     , E.projectionEventHandler = \registrant event -> case event of
         Cancel     -> registrant {rState = Just Cancelled}
-        Confirm    -> registrant {rState = Just Confirmed}
+        Confirm    -> case rState registrant of 
+                        Just Registered -> registrant {rState = Just Confirmed}
+                        _               -> registrant
         Register i -> registrant {rInfo = Just i, rState = Just Registered}
         Waitlist _ -> registrant {rState = Just Waitlisted}
         PopWaitlist _ | Just Waitlisted <- rState registrant ->

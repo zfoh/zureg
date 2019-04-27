@@ -105,21 +105,14 @@ main = do
                     registrant <- Database.getRegistrant db uuid
                     html $ Views.scan registrant
 
-            {-
-
-            NOTE (jaspervdj): We only want to enable this confirmation button
-            handler when send out the confirmation email.
-
-            TODO (jaspervdj): Check that they are not waitlisted?
-
             ["confirm"] -> do
                 uuid <- getUuidParam req
-                Database.writeEvents db uuid [Confirm]
-                return $ Serverless.response302 $
-                    "ticket?uuid=" <> E.uuidToText uuid
-
-            -}
-
+                registrant <- Database.getRegistrant db uuid
+                case rState registrant of 
+                  Just Registered -> Database.writeEvents db uuid [Confirm]
+                  _               -> return ()
+                return $ Serverless.response302 $ "ticket?uuid=" <> E.uuidToText uuid
+                   
             ["cancel"] -> do
                 (view, mbCancel) <- Serverless.runForm req "cancel" $
                     cancelForm (lookupUuidParam req)
