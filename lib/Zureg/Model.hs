@@ -15,12 +15,16 @@ module Zureg.Model
     , RegisterState (..)
     , Registrant (..)
     , registrantProjection
+
+    , parseRegisterState
     ) where
 
 import qualified Data.Aeson.TH.Extended as A
+import qualified Data.List              as L
 import qualified Data.Text              as T
 import qualified Data.Time              as Time
 import qualified Eventful               as E
+import           Text.Read              (readMaybe)
 
 --------------------------------------------------------------------------------
 -- Events
@@ -84,7 +88,7 @@ data Event
 -- State
 
 data RegisterState = Registered | Confirmed | Cancelled | Waitlisted
-    deriving (Eq, Show)
+    deriving (Bounded, Enum, Eq, Read, Show)
 
 data Registrant = Registrant
     { rUuid  :: E.UUID
@@ -97,7 +101,7 @@ registrantProjection uuid = E.Projection
     { E.projectionSeed         = Registrant uuid Nothing Nothing
     , E.projectionEventHandler = \registrant event -> case event of
         Cancel     -> registrant {rState = Just Cancelled}
-        Confirm    -> case rState registrant of 
+        Confirm    -> case rState registrant of
                         Just Registered -> registrant {rState = Just Confirmed}
                         _               -> registrant
         Register i -> registrant {rInfo = Just i, rState = Just Registered}
@@ -118,3 +122,12 @@ $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''Event)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
+
+--------------------------------------------------------------------------------
+
+parseRegisterState :: String -> Either String RegisterState
+parseRegisterState str = case readMaybe str of
+    Just rs -> return rs
+    Nothing -> Left $
+        "Can't parse register state, try one of: " ++
+        L.intercalate ", " (map show [minBound :: RegisterState .. maxBound])
