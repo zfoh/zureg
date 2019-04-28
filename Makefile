@@ -4,12 +4,12 @@ AWS_REGION=us-east-1
 # Build the executables.
 .PHONY: build
 build:
-	stack build --allow-different-user
+	stack build -j1
 
 # For development.
 .PHONY: watch
 watch:
-	stack build --allow-different-user --file-watch --pedantic
+	stack build --file-watch --pedantic
 
 # We need docker to build binaries that run on amazon's linux version.  This
 # makefile target launches a docker shell so you can just use `make build`
@@ -25,7 +25,8 @@ docker:
 		-it \
 		-m 4GB \
 		-p 8080:8080 \
-		--mount type=bind,source=$(shell pwd),target=/root/app \
+		--user $(shell id -u):$(shell id -g) \
+		--mount type=bind,source=$(shell pwd),target=/build \
 		--name zureg01 \
 		haskell-amazon-linux || \
 		docker start -ia zureg01
@@ -36,7 +37,7 @@ nuke-docker:
 	-docker container list -qa | xargs docker rm
 	-docker image list -qa | xargs docker image rm -f
 
-STACK_INSTALL_ROOT="$(shell stack path --allow-different-user --local-install-root)"
+STACK_INSTALL_ROOT="$(shell stack path --local-install-root)"
 
 LAMBDA_BIN="$(STACK_INSTALL_ROOT)/bin/zureg-lambda"
 LAMBDA_ZIP=dist/zureg-lambda.zip
