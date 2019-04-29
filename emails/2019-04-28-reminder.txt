@@ -1,0 +1,131 @@
+Hello {{info.name}},
+
+ZuriHac is coming up soon!
+
+First, the most important part: in order to get a good idea of how
+many people are attending, we are asking EVERYONE to either CONFIRM
+their registration, or CANCEL in case you cannot make it.  You can do
+both at the following link:
+
+    https://zureg.zfoh.ch/ticket?uuid={{uuid}}
+
+Confirming your registration will give you access to your ticket, and
+canceling will free up space for the people on the waiting list --
+thank you in advance!
+
+# Overview
+
+More than 540 people have signed up to meet, code, chat and enjoy good
+company with fellow Haskellers from the 14th of June to the 16th of
+June at the Hochschule Rapperswil near Zurich.  This is awesome, and
+we are very much looking forward to seeing you there!
+
+This email contains some practical information and reminders.  It is
+rather long but I promise there are interesting bits in here.
+
+# Accomodation
+
+If you have not yet booked accommodation or travel, now would be a
+good time to do so.
+
+As for accomodation, there are two options.  You can either stay in
+Zurich, or in Rapperswil itself.  Both have advantages and
+disadvantages: there are more things to do in Zurich, but you can save
+time and transportation costs by staying in Rapperswil.
+
+For those who travel on a budget; there are two more recommendations:
+
+ -  You can try sharing accomodation with fellow attendees (e.g. on
+    Airbnb).  There is an accomodation channel on our Slack chat:
+    https://slack.zurihac.info/
+
+ -  If weather allows for it, camping is also a very affordable and
+    beautiful option for the ultimate grassroots ZuriHac festival
+    fans.  Several people have stayed at this campsite in 2017 and
+    2018: https://www.rapperswil-zuerichsee.ch/de/besuchen/unterkunft/camping-im-strandbad-stampf
+
+# Travel
+
+You can take the S7 or S15 to get from the Zurich main station to
+Rapperswil.  These trains run regularly in 30 minute and 60 minute
+intervals, respectively.  One-way tickets are 17.20 CHF and 24-hour
+tickets cost 34.40 CHF.  The latest regular train back to Zurich is at
+00:19.  For Saturday and Sunday, there is a slightly cheaper option if
+you take the train to Rapperswil after 09:00, which costs 26.00 CHF.
+
+Budget tip: Please note that the 24 hour pass is literally a 24 hour
+pass and can be used over multiple days: e.g.  if you buy one on the
+first day of the Hackathon at e.g. 9.00, you can still use it to take
+the train at 8.00 the next day.  This way, it is possible to buy only
+two tickets for the three-day conference.
+
+# Keynotes
+
+The focus of ZuriHac is on hacking and collaboration.  But that
+doesn't mean we can't enjoy a good keynote from time to time.  We have
+five amazing keynote speakers this year:
+
+ -  Simon Peyton Jones
+ -  Ryan Trinkle
+ -  Susan Potter
+ -  Richard Eisenberg
+ -  Andrey Mokhov
+
+In addition to those keynotes, Edward Kmett has agreed to run his
+Glorious Hallway Track again.
+
+# Projects
+
+We have published a list of projects attendees are planning to work on
+during the Hackathon (https://zfoh.ch/zurihac2019/projects.html).  You
+can still add your own project to this list -- instructions are on
+that page.
+
+# Tracks
+
+In addition to the Hacking sessions, we have three dedicated tracks:
+
+ -  A beginner course by Ryan Moore
+ -  An intermediate/advanced course by Well-Typed
+ -  A dedicated GHC hacking room with some talks to help you get
+    started
+
+# Get in touch
+
+In case you would like to sync up with other attendees, feel free to
+use the following channels:
+
+ -  Our slack team: https://slack.zurihac.info/
+ -  The #zurihac hashtag on twitter and our account:
+    https://twitter.com/zurihac
+ -  The #zurihac channel on freenode IRC
+
+# Sponsors
+
+Organising ZuriHac would not be possible without the overwhelming
+support of our sponsors.  Huge thanks for their help -- please check
+them out if you have the chance!
+
+ -  Digital Asset: http://hub.digitalasset.com/events/zurich/zurihac
+ -  DFINITY: https://dfinity.org/jobs
+ -  Fretlink: https://www.fretlink.com/
+ -  Google: https://developers.google.com/open-source/
+ -  IOHK: https://iohk.io/
+ -  Joy of Haskell: https://joyofhaskell.com/
+ -  HSR: https://www.hsr.ch/en
+ -  Myrtle: https://www.myrtle.ai/
+ -  Serokell: https://serokell.io/
+ -  Tweag I/O: https://www.tweag.io/
+ -  Well-Typed: https://www.well-typed.com/
+
+# More info
+
+We have updated (and will be updating) lots of other sections on our
+webpage, such as the project list, how to buy train tickets, and more.
+Make sure to have a look before coming to the event:
+https://zfoh.ch/zurihac2019/
+
+On behalf of the ZuriHac organisers and the Zurich Friends of Haskell,
+Jasper Van der Jeugt
+Juri Chome
+Farhad Mehta
