@@ -140,6 +140,10 @@ registerView recaptcha view = DH.form view "?" $ do
 
     H.p $ H.strong "T-Shirt"
 
+    H.p $ H.strong $ do
+        "Please note that we have ordered the T-Shirts and cannot guarantee "
+        "that you will receive one if you register at this time."
+
     H.p $ "In what size would you like the free ZuriHac T-Shirt?"
 
     H.p $ do
