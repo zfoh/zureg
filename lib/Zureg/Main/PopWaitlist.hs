@@ -52,6 +52,7 @@ main = do
 
             IO.hPutStrLn IO.stderr "Writing event..."
             Database.writeEvents db uuid [event]
-            IO.hPutStrLn IO.stderr "Sending email..."
+            IO.hPutStrLn IO.stderr $
+                "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
             sendPopWaitlistEmail mailer rinfo uuid
             IO.hPutStrLn IO.stderr "OK"
