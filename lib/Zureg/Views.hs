@@ -27,6 +27,7 @@ import qualified Data.FileEmbed              as Embed
 import           Data.Maybe                  (fromMaybe)
 import           Data.List                   (intercalate)
 import qualified Data.Text                   as T
+import qualified Data.Time                   as Time
 import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -130,6 +131,15 @@ ticket r@Registrant {..} = template
 
         registrantInfo r
 
+        case rInfo of
+            Nothing                -> H.div $ ""
+            Just RegisterInfo {..} -> case riRegisteredAt of 
+                Nothing            -> H.div $ ""
+                Just rRegisteredAt -> when(rRegisteredAt >= Time.UTCTime (Time.fromGregorian 2019 5 7) (15*60*60)) $
+                    H.p $ do 
+                      "Please note that we have ordered the T-Shirts" 
+                      " and cannot guarantee that you will receive one if you register at this time."
+
         when (rState == Just Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
                 H.input H.! A.type_ "submit"
@@ -220,4 +230,4 @@ fileScanner :: B.ByteString
 fileScanner = $(Embed.embedFile "static/scanner.js")
 
 scan :: Registrant -> H.Html
-scan = registrantInfo
+scan registrant = registrantInfo registrant <> "Pick up T-Shirt later"
