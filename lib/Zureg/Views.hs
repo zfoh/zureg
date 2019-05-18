@@ -132,9 +132,9 @@ ticket r@Registrant {..} = template
         registrantInfo r
 
         case rInfo of
-            Nothing                -> H.div $ ""
+            Nothing                -> mempty
             Just RegisterInfo {..} -> case riRegisteredAt of 
-                Nothing            -> H.div $ ""
+                Nothing            -> mempty
                 Just rRegisteredAt -> when(rRegisteredAt >= Time.UTCTime (Time.fromGregorian 2019 5 7) (15*60*60)) $
                     H.p $ do 
                       "Please note that we have ordered the T-Shirts" 
