@@ -36,6 +36,9 @@ import qualified Zureg.Form                  as Form
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
 
+tShirtDeadline :: Time.UTCTime 
+tShirtDeadline = Time.UTCTime (Time.fromGregorian 2019 5 7) (15 * 3600)
+
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
     H.head $ do
@@ -135,10 +138,10 @@ ticket r@Registrant {..} = template
             Nothing                -> mempty
             Just RegisterInfo {..} -> case riRegisteredAt of 
                 Nothing            -> mempty
-                Just rRegisteredAt -> when(rRegisteredAt >= Time.UTCTime (Time.fromGregorian 2019 5 7) (15*60*60)) $
+                Just rRegisteredAt -> when(rRegisteredAt >= tShirtDeadline) $
                     H.p $ do 
-                      "Please note that we have ordered the T-Shirts" 
-                      " and cannot guarantee that you will receive one if you register at this time."
+                    "Because you registered after the T-Shirt were ordered,"
+                    " you will not be able to pick one up on the first day."
 
         when (rState == Just Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
@@ -230,4 +233,6 @@ fileScanner :: B.ByteString
 fileScanner = $(Embed.embedFile "static/scanner.js")
 
 scan :: Registrant -> H.Html
-scan registrant = registrantInfo registrant <> "Pick up T-Shirt later"
+scan registrant = do
+  H.p "Pick up T-Shirt later"
+  registrantInfo registrant
