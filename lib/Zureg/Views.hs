@@ -27,6 +27,7 @@ import qualified Data.FileEmbed              as Embed
 import           Data.Maybe                  (fromMaybe)
 import           Data.List                   (intercalate)
 import qualified Data.Text                   as T
+import qualified Data.Time                   as Time
 import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -34,6 +35,9 @@ import qualified Text.Digestive              as D
 import qualified Zureg.Form                  as Form
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
+
+tShirtDeadline :: Time.UTCTime 
+tShirtDeadline = Time.UTCTime (Time.fromGregorian 2019 5 7) (15 * 3600)
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -130,6 +134,15 @@ ticket r@Registrant {..} = template
 
         registrantInfo r
 
+        case rInfo of
+            Nothing                -> mempty
+            Just RegisterInfo {..} -> case riRegisteredAt of 
+                Nothing            -> mempty
+                Just rRegisteredAt -> when(rRegisteredAt >= tShirtDeadline) $
+                    H.p $ do 
+                    "Because you registered after the T-Shirt were ordered,"
+                    " you will not be able to pick one up on the first day."
+
         when (rState == Just Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
                 H.input H.! A.type_ "submit"
@@ -220,4 +233,6 @@ fileScanner :: B.ByteString
 fileScanner = $(Embed.embedFile "static/scanner.js")
 
 scan :: Registrant -> H.Html
-scan = registrantInfo
+scan registrant = do
+  H.p "Pick up T-Shirt later"
+  registrantInfo registrant
