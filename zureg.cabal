@@ -27,6 +27,7 @@ Library
     Zureg.Config
     Zureg.Database
     Zureg.Form
+    Zureg.Main.Badges
     Zureg.Main.Email
     Zureg.Main.Export
     Zureg.Main.Lambda
@@ -103,3 +104,7 @@ Executable zureg-pop-waitlist
 Executable zureg-projects-page
   Import:  exe
   Main-is: ProjectsPage.hs
+
+Executable zureg-badges
+  Import:  exe
+  Main-is: Badges.hs
