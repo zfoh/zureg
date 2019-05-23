@@ -116,7 +116,7 @@ registerView recaptcha view = DH.form view "?" $ do
     H.p $ do
         "Topic(s) that you want to display on your badge.  It's a good ice "
         "breaker for people who want to chat with you."
-    DH.inputText "affiliation" view
+    DH.inputText "askMeAbout" view
     H.br
 
     H.p $ H.strong "Track Interest (optional)"
