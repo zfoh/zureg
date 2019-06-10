@@ -1,0 +1,107 @@
+Hello {{info.name}},
+
+ZuriHac is only a few days away!  This email is a final reminder and contains
+some more practical information.
+
+# Registration
+
+Please take a screenshot of the QR code on your ticket so you can show it at the
+registration desk -- that will get you your name badge and T-Shirt.  You can
+find your ticket here:
+
+    https://zureg.zfoh.ch/ticket?uuid=${{uuid}}
+
+# Slack team
+
+We will use the ZuriHac Slack for on-event coordination. You can join us here:
+
+    http://slack.zurihac.info/
+
+# Schedule and keynotes
+
+We are very proud of our amazing keynote lineup this year.
+
+  - Friday 10.00: Ryan Trinkle
+  - Friday 17.00: Andrey Mokhov
+  - Saturday 10.00: Simon Peyton Jones
+  - Saturday 16.00: Susan Potter
+  - Sunday 10.00: Richard Eisenberg
+
+In addition to that, Edward Kmett will run his Glorious Hallway Track again.
+
+The full schedule can be found here: https://zfoh.ch/zurihac2019/#timetable
+
+# ZuriHac pre-party on Thursday
+
+For those staying in Zurich, we invite you to join our yearly pre-party near the
+lake.  This will take place Thursday the 13th at 19:00.  We will just socialize
+and share some drinks in the sun if the weather permits it.  There are shopping
+places nearby (Coop or Migros), so we will let you take care of bringing your
+own drinks.
+
+Meeting spot is the same as last year, near Zurich Bellevue / Sechseläutenplatz,
+next to the lake:
+
+    https://goo.gl/maps/wswFdfMCFHLzsP7S8
+
+You will recognize us by the Haskell T-shirts. In case the weather prediction
+looks bad, we will come up with an alternative place to meet indoors. In that
+case, we'll organize in the #2019-prehac-meeting channel on Slack.
+
+Don't hesitate to come and say hi, especially if you feel like you don't know
+anybody yet, we're all very friendly.
+
+# Project organisation and room allocation
+
+We have a lot of projects this year!  After the opening ceremony, project
+maintainers will have the opportunity to give a 1 minute elevator pitch to find
+collaborators.  This year, we will have a physical version of the map near the
+registration desk in addition to Slack to organize coordination of project
+locations.  You can still add your project here:
+
+    https://zfoh.ch/zurihac2019/projects.html
+
+# Food
+
+For lunch, we worked with HSR to provide affordable (for Swiss standards) meals,
+including a vegetarian option. Lunch coupons cost CHF 12 per meal and can be
+bought on Friday and Saturday (so please buy them in advance for Sunday).
+
+On Friday evening, we will have a bring-your-own-meat-or-alternatives barbeque.
+On Saturday evening, a Ramen Foodtruck will offer Japanese Noodle Soup.
+
+More information is available here:
+
+    https://zfoh.ch/zurihac2019/#food
+
+# Sponsors
+
+We would like to thank our sponsors for their overwhelming support. They are:
+
+- Digital Asset: http://hub.digitalasset.com/events/zurich/zurihac
+- DFINITY: https://dfinity.org/jobs
+- Fretlink: https://www.fretlink.com/
+- Google: https://developers.google.com/open-source/
+- IOHK: https://iohk.io/
+- Joy of Haskell: https://joyofhaskell.com/
+- HSR: https://www.hsr.ch/en
+- Myrtle: https://www.myrtle.ai/
+- Serokell: https://serokell.io/
+- Tezos: https://tezos.com/
+- Tweag I/O: https://www.tweag.io/
+- Well-Typed: https://www.well-typed.com/
+
+# Further information
+
+We have updated (and will be updating) lots of other sections on our webpage,
+such as the project list, how to buy train tickets, and more.  Make sure to have
+a look before coming to the event:
+
+    https://zfoh.ch/zurihac2019/
+
+We look forward to seeing you soon!
+
+On behalf of the ZuriHac organisers and the Zurich Friends of Haskell,
+Jasper Van der Jeugt
+Juri Chomé
+Farhad Mehta
