@@ -51,13 +51,11 @@ function scanner() {
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
       var newCode = jsQR(imageData.data, imageData.width, imageData.height);
-      if (newCode && code !== newCode && newCode.data) {
+      if (newCode && (!code || code.data != newCode.data) && newCode.data) {
         code = newCode;
         message.innerText = 'Found a code: ' + code.data;
         output.innerText = 'Loading ticket...';
         scanned(code.data);
-      } else {
-        code = null;
       }
     }
     requestAnimationFrame(tick);
