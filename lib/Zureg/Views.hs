@@ -24,8 +24,8 @@ import qualified Data.Array                  as Array
 import qualified Data.ByteString             as B
 import qualified Data.ByteString.Base64.Lazy as Base64
 import qualified Data.FileEmbed              as Embed
-import           Data.Maybe                  (fromMaybe)
 import           Data.List                   (intercalate)
+import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
 import qualified Data.Time                   as Time
 import qualified Eventful                    as E
@@ -33,11 +33,15 @@ import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Zureg.Form                  as Form
+import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
 
-tShirtDeadline :: Time.UTCTime 
+tShirtDeadline :: Time.UTCTime
 tShirtDeadline = Time.UTCTime (Time.fromGregorian 2019 5 7) (15 * 3600)
+
+badgesDeadline :: Time.UTCTime
+badgesDeadline = Time.UTCTime (Time.fromGregorian 2019 6 6) (16 * 3600 + 8 * 60)
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -134,14 +138,11 @@ ticket r@Registrant {..} = template
 
         registrantInfo r
 
-        case rInfo of
-            Nothing                -> mempty
-            Just RegisterInfo {..} -> case riRegisteredAt of 
-                Nothing            -> mempty
-                Just rRegisteredAt -> when(rRegisteredAt >= tShirtDeadline) $
-                    H.p $ do 
-                    "Because you registered after the T-Shirt were ordered,"
-                    " you will not be able to pick one up on the first day."
+        case registrantRegisteredAt r of
+            Just at | at >= tShirtDeadline -> H.p $ do
+                "Because you registered after the T-Shirt were ordered,"
+                " you will not be able to pick one up on the first day."
+            _                              -> mempty
 
         when (rState == Just Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
@@ -174,21 +175,21 @@ registrantInfo Registrant {..} = H.div $ do
         Just RegisterInfo {..} -> H.p $ do
             H.strong (H.toHtml riName ) <> H.br
             H.toHtml riEmail <> H.br
-            case riTShirt of 
-                Just rTShirt -> 
-                    "T-Shirt: " 
+            case riTShirt of
+                Just rTShirt ->
+                    "T-Shirt: "
                     <> (H.toHtml.show $ fst rTShirt) <> ", "
                     <> (H.toHtml.show $ snd rTShirt)
                     <>  case riMentor of
-                            True -> ", Mentorshirt"  <> H.br
+                            True  -> ", Mentorshirt"  <> H.br
                             False -> H.br
                 Nothing -> mempty
-            "Track interest(s): " 
+            "Track interest(s): "
             H.toHtml $ intercalate ", " $
-                ["Beginner" | tiBeginner tiTrackInterest] 
+                ["Beginner" | tiBeginner tiTrackInterest]
                 ++ ["Intermediate" | tiIntermediate tiTrackInterest]
                 ++ ["Advanced" | tiAdvanced tiTrackInterest]
-                ++ ["GHC DevOps" | tiGhcDevOps tiTrackInterest] 
+                ++ ["GHC DevOps" | tiGhcDevOps tiTrackInterest]
         Nothing ->
             mempty
 
@@ -233,6 +234,32 @@ fileScanner :: B.ByteString
 fileScanner = $(Embed.embedFile "static/scanner.js")
 
 scan :: Registrant -> H.Html
-scan registrant = do
-  H.p "Pick up T-Shirt later"
-  registrantInfo registrant
+scan registrant@Registrant {..} = do
+    H.h1 $ case rState of
+        Nothing         -> "❌ Not registered"
+        Just Cancelled  -> "❌ Cancelled"
+        Just Registered -> "✅ Registered"
+        Just Confirmed  -> "✅ Confirmed"
+        Just Waitlisted -> "⌛ on the waitlist"
+
+    H.p $ H.strong $
+        case (registrantRegisteredAt registrant, registrantToBadge registrant) of
+            (Just at, _) | at >= badgesDeadline -> "No Badge (late registration)"
+            (_, Nothing)                        -> "No Badge"
+            (_, Just badge)                     ->
+                "Badge: " <> H.toHtml (previewBadge badge)
+
+    case rInfo of
+        Nothing                -> mempty
+        Just RegisterInfo {..} -> H.p $ H.strong $ do
+            case riTShirt of
+                Nothing      -> "No T-Shirt"
+                Just rTShirt ->
+                    "T-Shirt: " <>
+                    (H.toHtml.show $ fst rTShirt) <> ", " <>
+                    (H.toHtml.show $ snd rTShirt) <> ", " <>
+                    (if riMentor then "Navy" else "Espresso")
+
+    case registrantRegisteredAt registrant of
+        Just at | at >= tShirtDeadline -> H.p $ H.strong "Pick up T-Shirt later"
+        _                              -> mempty

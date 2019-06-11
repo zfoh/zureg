@@ -1,13 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 module Zureg.Main.Badges
-    ( main
+    ( Badge
+    , previewBadge
+    , registrantToBadge
+
+    , main
     ) where
 
 import           Control.Monad        (guard)
 import qualified Data.Aeson           as A
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.Csv             as Csv
+import           Data.Maybe           (maybeToList)
 import           Data.Maybe           (fromMaybe, mapMaybe)
 import qualified Data.Text            as T
 import           System.Environment   (getArgs, getProgName)
@@ -20,6 +25,10 @@ data Badge = Badge
     , bLine2 :: Maybe T.Text
     , bLine3 :: Maybe T.Text
     }
+
+previewBadge :: Badge -> T.Text
+previewBadge Badge {..} = T.intercalate ", " $
+    [bLine1] ++ maybeToList bLine2
 
 badgeCsvHeader :: Csv.Header
 badgeCsvHeader = Csv.header ["Line 1", "Line 2", "Line 3"]
