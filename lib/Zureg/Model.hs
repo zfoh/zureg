@@ -1,6 +1,6 @@
 -- | Basic datatypes and operations in our event sourcing.
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
-
 module Zureg.Model
     ( TShirtCut (..)
     , TShirtSize (..)
@@ -17,6 +17,7 @@ module Zureg.Model
     , registrantProjection
 
     , parseRegisterState
+    , registrantRegisteredAt
     ) where
 
 import qualified Data.Aeson.TH.Extended as A
@@ -131,3 +132,6 @@ parseRegisterState str = case readMaybe str of
     Nothing -> Left $
         "Can't parse register state, try one of: " ++
         L.intercalate ", " (map show [minBound :: RegisterState .. maxBound])
+
+registrantRegisteredAt :: Registrant -> Maybe Time.UTCTime
+registrantRegisteredAt registrant = rInfo registrant >>= riRegisteredAt
