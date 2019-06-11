@@ -10,7 +10,7 @@ how many people are attending, we are asking EVERYONE to either CONFIRM their
 registration, or CANCEL in case you cannot make it.  You can do both at the
 following link:
 
-    https://zureg.zfoh.ch/ticket?uuid=${{uuid}}
+    https://zureg.zfoh.ch/ticket?uuid={{uuid}}
 
 Confirming your registration will give you access to your ticket, and canceling
 will free up space for the people on the waiting list -- thank you in advance!

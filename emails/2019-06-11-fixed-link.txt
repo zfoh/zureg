@@ -1,0 +1,11 @@
+Hello {{info.name}},
+
+The last email we sent out contained an invalid ticket link.  Our apologies!
+Here is the correct link:
+
+    https://zureg.zfoh.ch/ticket?uuid={{uuid}}
+
+On behalf of the ZuriHac organisers and the Zurich Friends of Haskell,
+Jasper Van der Jeugt
+Juri Chomé
+Farhad Mehta

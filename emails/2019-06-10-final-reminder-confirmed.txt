@@ -9,7 +9,7 @@ Please take a screenshot of the QR code on your ticket so you can show it at the
 registration desk -- that will get you your name badge and T-Shirt.  You can
 find your ticket here:
 
-    https://zureg.zfoh.ch/ticket?uuid=${{uuid}}
+    https://zureg.zfoh.ch/ticket?uuid={{uuid}}
 
 # Slack team
 
