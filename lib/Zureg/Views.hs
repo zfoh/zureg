@@ -220,12 +220,23 @@ qrimg qrdata = fromMaybe "Could not generate QR code" $ do
         H.! A.src src
 
 scanner :: H.Html
-scanner = H.docTypeHtml $ H.body $ do
-    H.script H.! A.type_ "text/JavaScript" $
-        H.unsafeByteString fileJsQr
-    H.script H.! A.type_ "text/JavaScript" $
-        H.unsafeByteString fileScanner
-    H.script H.! A.type_ "text/JavaScript" $ "scanner();"
+scanner = H.docTypeHtml $ do
+    H.head $ do
+        H.meta
+            H.! A.name "viewport"
+            H.! A.content "width=device-width, initial-scale=1"
+        H.style $ do
+            "html {"
+            "    font-size: 18px;"
+            "    font-family: sans-serif;"
+            "}"
+
+    H.body $ do
+        H.script H.! A.type_ "text/JavaScript" $
+            H.unsafeByteString fileJsQr
+        H.script H.! A.type_ "text/JavaScript" $
+            H.unsafeByteString fileScanner
+        H.script H.! A.type_ "text/JavaScript" $ "scanner();"
 
 fileJsQr :: B.ByteString
 fileJsQr = $(Embed.embedFile "static/jsQR-807b073.js")
@@ -234,32 +245,33 @@ fileScanner :: B.ByteString
 fileScanner = $(Embed.embedFile "static/scanner.js")
 
 scan :: Registrant -> H.Html
-scan registrant@Registrant {..} = do
-    H.h1 $ case rState of
-        Nothing         -> "❌ Not registered"
-        Just Cancelled  -> "❌ Cancelled"
+scan registrant@Registrant {..} = H.ul $ do
+    H.li $ H.strong $ case rState of
+        Nothing         -> red "❌ Not registered"
+        Just Cancelled  -> red "❌ Cancelled"
         Just Registered -> "✅ Registered"
         Just Confirmed  -> "✅ Confirmed"
-        Just Waitlisted -> "⌛ on the waitlist"
+        Just Waitlisted -> red "⌛ on the waitlist"
 
-    H.p $ H.strong $
-        case (registrantRegisteredAt registrant, registrantToBadge registrant) of
-            (Just at, _) | at >= badgesDeadline -> "No Badge (late registration)"
-            (_, Nothing)                        -> "No Badge"
-            (_, Just badge)                     ->
-                "Badge: " <> H.toHtml (previewBadge badge)
-
-    case rInfo of
-        Nothing                -> mempty
-        Just RegisterInfo {..} -> H.p $ H.strong $ do
-            case riTShirt of
-                Nothing      -> "No T-Shirt"
-                Just rTShirt ->
-                    "T-Shirt: " <>
-                    (H.toHtml.show $ fst rTShirt) <> ", " <>
-                    (H.toHtml.show $ snd rTShirt) <> ", " <>
-                    (if riMentor then "Navy" else "Espresso")
+    H.li $ case (registrantRegisteredAt registrant, registrantToBadge registrant) of
+        (Just at, _) | at >= badgesDeadline -> red "No Badge (late registration)"
+        (_, Nothing)                        -> red "No Badge"
+        (_, Just badge)                     ->
+            "Badge: " <> H.strong (H.toHtml $ previewBadge badge)
 
     case registrantRegisteredAt registrant of
-        Just at | at >= tShirtDeadline -> H.p $ H.strong "Pick up T-Shirt later"
+        Just at | at >= tShirtDeadline -> H.li $ H.strong $ red "Pick up T-Shirt later!"
         _                              -> mempty
+
+    H.li $ case rInfo of
+        Nothing                -> mempty
+        Just RegisterInfo {..} -> do
+            case riTShirt of
+                Nothing      -> "No T-Shirt"
+                Just rTShirt -> "T-Shirt: " <> H.strong (
+                    (H.toHtml.show $ fst rTShirt) <> ", " <>
+                    (H.toHtml.show $ snd rTShirt) <> ", " <>
+                    (if riMentor then "Navy" else "Espresso"))
+
+  where
+    red x = H.span H.! A.style "color: #aa0000" $ x
