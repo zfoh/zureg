@@ -15,13 +15,24 @@ function scanner() {
   var context = canvas.getContext("2d");
   document.body.appendChild(canvas);
 
+  var ui = document.createElement('div');
+  document.body.appendChild(ui);
+
+  document.body.style = 'margin: 0px; overflow: hidden';
+  ui.style = 'position: absolute;' +
+      'top: 20px; left: 20px; right: 20px;' +
+      'background-color: white;' +
+      'opacity: 0.7;' +
+      'padding: 20px;' +
+      'z-index: 1';
+
   var message = document.createElement("div");
   message.innerText =
     'Unable to access video stream (please make sure you have a camera enabled)';
-  document.body.appendChild(message);
+  ui.appendChild(message);
 
   var output = document.createElement("div");
-  document.body.appendChild(output);
+  ui.appendChild(output);
 
   var secret = getParameterByName('secret');
   var code = null;
@@ -46,8 +57,17 @@ function scanner() {
       canvas.hidden = false;
       output.hidden = false;
 
+      /* Compute aspect ratios... */
+      var videoWidth = video.videoWidth;
+      var intendedWidth = document.body.clientWidth;
+      var ratio = intendedWidth / videoWidth;
+
+      /* Scale the whole canvas to make the video "full-screen". */
       canvas.height = video.videoHeight;
-      canvas.width = video.videoWidth;
+      canvas.width = videoWidth;
+      canvas.style = 'transform: scale(' + ratio + ');' +
+          'transform-origin: 0% 0%;';
+
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
       var newCode = jsQR(imageData.data, imageData.width, imageData.height);
