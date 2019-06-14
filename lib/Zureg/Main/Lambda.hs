@@ -101,8 +101,10 @@ main = do
 
             ["scan"] | reqHttpMethod == "GET" ->
                 scannerAuthorized req scannerConfig $ do
+                    time <- Time.getCurrentTime
                     uuid <- getUuidParam req
                     registrant <- Database.getRegistrant db uuid
+                    Database.writeEvents db uuid [Scan $ ScanInfo time]
                     html $ Views.scan registrant
 
             ["confirm"] -> do

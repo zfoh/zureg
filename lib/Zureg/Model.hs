@@ -10,6 +10,7 @@ module Zureg.Model
     , RegisterInfo (..)
     , WaitlistInfo (..)
     , PopWaitlistInfo (..)
+    , ScanInfo (..)
     , Event (..)
 
     , RegisterState (..)
@@ -77,10 +78,15 @@ data PopWaitlistInfo = PopWaitlistInfo
     { pwiPoppedAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
+data ScanInfo = ScanInfo
+    { siScannedAt :: !Time.UTCTime
+    } deriving (Eq, Show)
+
 data Event
     = Register RegisterInfo
     | Waitlist WaitlistInfo
     | PopWaitlist PopWaitlistInfo
+    | Scan ScanInfo
     | Confirm
     | Cancel
     deriving (Eq, Show)
@@ -120,6 +126,7 @@ $(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegisterInfo)
 $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
+$(A.deriveJSON A.options ''ScanInfo)
 $(A.deriveJSON A.options ''Event)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
