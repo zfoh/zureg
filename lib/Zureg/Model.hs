@@ -98,14 +98,15 @@ data RegisterState = Registered | Confirmed | Cancelled | Waitlisted
     deriving (Bounded, Enum, Eq, Read, Show)
 
 data Registrant = Registrant
-    { rUuid  :: E.UUID
-    , rInfo  :: Maybe RegisterInfo
-    , rState :: Maybe RegisterState
+    { rUuid    :: E.UUID
+    , rInfo    :: Maybe RegisterInfo
+    , rState   :: Maybe RegisterState
+    , rScanned :: Bool
     } deriving (Eq, Show)
 
 registrantProjection :: E.UUID -> E.Projection Registrant Event
 registrantProjection uuid = E.Projection
-    { E.projectionSeed         = Registrant uuid Nothing Nothing
+    { E.projectionSeed         = Registrant uuid Nothing Nothing False
     , E.projectionEventHandler = \registrant event -> case event of
         Cancel     -> registrant {rState = Just Cancelled}
         Confirm    -> case rState registrant of
@@ -115,6 +116,7 @@ registrantProjection uuid = E.Projection
         Waitlist _ -> registrant {rState = Just Waitlisted}
         PopWaitlist _ | Just Waitlisted <- rState registrant ->
             registrant {rState = Just Registered}
+        Scan _ -> registrant {rScanned = True}
         _ -> registrant
     }
 
