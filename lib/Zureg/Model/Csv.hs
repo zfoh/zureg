@@ -23,6 +23,7 @@ instance ToNamedRecord Registrant where
         =  HM.unions [ namedRecord [ "UUID" .= rUuid ]
                      , toNamedRecord rState
                      , toNamedRecord rInfo
+                     , namedRecord [ "Scanned" .= rScanned ]
                      ]
 
 instance ToNamedRecord RegisterState where
@@ -107,6 +108,7 @@ itemHeader :: Header
 itemHeader = header
                 [ "UUID"
                 , "State"
+                , "Scanned"
                 , "Name"
                 , "Name on Badge"
                 , "Email"
