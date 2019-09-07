@@ -34,8 +34,10 @@ import           Text.Read              (readMaybe)
 -- Hackathon
 
 data Hackathon = Hackathon
-    { hName    :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
-    , hBaseUrl :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
+    { hName       :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
+    , hBaseUrl    :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
+    , hContactUrl :: !T.Text -- ^ URL of the hackathon homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
+    , hSlackUrl   :: !T.Text -- ^ Slack URL, e.g. "https://slack.zurihac.info/"
     } deriving (Eq, Show)
 
 --------------------------------------------------------------------------------

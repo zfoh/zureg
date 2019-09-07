@@ -29,12 +29,12 @@ sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    https://zfoh.ch/zurihac2019/#contact"
+    , "    " <> hContactUrl hackathon
     , ""
     , "For various questions, or socializing with other attendees,"
     , "you can join our Slack organisation:"
     , ""
-    , "    https://slack.zurihac.info/"
+    , "    " <> hSlackUrl hackathon
     , ""
     , "Warm regards"
     , "The " <> hName hackathon <> " Registration Bot"
