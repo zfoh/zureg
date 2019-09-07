@@ -2,7 +2,9 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Zureg.Model
-    ( TShirtCut (..)
+    ( Hackathon (..)
+
+    , TShirtCut (..)
     , TShirtSize (..)
     , TrackInterest (..)
     , ContributorLevel (..)
@@ -27,6 +29,14 @@ import qualified Data.Text              as T
 import qualified Data.Time              as Time
 import qualified Eventful               as E
 import           Text.Read              (readMaybe)
+
+--------------------------------------------------------------------------------
+-- Hackathon
+
+data Hackathon = Hackathon
+    { hName    :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
+    , hBaseUrl :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch/"
+    } deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
 -- Events
@@ -66,6 +76,7 @@ data RegisterInfo = RegisterInfo
     , riMentor        :: !Bool
     , riProject       :: !Project
     , riRegisteredAt  :: !Time.UTCTime
+    , riHackathon      :: !Hackathon
     } deriving (Eq, Show)
 
 data WaitlistInfo = WaitlistInfo
@@ -128,6 +139,7 @@ $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''ScanInfo)
 $(A.deriveJSON A.options ''Event)
+$(A.deriveJSON A.options ''Hackathon)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
 

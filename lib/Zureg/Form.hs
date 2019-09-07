@@ -57,6 +57,7 @@ registerForm = RegisterInfo
                     <*> "intermediate" D..: D.bool Nothing
                     <*> "advanced" D..: D.bool Nothing))))
     <*> D.monadic (Time.getCurrentTime >>= return . pure)
+    <*> (pure (Hackathon "" ""))
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
         case T.split (== '@') email of
