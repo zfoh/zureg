@@ -149,11 +149,13 @@ registerView hackathon recaptcha view = DH.form view "?" $ do
 
     H.p $ do
         "The sizes should be fairly standard. "
+        {- TODO only works with a more generic link.
         "You can see the "
         H.a H.! A.href "https://zfoh.ch/images/zurihac2019/tshirts-sizing.png"
             H.! A.target "_blank" $
             "specifications here"
         "."
+        -}
 
     DH.label "tshirt.cut" view "Cut"
     DH.inputSelect "tshirt.cut" view
