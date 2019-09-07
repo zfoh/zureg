@@ -16,16 +16,16 @@ sendRegisterSuccessEmail
 sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
-    "ZuriHac 2019 Registration Confirmation" $ T.unlines
+    (hName hackathon <> " Registration Confirmation") $ T.unlines
     [ "Hello " <> riName info <> ","
     , ""
-    , "Your registration for ZuriHac 2019 was successful."
+    , "Your registration for " <> hName hackathon <> " was successful."
     , ""
     , "We look forward to seeing you there!"
     , ""
     , "You can view (and cancel) your registration here:"
     , ""
-    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
+    , "    " <> hBaseUrl hackathon <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
@@ -37,8 +37,10 @@ sendRegisterSuccessEmail sendEmail info uuid = SendEmail.sendEmail
     , "    https://slack.zurihac.info/"
     , ""
     , "Warm regards"
-    , "The ZuriHac Registration Bot"
+    , "The " <> hName hackathon <> " Registration Bot"
     ]
+  where
+    hackathon = riHackathon info
 
 sendWaitlistEmail
     :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()

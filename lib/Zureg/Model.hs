@@ -35,7 +35,7 @@ import           Text.Read              (readMaybe)
 
 data Hackathon = Hackathon
     { hName    :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
-    , hBaseUrl :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch/"
+    , hBaseUrl :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
     } deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
