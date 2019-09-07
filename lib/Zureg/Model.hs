@@ -65,9 +65,7 @@ data RegisterInfo = RegisterInfo
     , riTShirt        :: !(Maybe (TShirtCut, TShirtSize))
     , riMentor        :: !Bool
     , riProject       :: !Project
-    -- | This field is optional because we only added after registration had
-    -- been opened.
-    , riRegisteredAt  :: !(Maybe Time.UTCTime)
+    , riRegisteredAt  :: !Time.UTCTime
     } deriving (Eq, Show)
 
 data WaitlistInfo = WaitlistInfo
@@ -143,4 +141,4 @@ parseRegisterState str = case readMaybe str of
         L.intercalate ", " (map show [minBound :: RegisterState .. maxBound])
 
 registrantRegisteredAt :: Registrant -> Maybe Time.UTCTime
-registrantRegisteredAt registrant = rInfo registrant >>= riRegisteredAt
+registrantRegisteredAt registrant = riRegisteredAt <$> rInfo registrant

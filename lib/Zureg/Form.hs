@@ -56,7 +56,7 @@ registerForm = RegisterInfo
                     <$> "beginner" D..: D.bool Nothing
                     <*> "intermediate" D..: D.bool Nothing
                     <*> "advanced" D..: D.bool Nothing))))
-    <*> (Just <$> D.monadic (Time.getCurrentTime >>= return . pure))
+    <*> D.monadic (Time.getCurrentTime >>= return . pure)
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
         case T.split (== '@') email of
