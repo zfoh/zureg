@@ -1,4 +1,8 @@
 {
+  "hackathon": {
+    "name": "ZuriHac 2019",
+    "baseUrl": "https://zureg.zfoh.ch"
+  },
   "scanner": {
     "secret": "endofunctor"
   },

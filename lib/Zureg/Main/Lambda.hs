@@ -53,6 +53,7 @@ main = do
     rcConfig      <- Config.section config "recaptcha"
     emailConfig   <- Config.section config "sendEmail"
     scannerConfig <- Config.section config "scanner"
+    hackathon     <- Config.section config "hackathon"
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->
@@ -65,7 +66,7 @@ main = do
                 (view, mbReg) <- Serverless.runForm req "register" $ D.checkM
                     "Email address already registered"
                     (fmap isNothing . Database.lookupEmail db . riEmail)
-                    registerForm
+                    (registerForm hackathon)
                 let waitlist = True
 
                 case mbReg of
