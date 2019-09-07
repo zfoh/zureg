@@ -47,50 +47,54 @@ sendWaitlistEmail
 sendWaitlistEmail sendEmail info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
-    "ZuriHac 2019: You're on the waitlist" $ T.unlines
+    (hName hackathon <> ": You're on the waitlist") $ T.unlines
     [ "Hello " <> riName info <> ","
     , ""
-    , "You have been added to the waitlist for ZuriHac 2019."
+    , "You have been added to the waitlist for " <> hName hackathon <> "."
     , ""
     , "We will let you know when places become available."
     , ""
     , "You can view your status here:"
     , ""
-    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
+    , "    " <> hBaseUrl hackathon <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    https://zfoh.ch/zurihac2019/#contact"
+    , "    " <> hContactUrl hackathon
     , ""
     , "Warm regards"
-    , "The ZuriHac Registration Bot"
+    , "The " <> hName hackathon <> " Registration Bot"
     ]
+  where
+    hackathon = riHackathon info
 
 sendPopWaitlistEmail
     :: SendEmail.Handle -> RegisterInfo -> E.UUID -> IO ()
 sendPopWaitlistEmail sendEmail info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
-    "ZuriHac 2019: You are now registered!" $ T.unlines
+    (hName hackathon <> ": You are now registered!") $ T.unlines
     [ "Hello " <> riName info <> ","
     , ""
-    , "Great news!  Some places for ZuriHac 2019 became available."
+    , "Great news!  Some places for " <> hName hackathon <> " became available."
     , "You have been removed from the waiting list and are now"
-    , "registered to attend ZuriHac."
+    , "registered to attend " <> hName hackathon <> "."
     , ""
     , "You can view your registration here:"
     , ""
-    , "    https://zureg.zfoh.ch/ticket?uuid=" <> E.uuidToText uuid
+    , "    " <> hBaseUrl hackathon <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    https://zfoh.ch/zurihac2019/#contact"
+    , "    " <> hContactUrl hackathon
     , ""
     , "For various questions, or socializing with other attendees,"
     , "you can join our Slack organisation:"
     , ""
-    , "    https://slack.zurihac.info/"
+    , "    " <> hSlackUrl hackathon
     , ""
     , "Warm regards"
-    , "The ZuriHac Registration Bot"
+    , "The " <> hName hackathon <> " Registration Bot"
     ]
+  where
+    hackathon = riHackathon info
