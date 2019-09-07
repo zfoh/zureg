@@ -71,7 +71,7 @@ main = do
 
                 case mbReg of
                     Nothing -> html $
-                        Views.register (ReCaptcha.clientHtml recaptcha) view
+                        Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
 
                     Just info | waitlist -> do
                         -- You're on the waitlist
