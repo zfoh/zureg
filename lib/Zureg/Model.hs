@@ -38,6 +38,7 @@ data Hackathon = Hackathon
     , hBaseUrl    :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
     , hContactUrl :: !T.Text -- ^ URL of the hackathon homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
     , hSlackUrl   :: !T.Text -- ^ Slack URL, e.g. "https://slack.zurihac.info/"
+    , hWaitlist   :: !Bool   -- ^ When 'True', new registrants are added to the waitlist
     } deriving (Eq, Show)
 
 --------------------------------------------------------------------------------

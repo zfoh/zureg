@@ -67,13 +67,12 @@ main = do
                     "Email address already registered"
                     (fmap isNothing . Database.lookupEmail db . riEmail)
                     registerForm
-                let waitlist = True
 
                 case mbReg of
                     Nothing -> html $
                         Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
 
-                    Just info | waitlist -> do
+                    Just info | hWaitlist hackathon -> do
                         -- You're on the waitlist
                         uuid <- E.uuidNextRandom
                         time <- Time.getCurrentTime
