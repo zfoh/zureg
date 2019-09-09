@@ -25,7 +25,7 @@ docker:
 		-it \
 		-m 4GB \
 		-p 8080:8080 \
-		--user $(shell id -u):$(shell id -g) \
+		--user 1000:1000 \
 		--mount type=bind,source=$(shell pwd),target=/build \
 		--name zureg01 \
 		haskell-amazon-linux || \
