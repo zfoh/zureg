@@ -49,9 +49,9 @@ main = do
 
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant]
+                :: IO [Registrant ()]
 
-            let prepare :: Registrant -> IO T.Text
+            let prepare :: A.ToJSON a => Registrant a -> IO T.Text
                 prepare registrant = do
                     let (errs, t) = Mustache.checkedSubstitute
                             template (A.toJSON registrant)

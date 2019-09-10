@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Main.Lambda
@@ -7,8 +8,10 @@ module Zureg.Main.Lambda
 
 import           Control.Exception             (throwIO)
 import           Control.Monad                 (when)
+import qualified Data.Aeson                    as A
 import qualified Data.Aeson.TH.Extended        as A
 import           Data.Maybe                    (isNothing)
+import           Data.Proxy                    (Proxy (..))
 import qualified Data.Text                     as T
 import qualified Data.Time                     as Time
 import qualified Eventful                      as E
@@ -38,8 +41,8 @@ html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
     Serverless.response200 . RenderHtml.renderHtml
 
-main :: IO ()
-main = do
+main :: forall a. (A.FromJSON a, A.ToJSON a) => Proxy a -> IO ()
+main _ = do
     progName <- getProgName
     args     <- getArgs
 
@@ -78,21 +81,21 @@ main = do
                         time <- Time.getCurrentTime
                         let wlinfo = WaitlistInfo time
                         Database.writeEvents db uuid
-                            [Register info, Waitlist wlinfo]
+                            [Register info (), Waitlist wlinfo]
                         Database.putEmail db (riEmail info) uuid
                         sendWaitlistEmail sendEmail hackathon info uuid
                         html $ Views.registerWaitlist uuid info
                     Just info -> do
                         -- Success registration
                         uuid <- E.uuidNextRandom
-                        Database.writeEvents db uuid [Register info]
+                        Database.writeEvents db uuid [Register info ()]
                         Database.putEmail db (riEmail info) uuid
                         sendRegisterSuccessEmail sendEmail hackathon info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db uuid
+                registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                 html $ Views.ticket registrant
 
             ["scanner"] | reqHttpMethod == "GET" ->
@@ -103,15 +106,15 @@ main = do
                 scannerAuthorized req scannerConfig $ do
                     time <- Time.getCurrentTime
                     uuid <- getUuidParam req
-                    registrant <- Database.getRegistrant db uuid
-                    Database.writeEvents db uuid [Scan $ ScanInfo time]
+                    registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+                    Database.writeEvents db uuid [Scan $ ScanInfo time :: Event a]
                     html $ Views.scan registrant
 
             ["confirm"] -> do
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db uuid
+                registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                 case rState registrant of 
-                  Just Registered -> Database.writeEvents db uuid [Confirm]
+                  Just Registered -> Database.writeEvents db uuid [Confirm :: Event a]
                   _               -> return ()
                 return $ Serverless.response302 $ "ticket?uuid=" <> E.uuidToText uuid
                    
@@ -120,9 +123,9 @@ main = do
                     cancelForm (lookupUuidParam req)
                 case mbCancel of
                     Just (uuid, True) -> do
-                        registrant <- Database.getRegistrant db uuid
+                        registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                         -- TODO: Check that not yet cancelled?
-                        Database.writeEvents db uuid [Cancel]
+                        Database.writeEvents db uuid [Cancel :: Event a]
                         case rInfo registrant of
                             Nothing -> return ()
                             Just info ->  Database.deleteEmail db $ riEmail info

@@ -37,7 +37,7 @@ renderProject contact project = do
 
         maybe mempty (H.p . H.toHtml) (pShortDescription project)
 
-renderProjects :: [Registrant] -> H.Html
+renderProjects :: [Registrant a] -> H.Html
 renderProjects registrants = H.ul H.! HA.class_ "projects" $ mconcat $ do
     registrant <- L.sortOn sortKey registrants
     contact    <- maybeToList $ rInfo registrant
@@ -55,7 +55,7 @@ main = do
         [exportPath] -> do
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant]
+                :: IO [Registrant ()]
 
             putStr $ Pretty.renderHtml $ renderProjects registrants
         _ -> do

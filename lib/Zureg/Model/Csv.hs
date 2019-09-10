@@ -18,7 +18,7 @@ import qualified Eventful               as E
 import           Data.Csv               as CSV
 import qualified Data.HashMap.Strict    as HM
 
-instance ToNamedRecord Registrant where
+instance ToNamedRecord (Registrant a) where
     toNamedRecord Registrant {..}
         =  HM.unions [ namedRecord [ "UUID" .= rUuid ]
                      , toNamedRecord rState

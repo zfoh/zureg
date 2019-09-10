@@ -55,7 +55,7 @@ main = do
             Just s  -> (== Just s) . rState
 
     encode <- case takeExtension (oPath opts) of
-        ".json" -> return A.encode
+        ".json" -> return (A.encode :: [Registrant ()] -> BL.ByteString)
         ".csv"  -> return $ CSV.encodeByName MCSV.itemHeader
         ext     -> do
             IO.hPutStrLn IO.stderr $ "Unkown extension: " ++ ext

@@ -93,8 +93,8 @@ data ScanInfo = ScanInfo
     { siScannedAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
-data Event
-    = Register RegisterInfo
+data Event a
+    = Register RegisterInfo a
     | Waitlist WaitlistInfo
     | PopWaitlist PopWaitlistInfo
     | Scan ScanInfo
@@ -108,22 +108,23 @@ data Event
 data RegisterState = Registered | Confirmed | Cancelled | Waitlisted
     deriving (Bounded, Enum, Eq, Read, Show)
 
-data Registrant = Registrant
+data Registrant a = Registrant
     { rUuid    :: E.UUID
     , rInfo    :: Maybe RegisterInfo
+    , rAdditionalInfo :: Maybe a
     , rState   :: Maybe RegisterState
     , rScanned :: Bool
     } deriving (Eq, Show)
 
-registrantProjection :: E.UUID -> E.Projection Registrant Event
+registrantProjection :: E.UUID -> E.Projection (Registrant a) (Event a)
 registrantProjection uuid = E.Projection
-    { E.projectionSeed         = Registrant uuid Nothing Nothing False
+    { E.projectionSeed         = Registrant uuid Nothing Nothing Nothing False
     , E.projectionEventHandler = \registrant event -> case event of
         Cancel     -> registrant {rState = Just Cancelled}
         Confirm    -> case rState registrant of
                         Just Registered -> registrant {rState = Just Confirmed}
                         _               -> registrant
-        Register i -> registrant {rInfo = Just i, rState = Just Registered}
+        Register i a -> registrant {rInfo = Just i, rAdditionalInfo = Just a, rState = Just Registered}
         Waitlist _ -> registrant {rState = Just Waitlisted}
         PopWaitlist _ | Just Waitlisted <- rState registrant ->
             registrant {rState = Just Registered}
@@ -154,5 +155,5 @@ parseRegisterState str = case readMaybe str of
         "Can't parse register state, try one of: " ++
         L.intercalate ", " (map show [minBound :: RegisterState .. maxBound])
 
-registrantRegisteredAt :: Registrant -> Maybe Time.UTCTime
+registrantRegisteredAt :: Registrant a -> Maybe Time.UTCTime
 registrantRegisteredAt registrant = riRegisteredAt <$> rInfo registrant

@@ -40,7 +40,7 @@ main = do
     Database.withHandle dbConfig $ \db ->
         SendEmail.withHandle emailConfig $ \mailer ->
         forM_ uuids $ \uuid -> do
-            registrant <- Database.getRegistrant db uuid
+            registrant <- Database.getRegistrant db uuid :: IO (Registrant ())
             event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
             let registrant' = E.projectionEventHandler
                     (registrantProjection uuid) registrant event

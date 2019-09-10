@@ -40,7 +40,7 @@ instance Csv.ToNamedRecord Badge where
         , "Line 3" Csv..= bLine3
         ]
 
-registrantToBadge :: Registrant -> Maybe Badge
+registrantToBadge :: Registrant a -> Maybe Badge
 registrantToBadge Registrant {..} = do
     state <- rState
     guard $ state `elem` [Confirmed, Registered]
@@ -59,7 +59,7 @@ main = do
         [exportPath] -> do
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant]
+                :: IO [Registrant ()]
 
             BL.putStr $ Csv.encodeByName badgeCsvHeader $
                 mapMaybe registrantToBadge registrants

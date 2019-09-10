@@ -67,13 +67,13 @@ withHandle hConfig@Config {..} f = do
 
     f Handle {..}
 
-writeEvents :: Handle -> E.UUID -> [Event] -> IO ()
+writeEvents :: A.ToJSON a => Handle -> E.UUID -> [Event a] -> IO ()
 writeEvents Handle {..} uuid events = do
     mbError <- Aws.runResourceT $ Aws.runAWS hAwsEnv $
         E.storeEvents hWriter E.AnyVersion uuid $ map A.toJSON events
     maybe (return ()) (throwIO . WriterException) mbError
 
-getRegistrant :: Handle -> E.UUID -> IO Registrant
+getRegistrant :: A.FromJSON a => Handle -> E.UUID -> IO (Registrant a)
 getRegistrant Handle {..} uuid = do
     values <- Aws.runResourceT $ Aws.runAWS hAwsEnv $
         E.getEvents hReader (E.allEvents uuid)

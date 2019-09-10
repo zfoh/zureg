@@ -117,7 +117,7 @@ registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
     H.p $ H.toHtml riName <> ", your have been added to the waitlist."
     H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
 
-ticket :: Registrant -> H.Html
+ticket :: Registrant a -> H.Html
 ticket r@Registrant {..} = template
     (H.style $ do
         "img.qr {"
@@ -163,7 +163,7 @@ ticket r@Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Cancel my registration")
 
-registrantInfo :: Registrant -> H.Html
+registrantInfo :: Registrant a -> H.Html
 registrantInfo Registrant {..} = H.div $ do
     H.h1 $ case rState of
         Nothing         -> "❌ Not registered"
@@ -244,7 +244,7 @@ fileJsQr = $(Embed.embedFile "static/jsQR-807b073.js")
 fileScanner :: B.ByteString
 fileScanner = $(Embed.embedFile "static/scanner.js")
 
-scan :: Registrant -> H.Html
+scan :: Registrant a -> H.Html
 scan registrant@Registrant {..} = H.ul $ do
     H.li $ H.strong $ case rState of
         Nothing         -> red "❌ Not registered"
