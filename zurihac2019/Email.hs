@@ -1,4 +1,5 @@
 import qualified Zureg.Main.Email as Email
+import qualified ZuriHac2019
 
 main :: IO ()
-main = Email.main
+main = ZuriHac2019.withHandle undefined Email.main
