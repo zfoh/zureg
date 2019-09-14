@@ -1,14 +1,17 @@
 module ZuriHac2019 (withHandle) where
 
+import           Zureg.Config      as Config
 import           Zureg.Hackathon   as Hackathon
 import           ZuriHac2019.Form  as ZH19
 import           ZuriHac2019.Model as ZH19
 import           ZuriHac2019.Views as ZH19
 
-withHandle :: Hackathon.Config -> (Hackathon.Handle ZH19.RegisterInfo -> IO a) -> IO a
+withHandle :: (Hackathon.Handle ZH19.RegisterInfo -> IO a) -> IO a
 withHandle config action = do
+    config          <- Config.load "zureg.json"
+    hackathonConfig <- Config.section config "sendEmail"
     let handle = Hackathon.Handle
-            { hConfig = config
+            { hConfig = hackathonConfig
             , hRegisterForm = ZH19.additionalInfoForm
             , hRegisterView = ZH19.additionalInfoView config
             , hTicketView = ZH19.ticketView
