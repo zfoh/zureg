@@ -2,6 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Email
     ( main
+    , loadConfig
     ) where
 
 import           Control.Monad      (forM_, unless)
@@ -36,13 +37,16 @@ confirm = do
     line <- getLine
     unless (line == "yes") $ fail "aborted"
 
+loadConfig :: IO Config.Config
+loadConfig = Config.load "zureg.json"
+
 main :: forall a. (A.FromJSON a, A.ToJSON a)
-     => Hackathon.Handle a -> Config.Config -> IO ()
-main _ config = do
+     => Config.Config -> Hackathon.Handle a -> IO ()
+main config _ = do
     progName <- getProgName
     args     <- getArgs
 
-    sendEmailConfig <- Config.section config "sendEmail"
+    sendEmailConfig <- Config.section "sendEmail" config
 
     case args of
         [exportPath, templatePath, statefile, subject] -> do

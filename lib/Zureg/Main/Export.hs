@@ -3,6 +3,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Export
     ( main
+    , loadConfig
     ) where
 
 import           Control.Monad              (forM, when)
@@ -43,13 +44,16 @@ parseOptions = Options
         OA.help    ".csv or .json export path" <>
         OA.metavar "PATH")
 
+loadConfig :: IO Config.Config
+loadConfig = Config.load "zureg.json"
+
 main :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a)
-     => Hackathon.Handle a -> Config.Config -> IO ()
-main Hackathon.Handle {..} config = do
+     => Config.Config -> Hackathon.Handle a -> IO ()
+main config Hackathon.Handle {..} = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
 
-    dbConfig <- Config.section config "database"
+    dbConfig <- Config.section "database" config
 
     exists <- doesFileExist (oPath opts)
     when exists $ fail $ oPath opts ++ " already exists"

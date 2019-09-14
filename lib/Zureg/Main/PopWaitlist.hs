@@ -2,6 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.PopWaitlist
     ( main
+    , loadConfig
     ) where
 
 import           Control.Monad             (forM, when, forM_)
@@ -19,13 +20,17 @@ import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 
-main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon.Handle a -> Config.Config -> IO ()
-main hackathon config = do
+loadConfig :: IO Config.Config
+loadConfig = Config.load "zureg.json"
+
+main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
+     => Config.Config -> Hackathon.Handle a -> IO ()
+main config hackathon = do
     progName <- getProgName
     args     <- getArgs
 
-    dbConfig    <- Config.section config "database"
-    emailConfig <- Config.section config "sendEmail"
+    dbConfig    <- Config.section "database" config
+    emailConfig <- Config.section "sendEmail" config
 
     uuids <- forM args $
         maybe (fail "could not parse uuid") return .  E.uuidFromText . T.pack

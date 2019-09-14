@@ -7,6 +7,7 @@ module Zureg.Main.Badges
     , registrantToBadge
 
     , main
+    , loadConfig
     ) where
 
 import           Control.Monad        (guard)
@@ -53,8 +54,11 @@ registrantToBadge Registrant {..} = do
         bLine3 = riAskMeAbout
     pure Badge {..}
 
-main :: forall a. A.FromJSON a => Hackathon.Handle a -> Config.Config -> IO ()
-main _ _ = do
+loadConfig :: IO Config.Config
+loadConfig = Config.load "zureg.json"
+
+main :: forall a. A.FromJSON a => Hackathon.Handle a -> IO ()
+main _ = do
     progName <- getProgName
     args     <- getArgs
 

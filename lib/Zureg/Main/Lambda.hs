@@ -4,6 +4,7 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Main.Lambda
     ( main
+    , loadConfig
     ) where
 
 import           Control.Applicative           (liftA2)
@@ -42,22 +43,23 @@ html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
     Serverless.response200 . RenderHtml.renderHtml
 
-main :: forall a. (A.FromJSON a, A.ToJSON a)
-     => Hackathon.Handle a -> Config.Config -> IO ()
-main hackathon config = do
+loadConfig :: IO Config.Config
+loadConfig = do
     progName <- getProgName
     args     <- getArgs
-
-    config <- case args of
+    case args of
         [configPath] -> Config.load configPath
         _            -> do
             IO.hPutStr IO.stderr $ "Usage: " ++ progName ++ " config.json"
             exitFailure
 
-    dbConfig        <- Config.section config "database"
-    rcConfig        <- Config.section config "recaptcha"
-    emailConfig     <- Config.section config "sendEmail"
-    scannerConfig   <- Config.section config "scanner"
+main :: forall a. (A.FromJSON a, A.ToJSON a)
+     => Config.Config -> Hackathon.Handle a -> IO ()
+main config hackathon = do
+    dbConfig        <- Config.section "database" config
+    rcConfig        <- Config.section "recaptcha" config
+    emailConfig     <- Config.section "sendEmail" config
+    scannerConfig   <- Config.section "scanner" config
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->

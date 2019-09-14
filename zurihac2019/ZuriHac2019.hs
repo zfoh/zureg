@@ -7,10 +7,10 @@ import           ZuriHac2019.Form  as ZH19
 import           ZuriHac2019.Model as ZH19
 import           ZuriHac2019.Views as ZH19
 
-withHandle :: (Hackathon.Handle ZH19.RegisterInfo -> Config.Config -> IO a) -> IO a
-withHandle action = do
-    config          <- Config.load "zureg.json"
-    hackathonConfig <- Config.section config "hackathon"
+
+withHandle :: Config.Config -> (Hackathon.Handle ZH19.RegisterInfo -> IO a) -> IO a
+withHandle config action = do
+    hackathonConfig <- Config.section "hackathon" config
     let handle = Hackathon.Handle
             { hConfig = hackathonConfig
             , hRegisterForm = ZH19.additionalInfoForm
@@ -19,4 +19,4 @@ withHandle action = do
             , hScanView = ZH19.scanView
             , hCsvHeader = ZH19.csvHeader
             }
-    action handle config
+    action handle
