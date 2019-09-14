@@ -102,7 +102,7 @@ template head' body = H.docTypeHtml $ do
 register :: Hackathon.Handle a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 register hackathon recaptcha view =
     template (ReCaptcha.chScript recaptcha) $
-    Form.registerView (hConfig hackathon) recaptcha view
+    Form.registerView hackathon recaptcha view
 
 registerSuccess :: E.UUID -> RegisterInfo -> H.Html
 registerSuccess _uuid RegisterInfo {..} = template mempty $ do

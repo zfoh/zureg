@@ -88,6 +88,8 @@ Common exe
     base,
     blaze-html,
     cassava,
+    digestive-functors,
+    digestive-functors-blaze,
     text,
     unordered-containers,
     zureg

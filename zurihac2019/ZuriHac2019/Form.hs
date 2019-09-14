@@ -1,19 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 module ZuriHac2019.Form (
-    ( additionalInfoForm
+      additionalInfoForm
+    , additionalInfoView
     ) where
 
-import qualified ZuriHac2019.Model as ZH19
-
 import qualified Data.Text                   as T
--- import qualified Data.Time                   as Time
--- import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Text.Digestive.Blaze.Html5  as DH
--- import           Zureg.Model
--- import qualified Zureg.ReCaptcha             as ReCaptcha
+
+import           Zureg.Hackathon             as Hackathon
+import           ZuriHac2019.Model           as ZH19
 
 additionalInfoForm :: Monad m => D.Form H.Html m ZH19.RegisterInfo
 additionalInfoForm = RegisterInfo
@@ -51,49 +49,8 @@ additionalInfoForm = RegisterInfo
         (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
         (D.text Nothing)
 
-registerView :: Hackathon -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
-registerView hackathon recaptcha view = DH.form view "?" $ do
-    H.h1 $ H.toHtml (hName hackathon) <> " registration"
-    H.div H.! A.class_ "errors" $ DH.childErrorList "" view
-
-    DH.label "name" view $ H.strong "Full name"
-    DH.inputText "name" view
-    H.br
-
-    DH.label "badgeName" view $ H.strong "Name on badge (optional)"
-    H.p $ do
-        "Fill in this field if you would rather use a nickname on your badge. "
-        "By default we will use your full name."
-    DH.inputText "badgeName" view
-    H.br
-
-    DH.label "email" view $ H.strong "Email"
-    H.p $ do
-        "We will only use your email address to send you your ticket, as well "
-        "as information about the event.  It is not shared with any other "
-        "parties."
-    DH.inputText "email" view
-    H.br
-
-    DH.label "confirmEmail" view $ H.strong "Confirm your email"
-    H.p "We want to be sure we that we can email you your ticket."
-    DH.inputText "confirmEmail" view
-    H.br
-
-    DH.label "affiliation" view $ H.strong "Affiliation (optional)"
-    H.p $ do
-        "Affiliations that you want to display on your badge (e.g.: employer, "
-        "university, open source project...)"
-    DH.inputText "affiliation" view
-    H.br
-
-    DH.label "askMeAbout" view $ H.strong "Ask me about (optional)"
-    H.p $ do
-        "Topic(s) that you want to display on your badge.  It's a good ice "
-        "breaker for people who want to chat with you."
-    DH.inputText "askMeAbout" view
-    H.br
-
+additionalInfoView :: Hackathon.Config -> D.View H.Html -> H.Html
+additionalInfoView hackathon view = do
     H.p $ H.strong "Track Interest (optional)"
     H.p $ do
         "Let us know which track(s) you would participate in.  Note that we "
@@ -119,17 +76,15 @@ registerView hackathon recaptcha view = DH.form view "?" $ do
         "Please note that we have ordered the T-Shirts and cannot guarantee "
         "that you will receive one if you register at this time."
 
-    H.p $ "In what size would you like the free " <> H.toHtml (hName hackathon) <> " T-Shirt?"
+    H.p $ "In what size would you like the free " <> H.toHtml (cName hackathon) <> " T-Shirt?"
 
     H.p $ do
         "The sizes should be fairly standard. "
-        {- TODO only works with a more generic link.
         "You can see the "
         H.a H.! A.href "https://zfoh.ch/images/zurihac2019/tshirts-sizing.png"
             H.! A.target "_blank" $
             "specifications here"
         "."
-        -}
 
     DH.label "tshirt.cut" view "Cut"
     DH.inputSelect "tshirt.cut" view
@@ -174,10 +129,3 @@ registerView hackathon recaptcha view = DH.form view "?" $ do
     H.br
     DH.inputCheckbox "project.contributorLevel.advanced" view H.! A.class_ "checkbox"
     DH.label "project.contributorLevel.advanced" view $ "Advanced"
-    H.br
-    H.br
-    H.br
-
-    ReCaptcha.chForm recaptcha
-
-    DH.inputSubmit "Register"
