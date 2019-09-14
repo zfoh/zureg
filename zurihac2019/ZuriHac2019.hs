@@ -1,4 +1,4 @@
-module ZuriHac2019.Hackathon (withHandle) where
+module ZuriHac2019 (withHandle) where
 
 import           Zureg.Hackathon   as Hackathon
 import           ZuriHac2019.Form  as ZH19
@@ -13,5 +13,6 @@ withHandle config action = do
             , hRegisterView = ZH19.additionalInfoView config
             , hTicketView = ZH19.ticketView
             , hScanView = ZH19.scanView
+            , hCsvHeader = ZH19.csvHeader
             }
-    in  action handle
+    action handle

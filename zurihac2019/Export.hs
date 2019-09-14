@@ -1,4 +1,5 @@
 import qualified Zureg.Main.Export as Export
+import qualified ZuriHac2019
 
 main :: IO ()
-main = Export.main
+main = ZuriHac2019.withHandle undefined Export.main

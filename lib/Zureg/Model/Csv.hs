@@ -8,9 +8,7 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Zureg.Model.Csv
-    ( itemHeader
-    ) where
+module Zureg.Model.Csv () where
 
 import           Zureg.Model
 import qualified Data.Time              as Time
@@ -18,11 +16,14 @@ import qualified Eventful               as E
 import           Data.Csv               as CSV
 import qualified Data.HashMap.Strict    as HM
 
-instance ToNamedRecord (Registrant a) where
+instance ToNamedRecord a => ToNamedRecord (Registrant a) where
     toNamedRecord Registrant {..}
         =  HM.unions [ namedRecord [ "UUID" .= rUuid ]
                      , toNamedRecord rState
                      , toNamedRecord rInfo
+                     , case rAdditionalInfo of
+                        Just ai -> toNamedRecord ai
+                        Nothing -> HM.empty
                      , namedRecord [ "Scanned" .= rScanned ]
                      ]
 
@@ -52,7 +53,7 @@ instance ToField RegisterState where
     toField Registered = toField ("Registered" :: String)
     toField Confirmed  = toField ("Confirmed" :: String)
     toField Cancelled  = toField ("Cancelled" :: String)
-    toField Waitlisted  = toField ("Waitlisted" :: String)
+    toField Waitlisted = toField ("Waitlisted" :: String)
 
 instance ToField Bool where
     toField True  = toField ("true" :: String)
@@ -63,30 +64,3 @@ instance ToField E.UUID where
 
 instance ToField Time.UTCTime where
     toField time' = toField (show time' :: String)
-
-itemHeader :: Header
-itemHeader = header
-                [ "UUID"
-                , "State"
-                , "Scanned"
-                , "Name"
-                , "Name on Badge"
-                , "Email"
-                , "Affiliation"
-                , "AskMeAbout"
-                , "Beginner Track"
-                , "Intermediate Track"
-                , "Advanced Track"
-                , "GhcDevOps Track"
-                , "Mentor"
-                , "T-Shirt Cut"
-                , "T-Shirt Size"
-                , "Mentor"
-                , "Project Name"
-                , "Project Website"
-                , "Project Short Description"
-                , "CL Beginner"
-                , "CL Intermediate"
-                , "CL Advanced"
-                , "Registered At"
-                ]

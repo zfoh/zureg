@@ -1,4 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Export
     ( main
     ) where
@@ -14,8 +16,9 @@ import           System.FilePath            (takeExtension)
 import qualified System.IO                  as IO
 import qualified Zureg.Config               as Config
 import qualified Zureg.Database             as Database
+import qualified Zureg.Hackathon            as Hackathon
 import           Zureg.Model
-import qualified Zureg.Model.Csv            as MCSV
+import           Zureg.Model.Csv            ()
 
 progressMapM :: (a -> IO b) -> [a] -> IO [b]
 progressMapM f xs = forM (zip [1 :: Int ..] xs) $ \(n, x) -> do
@@ -40,8 +43,8 @@ parseOptions = Options
         OA.help    ".csv or .json export path" <>
         OA.metavar "PATH")
 
-main :: IO ()
-main = do
+main :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a) => Hackathon.Handle a -> IO ()
+main Hackathon.Handle {..} = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
     config   <- Config.load "zureg.json"
@@ -55,10 +58,10 @@ main = do
             Just s  -> (== Just s) . rState
 
     encode <- case takeExtension (oPath opts) of
-        ".json" -> return (A.encode :: [Registrant ()] -> BL.ByteString)
-        ".csv"  -> return $ CSV.encodeByName MCSV.itemHeader
+        ".json" -> return (A.encode :: [Registrant a] -> BL.ByteString)
+        ".csv"  -> return $ CSV.encodeByName hCsvHeader
         ext     -> do
-            IO.hPutStrLn IO.stderr $ "Unkown extension: " ++ ext
+            IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure
 
     Database.withHandle dbConfig $ \db -> do

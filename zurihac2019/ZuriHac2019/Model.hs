@@ -13,6 +13,8 @@ module ZuriHac2019.Model (
     , ContributorLevel (..)
     , Project (..)
     , RegisterInfo (..)
+
+    , csvHeader
 ) where
 
 import qualified Data.Aeson.TH.Extended as A
@@ -103,3 +105,30 @@ instance Csv.ToNamedRecord RegisterInfo where
                     , toNamedRecord riTShirt
                     , toNamedRecord riProject
                     ]
+
+csvHeader :: Csv.Header
+csvHeader = Csv.header
+    [ "UUID"
+    , "State"
+    , "Scanned"
+    , "Name"
+    , "Name on Badge"
+    , "Email"
+    , "Affiliation"
+    , "AskMeAbout"
+    , "Beginner Track"
+    , "Intermediate Track"
+    , "Advanced Track"
+    , "GhcDevOps Track"
+    , "Mentor"
+    , "T-Shirt Cut"
+    , "T-Shirt Size"
+    , "Mentor"
+    , "Project Name"
+    , "Project Website"
+    , "Project Short Description"
+    , "CL Beginner"
+    , "CL Intermediate"
+    , "CL Advanced"
+    , "Registered At"
+    ]

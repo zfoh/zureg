@@ -4,10 +4,11 @@ module Zureg.Hackathon (
     , Handle (..)
     ) where
 
-import qualified Data.Aeson.TH.Extended      as A
-import qualified Data.Text                   as T
-import qualified Text.Blaze.Html5            as H
-import qualified Text.Digestive              as D
+import qualified Data.Aeson.TH.Extended as A
+import qualified Data.Csv               as Csv
+import qualified Data.Text              as T
+import qualified Text.Blaze.Html5       as H
+import qualified Text.Digestive         as D
 
 data Config = Config
     { cName       :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
@@ -24,4 +25,6 @@ data Handle a = Handle
     , hRegisterForm :: D.Form H.Html IO a
     , hRegisterView :: D.View H.Html -> H.Html
     , hTicketView   :: a -> H.Html
-    , hScanView     :: a -> H.Html }
+    , hScanView     :: a -> H.Html
+    , hCsvHeader    :: Csv.Header
+    }
