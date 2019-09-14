@@ -1,9 +1,11 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.PopWaitlist
     ( main
     ) where
 
 import           Control.Monad             (forM, when, forM_)
+import qualified Data.Aeson                as A
 import qualified Data.Text                 as T
 import qualified Data.Time                 as Time
 import qualified Eventful                  as E
@@ -17,12 +19,11 @@ import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 
-main :: Hackathon.Handle a -> IO ()
-main hackathon = do
+main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon.Handle a -> Config.Config -> IO ()
+main hackathon config = do
     progName <- getProgName
     args     <- getArgs
 
-    config      <- Config.load "zureg.json"
     dbConfig    <- Config.section config "database"
     emailConfig <- Config.section config "sendEmail"
 
@@ -40,7 +41,7 @@ main hackathon = do
     Database.withHandle dbConfig $ \db ->
         SendEmail.withHandle emailConfig $ \mailer ->
         forM_ uuids $ \uuid -> do
-            registrant <- Database.getRegistrant db uuid :: IO (Registrant ())
+            registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
             event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
             let registrant' = E.projectionEventHandler
                     (registrantProjection uuid) registrant event

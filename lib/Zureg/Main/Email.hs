@@ -36,12 +36,12 @@ confirm = do
     line <- getLine
     unless (line == "yes") $ fail "aborted"
 
-main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon.Handle a -> IO ()
-main _ = do
+main :: forall a. (A.FromJSON a, A.ToJSON a)
+     => Hackathon.Handle a -> Config.Config -> IO ()
+main _ config = do
     progName <- getProgName
     args     <- getArgs
 
-    config          <- Config.load "zureg.json"
     sendEmailConfig <- Config.section config "sendEmail"
 
     case args of

@@ -43,11 +43,12 @@ parseOptions = Options
         OA.help    ".csv or .json export path" <>
         OA.metavar "PATH")
 
-main :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a) => Hackathon.Handle a -> IO ()
-main Hackathon.Handle {..} = do
+main :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a)
+     => Hackathon.Handle a -> Config.Config -> IO ()
+main Hackathon.Handle {..} config = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
-    config   <- Config.load "zureg.json"
+
     dbConfig <- Config.section config "database"
 
     exists <- doesFileExist (oPath opts)

@@ -42,8 +42,9 @@ html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
     Serverless.response200 . RenderHtml.renderHtml
 
-main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon.Handle a -> IO ()
-main hackathon = do
+main :: forall a. (A.FromJSON a, A.ToJSON a)
+     => Hackathon.Handle a -> Config.Config -> IO ()
+main hackathon config = do
     progName <- getProgName
     args     <- getArgs
 

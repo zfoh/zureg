@@ -19,6 +19,7 @@ import qualified Data.Text            as T
 import           System.Environment   (getArgs, getProgName)
 import           System.Exit          (exitFailure)
 import qualified System.IO            as IO
+import qualified Zureg.Config         as Config
 import           Zureg.Model
 import qualified Zureg.Hackathon      as Hackathon
 
@@ -52,8 +53,8 @@ registrantToBadge Registrant {..} = do
         bLine3 = riAskMeAbout
     pure Badge {..}
 
-main :: forall a. A.FromJSON a => Hackathon.Handle a -> IO ()
-main _ = do
+main :: forall a. A.FromJSON a => Hackathon.Handle a -> Config.Config -> IO ()
+main _ _ = do
     progName <- getProgName
     args     <- getArgs
 
