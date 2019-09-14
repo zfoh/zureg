@@ -1,5 +1,6 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Badges
     ( Badge
     , previewBadge
@@ -19,6 +20,7 @@ import           System.Environment   (getArgs, getProgName)
 import           System.Exit          (exitFailure)
 import qualified System.IO            as IO
 import           Zureg.Model
+import qualified Zureg.Hackathon      as Hackathon
 
 data Badge = Badge
     { bLine1 :: T.Text
@@ -50,8 +52,8 @@ registrantToBadge Registrant {..} = do
         bLine3 = riAskMeAbout
     pure Badge {..}
 
-main :: IO ()
-main = do
+main :: forall a. A.FromJSON a => Hackathon.Handle a -> IO ()
+main _ = do
     progName <- getProgName
     args     <- getArgs
 
@@ -59,7 +61,7 @@ main = do
         [exportPath] -> do
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant ()]
+                :: IO [Registrant a]
 
             BL.putStr $ Csv.encodeByName badgeCsvHeader $
                 mapMaybe registrantToBadge registrants
