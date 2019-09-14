@@ -1,5 +1,5 @@
 import qualified Zureg.Main.Lambda as Lambda
-import           ZuriHac2019.Hackathon
+import qualified ZuriHac2019
 
 main :: IO ()
-main = Lambda.main (zuriHac2019 undefined)
+main = ZuriHac2019.withHandle undefined Lambda.main

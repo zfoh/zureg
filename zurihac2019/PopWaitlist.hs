@@ -1,5 +1,5 @@
 import qualified Zureg.Main.PopWaitlist as PopWaitlist
-import           ZuriHac2019.Hackathon
+import qualified ZuriHac2019
 
 main :: IO ()
-main = PopWaitlist.main (zuriHac2019 undefined)
+main = ZuriHac2019.withHandle undefined PopWaitlist.main
