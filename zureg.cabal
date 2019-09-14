@@ -24,15 +24,16 @@ Library
   Ghc-options:      -Wall
 
   Exposed-modules:
+    Data.Aeson.TH.Extended
     Zureg.Config
     Zureg.Database
     Zureg.Form
+    Zureg.Hackathon
     Zureg.Main.Badges
     Zureg.Main.Email
     Zureg.Main.Export
     Zureg.Main.Lambda
     Zureg.Main.PopWaitlist
-    Zureg.Main.ProjectsPage
     Zureg.Model
     Zureg.ReCaptcha
     Zureg.SendEmail
@@ -43,7 +44,6 @@ Library
 
   Other-modules:
     Paths_zureg
-    Data.Aeson.TH.Extended
 
   Build-depends:
     JuicyPixels              >= 3.2  && < 3.4,
@@ -81,9 +81,16 @@ Library
 
 Common exe
   Default-language: Haskell2010
-  Hs-source-dirs:   src
+  Hs-source-dirs:   zurihac2019
   Ghc-options:      -threaded -rtsopts -with-rtsopts=-N -Wall
-  Build-depends:    base, zureg
+  Build-depends:
+    aeson,
+    base,
+    blaze-html,
+    cassava,
+    text,
+    unordered-containers,
+    zureg
 
 Executable zureg-export
   Import:  exe

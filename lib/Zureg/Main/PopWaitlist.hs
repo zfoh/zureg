@@ -12,19 +12,19 @@ import           System.Exit               (exitFailure)
 import qualified System.IO                 as IO
 import qualified Zureg.Config              as Config
 import qualified Zureg.Database            as Database
+import qualified Zureg.Hackathon           as Hackathon
 import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 
-main :: IO ()
-main = do
+main :: Hackathon.Handle a -> IO ()
+main hackathon = do
     progName <- getProgName
     args     <- getArgs
 
     config      <- Config.load "zureg.json"
     dbConfig    <- Config.section config "database"
     emailConfig <- Config.section config "sendEmail"
-    hackathon   <- Config.section config "hackathon"
 
     uuids <- forM args $
         maybe (fail "could not parse uuid") return .  E.uuidFromText . T.pack
@@ -55,5 +55,5 @@ main = do
             Database.writeEvents db uuid [event]
             IO.hPutStrLn IO.stderr $
                 "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
-            sendPopWaitlistEmail mailer hackathon rinfo uuid
+            sendPopWaitlistEmail mailer (Hackathon.hConfig hackathon) rinfo uuid
             IO.hPutStrLn IO.stderr "OK"

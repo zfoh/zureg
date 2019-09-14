@@ -1,56 +1,59 @@
--- | Registration and cancellation forms using the `digestive-functors`
--- library.
 {-# LANGUAGE OverloadedStrings #-}
-module Zureg.Form
-    ( registerForm
-    , registerView
-
-    , cancelForm
-    , cancelView
+module ZuriHac2019.Form (
+    ( additionalInfoForm
     ) where
 
+import qualified ZuriHac2019.Model as ZH19
+
 import qualified Data.Text                   as T
-import qualified Data.Time                   as Time
-import qualified Eventful                    as E
+-- import qualified Data.Time                   as Time
+-- import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Text.Digestive.Blaze.Html5  as DH
-import           Zureg.Model
-import qualified Zureg.ReCaptcha             as ReCaptcha
-import qualified Zureg.Hackathon             as Hackathon
+-- import           Zureg.Model
+-- import qualified Zureg.ReCaptcha             as ReCaptcha
 
--- | The 'IO' in this type signature is because we want to get the registration
--- time.
-registerForm :: D.Form H.Html IO RegisterInfo
-registerForm = RegisterInfo
-    <$> "name" D..: (D.check "Name is required"
-            (not . T.null . T.strip)
-            (D.text Nothing))
-    <*> "badgeName" D..: optionalText
-    <*> (D.validate confirmEmailCheck $ (,)
-            <$> "email" D..: simpleEmailCheck (T.strip <$> D.text Nothing)
-            <*> "confirmEmail" D..: (T.strip <$> D.text Nothing))
-    <*> "affiliation" D..: optionalText
-    <*> "askMeAbout" D..: optionalText
-    <*> D.monadic (Time.getCurrentTime >>= return . pure)
+additionalInfoForm :: Monad m => D.Form H.Html m ZH19.RegisterInfo
+additionalInfoForm = RegisterInfo
+    <$> "trackInterest" D..: (TrackInterest
+            <$> "beginner" D..: D.bool Nothing
+            <*> "intermediate" D..: D.bool Nothing
+            <*> "advanced" D..: D.bool Nothing
+            <*> "ghcDevOps" D..: D.bool Nothing)
+    <*> ("tshirt" D..: (D.validate tshirtCheck $ (,)
+            <$> "cut" D..: D.choice
+                    [ (Nothing,     "I don't want a T-Shirt")
+                    , (Just Female, "Female")
+                    , (Just Male,   "Male")
+                    ] (Just (Just Male))
+            <*> "size" D..: D.choice (
+                    [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]] ++
+                    [(Nothing, "I don't want a T-Shirt")])
+                    (Just (Just M))))
+    <*> ("mentor" D..: D.bool Nothing)
+    <*> ("project" D..: (Project
+            <$> "name" D..: optionalText
+            <*> "website" D..: optionalText
+            <*> "description" D..: optionalText
+            <*> ("contributorLevel" D..: (ContributorLevel
+                    <$> "beginner" D..: D.bool Nothing
+                    <*> "intermediate" D..: D.bool Nothing
+                    <*> "advanced" D..: D.bool Nothing))))
   where
-    simpleEmailCheck = D.check "Invalid email address" $ \email ->
-        case T.split (== '@') email of
-            [_user, domain] -> T.count "." domain >= 1
-            _               -> False
-
-    confirmEmailCheck (x, y)
-        | x == y    = D.Success x
-        | otherwise = D.Error "Email confirmation doesn't match"
+    tshirtCheck (Just c,  Just s)  = D.Success (Just (c, s))
+    tshirtCheck (Nothing, Nothing) = D.Success Nothing
+    tshirtCheck (_,       _)       = D.Error
+        "Fill in both T-Shirt cut and size or neither of the two"
 
     optionalText =
         (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
         (D.text Nothing)
 
-registerView :: Hackathon.Config -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
+registerView :: Hackathon -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 registerView hackathon recaptcha view = DH.form view "?" $ do
-    H.h1 $ H.toHtml (Hackathon.cName hackathon) <> " registration"
+    H.h1 $ H.toHtml (hName hackathon) <> " registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
     DH.label "name" view $ H.strong "Full name"
@@ -116,7 +119,7 @@ registerView hackathon recaptcha view = DH.form view "?" $ do
         "Please note that we have ordered the T-Shirts and cannot guarantee "
         "that you will receive one if you register at this time."
 
-    H.p $ "In what size would you like the free " <> H.toHtml (Hackathon.cName hackathon) <> " T-Shirt?"
+    H.p $ "In what size would you like the free " <> H.toHtml (hName hackathon) <> " T-Shirt?"
 
     H.p $ do
         "The sizes should be fairly standard. "
@@ -178,34 +181,3 @@ registerView hackathon recaptcha view = DH.form view "?" $ do
     ReCaptcha.chForm recaptcha
 
     DH.inputSubmit "Register"
-
-cancelForm :: Monad m => Maybe E.UUID -> D.Form H.Html m (E.UUID, Bool)
-cancelForm uuid = (,)
-    <$> "uuid" D..: D.validate
-            validateUuid (D.text (fmap E.uuidToText uuid))
-    <*> "confirm" D..: D.bool Nothing
-
-cancelView :: Maybe E.UUID -> D.View H.Html -> H.Html
-cancelView mbUuid view = do
-    DH.form view "cancel?" $ do
-        DH.childErrorList "" view
-        DH.inputCheckbox "confirm" view H.! A.class_ "checkbox"
-        DH.label         "confirm" view "I am sure"
-        DH.inputText "uuid" view H.! A.style "display: none"
-        DH.inputSubmit "Cancel Registration"
-
-    -- Simple button that acts like a "back to ticket".  That is why we need the
-    -- UUID here.
-    H.form H.! A.method "GET" H.! A.action "ticket" $ do
-        H.input
-            H.! A.style "display: none"
-            H.! A.type_ "text"
-            H.! A.name "uuid"
-            H.! A.value (maybe "" (H.toValue . E.uuidToText) mbUuid)
-        H.input H.! A.type_ "submit"
-            H.! A.value "Take me back to my ticket"
-
-validateUuid :: T.Text -> D.Result H.Html E.UUID
-validateUuid txt = case E.uuidFromText txt of
-    Nothing -> D.Error "Not a valid UUID"
-    Just u  -> D.Success u

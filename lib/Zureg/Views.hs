@@ -24,7 +24,6 @@ import qualified Data.Array                  as Array
 import qualified Data.ByteString             as B
 import qualified Data.ByteString.Base64.Lazy as Base64
 import qualified Data.FileEmbed              as Embed
-import           Data.List                   (intercalate)
 import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
 import qualified Data.Time                   as Time
@@ -33,6 +32,7 @@ import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Zureg.Form                  as Form
+import           Zureg.Hackathon             as Hackathon
 import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
@@ -99,10 +99,10 @@ template head' body = H.docTypeHtml $ do
         head'
     H.body body
 
-register :: Hackathon -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
+register :: Hackathon.Handle a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 register hackathon recaptcha view =
     template (ReCaptcha.chScript recaptcha) $
-    Form.registerView hackathon recaptcha view
+    Form.registerView (hConfig hackathon) recaptcha view
 
 registerSuccess :: E.UUID -> RegisterInfo -> H.Html
 registerSuccess _uuid RegisterInfo {..} = template mempty $ do
@@ -117,8 +117,8 @@ registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
     H.p $ H.toHtml riName <> ", your have been added to the waitlist."
     H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
 
-ticket :: Registrant a -> H.Html
-ticket r@Registrant {..} = template
+ticket :: Hackathon.Handle a -> Registrant a -> H.Html
+ticket hackathon r@Registrant {..} = template
     (H.style $ do
         "img.qr {"
         "  display: block;"
@@ -136,7 +136,10 @@ ticket r@Registrant {..} = template
         when (rState == Just Confirmed) $
             qrimg $ T.unpack $ E.uuidToText rUuid
 
-        registrantInfo r
+        H.div $ do
+            H.h1 $ registerState rState
+            whenJust rInfo $ registrantInfo
+            whenJust rAdditionalInfo $ hTicketView hackathon
 
         case registrantRegisteredAt r of
             Just at | at >= tShirtDeadline -> H.p $ do
@@ -163,35 +166,18 @@ ticket r@Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Cancel my registration")
 
-registrantInfo :: Registrant a -> H.Html
-registrantInfo Registrant {..} = H.div $ do
-    H.h1 $ case rState of
-        Nothing         -> "❌ Not registered"
-        Just Cancelled  -> "❌ Cancelled"
-        Just Registered -> "✅ Registered"
-        Just Confirmed  -> "✅ Confirmed"
-        Just Waitlisted -> "⌛ on the waitlist"
-    case rInfo of
-        Just RegisterInfo {..} -> H.p $ do
-            H.strong (H.toHtml riName ) <> H.br
-            H.toHtml riEmail <> H.br
-            case riTShirt of
-                Just rTShirt ->
-                    "T-Shirt: "
-                    <> (H.toHtml.show $ fst rTShirt) <> ", "
-                    <> (H.toHtml.show $ snd rTShirt)
-                    <>  case riMentor of
-                            True  -> ", Mentorshirt"  <> H.br
-                            False -> H.br
-                Nothing -> mempty
-            "Track interest(s): "
-            H.toHtml $ intercalate ", " $
-                ["Beginner" | tiBeginner tiTrackInterest]
-                ++ ["Intermediate" | tiIntermediate tiTrackInterest]
-                ++ ["Advanced" | tiAdvanced tiTrackInterest]
-                ++ ["GHC DevOps" | tiGhcDevOps tiTrackInterest]
-        Nothing ->
-            mempty
+registerState :: Maybe RegisterState -> H.Html
+registerState rs = case rs of
+    Nothing         -> "❌ Not registered"
+    Just Cancelled  -> "❌ Cancelled"
+    Just Registered -> "✅ Registered"
+    Just Confirmed  -> "✅ Confirmed"
+    Just Waitlisted -> "⌛ on the waitlist"
+
+registrantInfo :: RegisterInfo -> H.Html
+registrantInfo RegisterInfo {..} = H.p $ do
+    H.strong (H.toHtml riName ) <> H.br
+    H.toHtml riEmail <> H.br
 
 cancel :: Maybe E.UUID -> D.View H.Html -> H.Html
 cancel mbUuid view = template mempty $
@@ -244,8 +230,8 @@ fileJsQr = $(Embed.embedFile "static/jsQR-807b073.js")
 fileScanner :: B.ByteString
 fileScanner = $(Embed.embedFile "static/scanner.js")
 
-scan :: Registrant a -> H.Html
-scan registrant@Registrant {..} = H.ul $ do
+scan :: Hackathon.Handle a -> Registrant a -> H.Html
+scan hackathon registrant@Registrant {..} = H.ul $ do
     H.li $ H.strong $ case rState of
         Nothing         -> red "❌ Not registered"
         Just Cancelled  -> red "❌ Cancelled"
@@ -262,16 +248,11 @@ scan registrant@Registrant {..} = H.ul $ do
     case registrantRegisteredAt registrant of
         Just at | at >= tShirtDeadline -> H.li $ H.strong $ red "Pick up T-Shirt later!"
         _                              -> mempty
-
-    H.li $ case rInfo of
-        Nothing                -> mempty
-        Just RegisterInfo {..} -> do
-            case riTShirt of
-                Nothing      -> "No T-Shirt"
-                Just rTShirt -> "T-Shirt: " <> H.strong (
-                    (H.toHtml.show $ fst rTShirt) <> ", " <>
-                    (H.toHtml.show $ snd rTShirt) <> ", " <>
-                    (if riMentor then "Navy" else "Espresso"))
+    
+    whenJust rAdditionalInfo $ \ri -> H.li (hScanView hackathon ri)
 
   where
     red x = H.span H.! A.style "color: #aa0000" $ x
+
+whenJust :: Applicative m => Maybe a -> (a -> m ()) -> m ()
+whenJust a f = maybe (pure ()) f a

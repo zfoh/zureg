@@ -6,12 +6,12 @@ module Zureg.Main.Lambda
     ( main
     ) where
 
+import           Control.Applicative           (liftA2)
 import           Control.Exception             (throwIO)
 import           Control.Monad                 (when)
 import qualified Data.Aeson                    as A
 import qualified Data.Aeson.TH.Extended        as A
 import           Data.Maybe                    (isNothing)
-import           Data.Proxy                    (Proxy (..))
 import qualified Data.Text                     as T
 import qualified Data.Time                     as Time
 import qualified Eventful                      as E
@@ -24,6 +24,7 @@ import qualified Text.Digestive                as D
 import qualified Zureg.Config                  as Config
 import qualified Zureg.Database                as Database
 import           Zureg.Form
+import qualified Zureg.Hackathon               as Hackathon
 import           Zureg.Model
 import qualified Zureg.ReCaptcha               as ReCaptcha
 import qualified Zureg.SendEmail               as SendEmail
@@ -41,8 +42,8 @@ html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
     Serverless.response200 . RenderHtml.renderHtml
 
-main :: forall a. (A.FromJSON a, A.ToJSON a) => Proxy a -> IO ()
-main _ = do
+main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon.Handle a -> IO ()
+main hackathon = do
     progName <- getProgName
     args     <- getArgs
 
@@ -52,11 +53,10 @@ main _ = do
             IO.hPutStr IO.stderr $ "Usage: " ++ progName ++ " config.json"
             exitFailure
 
-    dbConfig      <- Config.section config "database"
-    rcConfig      <- Config.section config "recaptcha"
-    emailConfig   <- Config.section config "sendEmail"
-    scannerConfig <- Config.section config "scanner"
-    hackathon     <- Config.section config "hackathon"
+    dbConfig        <- Config.section config "database"
+    rcConfig        <- Config.section config "recaptcha"
+    emailConfig     <- Config.section config "sendEmail"
+    scannerConfig   <- Config.section config "scanner"
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->
@@ -68,35 +68,37 @@ main _ = do
                     ReCaptcha.verify recaptcha (Serverless.reqBody req)
                 (view, mbReg) <- Serverless.runForm req "register" $ D.checkM
                     "Email address already registered"
-                    (fmap isNothing . Database.lookupEmail db . riEmail)
-                    registerForm
+                    (fmap isNothing . Database.lookupEmail db . riEmail . fst)
+                    (liftA2 (,)
+                        registerForm
+                        (Hackathon.hRegisterForm hackathon))
 
                 case mbReg of
                     Nothing -> html $
                         Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
 
-                    Just info | hWaitlist hackathon -> do
+                    Just (info, additionalInfo) | Hackathon.cWaitlist (Hackathon.hConfig hackathon) -> do
                         -- You're on the waitlist
                         uuid <- E.uuidNextRandom
                         time <- Time.getCurrentTime
                         let wlinfo = WaitlistInfo time
                         Database.writeEvents db uuid
-                            [Register info (), Waitlist wlinfo]
+                            [Register info additionalInfo, Waitlist wlinfo]
                         Database.putEmail db (riEmail info) uuid
-                        sendWaitlistEmail sendEmail hackathon info uuid
+                        sendWaitlistEmail sendEmail (Hackathon.hConfig hackathon) info uuid
                         html $ Views.registerWaitlist uuid info
-                    Just info -> do
+                    Just (info, additionalInfo) -> do
                         -- Success registration
                         uuid <- E.uuidNextRandom
-                        Database.writeEvents db uuid [Register info ()]
+                        Database.writeEvents db uuid [Register info additionalInfo]
                         Database.putEmail db (riEmail info) uuid
-                        sendRegisterSuccessEmail sendEmail hackathon info uuid
+                        sendRegisterSuccessEmail sendEmail (Hackathon.hConfig hackathon) info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
                 uuid <- getUuidParam req
                 registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
-                html $ Views.ticket registrant
+                html $ Views.ticket hackathon registrant
 
             ["scanner"] | reqHttpMethod == "GET" ->
                 scannerAuthorized req scannerConfig $
@@ -108,7 +110,7 @@ main _ = do
                     uuid <- getUuidParam req
                     registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                     Database.writeEvents db uuid [Scan $ ScanInfo time :: Event a]
-                    html $ Views.scan registrant
+                    html $ Views.scan hackathon registrant
 
             ["confirm"] -> do
                 uuid <- getUuidParam req

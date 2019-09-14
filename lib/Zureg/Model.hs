@@ -2,14 +2,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Zureg.Model
-    ( Hackathon (..)
-
-    , TShirtCut (..)
-    , TShirtSize (..)
-    , TrackInterest (..)
-    , ContributorLevel (..)
-    , Project (..)
-    , RegisterInfo (..)
+    ( RegisterInfo (..)
     , WaitlistInfo (..)
     , PopWaitlistInfo (..)
     , ScanInfo (..)
@@ -31,42 +24,7 @@ import qualified Eventful               as E
 import           Text.Read              (readMaybe)
 
 --------------------------------------------------------------------------------
--- Hackathon
-
-data Hackathon = Hackathon
-    { hName       :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
-    , hBaseUrl    :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
-    , hContactUrl :: !T.Text -- ^ URL of the hackathon homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
-    , hSlackUrl   :: !T.Text -- ^ Slack URL, e.g. "https://slack.zurihac.info/"
-    , hWaitlist   :: !Bool   -- ^ When 'True', new registrants are added to the waitlist
-    } deriving (Eq, Show)
-
---------------------------------------------------------------------------------
 -- Events
-
-data TShirtCut = Female | Male deriving (Bounded, Enum, Eq, Show)
-
-data TShirtSize = S | M | L | XL | XXL deriving (Bounded, Enum, Eq, Show)
-
-data TrackInterest = TrackInterest
-    { tiBeginner     :: !Bool
-    , tiIntermediate :: !Bool
-    , tiAdvanced     :: !Bool
-    , tiGhcDevOps    :: !Bool
-    } deriving (Eq, Show)
-
-data ContributorLevel = ContributorLevel
-    { clBeginner     :: !Bool
-    , clIntermediate :: !Bool
-    , clAdvanced     :: !Bool
-    } deriving (Eq, Show)
-
-data Project = Project
-    { pName             :: !(Maybe T.Text)
-    , pWebsite          :: !(Maybe T.Text)
-    , pShortDescription :: !(Maybe T.Text)
-    , pContributorLevel :: !ContributorLevel
-    } deriving (Eq, Show)
 
 data RegisterInfo = RegisterInfo
     { riName          :: !T.Text
@@ -74,10 +32,6 @@ data RegisterInfo = RegisterInfo
     , riEmail         :: !T.Text
     , riAffiliation   :: !(Maybe T.Text)
     , riAskMeAbout    :: !(Maybe T.Text)
-    , tiTrackInterest :: !TrackInterest
-    , riTShirt        :: !(Maybe (TShirtCut, TShirtSize))
-    , riMentor        :: !Bool
-    , riProject       :: !Project
     , riRegisteredAt  :: !Time.UTCTime
     } deriving (Eq, Show)
 
@@ -109,11 +63,11 @@ data RegisterState = Registered | Confirmed | Cancelled | Waitlisted
     deriving (Bounded, Enum, Eq, Read, Show)
 
 data Registrant a = Registrant
-    { rUuid    :: E.UUID
-    , rInfo    :: Maybe RegisterInfo
+    { rUuid           :: E.UUID
+    , rInfo           :: Maybe RegisterInfo
     , rAdditionalInfo :: Maybe a
-    , rState   :: Maybe RegisterState
-    , rScanned :: Bool
+    , rState          :: Maybe RegisterState
+    , rScanned        :: Bool
     } deriving (Eq, Show)
 
 registrantProjection :: E.UUID -> E.Projection (Registrant a) (Event a)
@@ -132,17 +86,11 @@ registrantProjection uuid = E.Projection
         _ -> registrant
     }
 
-$(A.deriveJSON A.options ''TShirtSize)
-$(A.deriveJSON A.options ''TShirtCut)
-$(A.deriveJSON A.options ''TrackInterest)
-$(A.deriveJSON A.options ''ContributorLevel)
-$(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegisterInfo)
 $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''ScanInfo)
 $(A.deriveJSON A.options ''Event)
-$(A.deriveJSON A.options ''Hackathon)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
 
