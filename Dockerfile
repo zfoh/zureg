@@ -9,4 +9,4 @@ RUN chmod 777 /build
 ENV HOME="/build"
 ENV STACK_WORK=".stack-work-docker"
 WORKDIR /build
-ENTRYPOINT /bin/bash -l
+ENTRYPOINT ["/bin/bash", "-l"]
