@@ -78,7 +78,6 @@ data RegisterInfo = RegisterInfo
     , riMentor        :: !Bool
     , riProject       :: !Project
     , riRegisteredAt  :: !Time.UTCTime
-    , riHackathon      :: !Hackathon
     } deriving (Eq, Show)
 
 data WaitlistInfo = WaitlistInfo

@@ -21,8 +21,8 @@ import qualified Zureg.ReCaptcha             as ReCaptcha
 
 -- | The 'IO' in this type signature is because we want to get the registration
 -- time.
-registerForm :: Hackathon -> D.Form H.Html IO RegisterInfo
-registerForm hackathon = RegisterInfo
+registerForm :: D.Form H.Html IO RegisterInfo
+registerForm = RegisterInfo
     <$> "name" D..: (D.check "Name is required"
             (not . T.null . T.strip)
             (D.text Nothing))
@@ -57,7 +57,6 @@ registerForm hackathon = RegisterInfo
                     <*> "intermediate" D..: D.bool Nothing
                     <*> "advanced" D..: D.bool Nothing))))
     <*> D.monadic (Time.getCurrentTime >>= return . pure)
-    <*> pure hackathon
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
         case T.split (== '@') email of

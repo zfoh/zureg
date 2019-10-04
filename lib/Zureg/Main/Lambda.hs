@@ -66,7 +66,7 @@ main = do
                 (view, mbReg) <- Serverless.runForm req "register" $ D.checkM
                     "Email address already registered"
                     (fmap isNothing . Database.lookupEmail db . riEmail)
-                    (registerForm hackathon)
+                    registerForm
                 let waitlist = True
 
                 case mbReg of
@@ -81,14 +81,14 @@ main = do
                         Database.writeEvents db uuid
                             [Register info, Waitlist wlinfo]
                         Database.putEmail db (riEmail info) uuid
-                        sendWaitlistEmail sendEmail info uuid
+                        sendWaitlistEmail sendEmail hackathon info uuid
                         html $ Views.registerWaitlist uuid info
                     Just info -> do
                         -- Success registration
                         uuid <- E.uuidNextRandom
                         Database.writeEvents db uuid [Register info]
                         Database.putEmail db (riEmail info) uuid
-                        sendRegisterSuccessEmail sendEmail info uuid
+                        sendRegisterSuccessEmail sendEmail hackathon info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
