@@ -83,33 +83,3 @@ Library
     urlencoded               >= 0.4  && < 0.5,
     uuid                     >= 1.3  && < 1.4,
     vector                   >= 0.12 && < 1.13
-
-Common exe
-  Default-language: Haskell2010
-  Hs-source-dirs:   zurihac2019
-  Ghc-options:      -threaded -rtsopts -with-rtsopts=-N -Wall
-  Build-depends: base, zureg
-
-Executable zureg-export
-  Import:  exe
-  Main-is: Export.hs
-
-Executable zureg-lambda
-  Import:  exe
-  Main-is: Lambda.hs
-
-Executable zureg-email
-  Import:  exe
-  Main-is: Email.hs
-
-Executable zureg-pop-waitlist
-  Import:  exe
-  Main-is: PopWaitlist.hs
-
-Executable zureg-projects-page
-  Import:  exe
-  Main-is: ProjectsPage.hs
-
-Executable zureg-badges
-  Import:  exe
-  Main-is: Badges.hs

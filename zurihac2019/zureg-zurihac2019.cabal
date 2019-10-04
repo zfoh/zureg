@@ -1,0 +1,45 @@
+Cabal-version:  2.2
+Name:           zureg-zurihac2019
+Version:        0.1.0.0
+Description:    Please see the README on GitHub at <https://github.com/zfoh/zureg#readme>
+Homepage:       https://github.com/zfoh/zureg#readme
+Bug-reports:    https://github.com/zfoh/zureg/issues
+Author:         Jasper Van der Jeugt
+Maintainer:     jaspervdj@gmail.com
+Copyright:      2018 Jasper Van der Jeugt
+License:        BSD-3-Clause
+Build-type:     Simple
+
+Source-repository head
+  Type: git
+  Location: https://github.com/zfoh/zureg
+
+Common exe
+  Default-language: Haskell2010
+  Hs-source-dirs:   src
+  Ghc-options:      -threaded -rtsopts -with-rtsopts=-N -Wall
+  Build-depends: base, zureg
+
+Executable zureg-export
+  Import:  exe
+  Main-is: Export.hs
+
+Executable zureg-lambda
+  Import:  exe
+  Main-is: Lambda.hs
+
+Executable zureg-email
+  Import:  exe
+  Main-is: Email.hs
+
+Executable zureg-pop-waitlist
+  Import:  exe
+  Main-is: PopWaitlist.hs
+
+Executable zureg-projects-page
+  Import:  exe
+  Main-is: ProjectsPage.hs
+
+Executable zureg-badges
+  Import:  exe
+  Main-is: Badges.hs
