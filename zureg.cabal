@@ -41,11 +41,6 @@ Library
     Zureg.SendEmail.Hardcoded
     Zureg.Serverless
     Zureg.Views
-    ZuriHac2019
-    ZuriHac2019.Main.ProjectsPage
-    ZuriHac2019.Form
-    ZuriHac2019.Model
-    ZuriHac2019.Views
 
   Other-modules:
     Paths_zureg

@@ -14,11 +14,34 @@ Source-repository head
   Type: git
   Location: https://github.com/zfoh/zureg
 
+Library
+  Default-language: Haskell2010
+  Hs-source-dirs:   lib
+  Ghc-options:      -Wall
+
+  Exposed-modules:
+    ZuriHac2019
+    ZuriHac2019.Main.ProjectsPage
+    ZuriHac2019.Form
+    ZuriHac2019.Model
+    ZuriHac2019.Views
+
+  Build-depends:
+    aeson,
+    base,
+    blaze-html,
+    cassava,
+    digestive-functors,
+    digestive-functors-blaze,
+    text,
+    unordered-containers,
+    zureg
+
 Common exe
   Default-language: Haskell2010
   Hs-source-dirs:   src
   Ghc-options:      -threaded -rtsopts -with-rtsopts=-N -Wall
-  Build-depends: base, zureg
+  Build-depends: base, zureg, zureg-zurihac2019
 
 Executable zureg-export
   Import:  exe
