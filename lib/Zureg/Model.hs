@@ -2,7 +2,9 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Zureg.Model
-    ( TShirtCut (..)
+    ( Hackathon (..)
+
+    , TShirtCut (..)
     , TShirtSize (..)
     , TrackInterest (..)
     , ContributorLevel (..)
@@ -27,6 +29,16 @@ import qualified Data.Text              as T
 import qualified Data.Time              as Time
 import qualified Eventful               as E
 import           Text.Read              (readMaybe)
+
+--------------------------------------------------------------------------------
+-- Hackathon
+
+data Hackathon = Hackathon
+    { hName       :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
+    , hBaseUrl    :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
+    , hContactUrl :: !T.Text -- ^ URL of the hackathon homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
+    , hSlackUrl   :: !T.Text -- ^ Slack URL, e.g. "https://slack.zurihac.info/"
+    } deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
 -- Events
@@ -65,9 +77,7 @@ data RegisterInfo = RegisterInfo
     , riTShirt        :: !(Maybe (TShirtCut, TShirtSize))
     , riMentor        :: !Bool
     , riProject       :: !Project
-    -- | This field is optional because we only added after registration had
-    -- been opened.
-    , riRegisteredAt  :: !(Maybe Time.UTCTime)
+    , riRegisteredAt  :: !Time.UTCTime
     } deriving (Eq, Show)
 
 data WaitlistInfo = WaitlistInfo
@@ -130,6 +140,7 @@ $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''ScanInfo)
 $(A.deriveJSON A.options ''Event)
+$(A.deriveJSON A.options ''Hackathon)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
 
@@ -143,4 +154,4 @@ parseRegisterState str = case readMaybe str of
         L.intercalate ", " (map show [minBound :: RegisterState .. maxBound])
 
 registrantRegisteredAt :: Registrant -> Maybe Time.UTCTime
-registrantRegisteredAt registrant = rInfo registrant >>= riRegisteredAt
+registrantRegisteredAt registrant = riRegisteredAt <$> rInfo registrant

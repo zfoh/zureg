@@ -56,7 +56,7 @@ registerForm = RegisterInfo
                     <$> "beginner" D..: D.bool Nothing
                     <*> "intermediate" D..: D.bool Nothing
                     <*> "advanced" D..: D.bool Nothing))))
-    <*> (Just <$> D.monadic (Time.getCurrentTime >>= return . pure))
+    <*> D.monadic (Time.getCurrentTime >>= return . pure)
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
         case T.split (== '@') email of
@@ -76,9 +76,9 @@ registerForm = RegisterInfo
         (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
         (D.text Nothing)
 
-registerView :: ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
-registerView recaptcha view = DH.form view "?" $ do
-    H.h1 $ "ZuriHac registration"
+registerView :: Hackathon -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
+registerView hackathon recaptcha view = DH.form view "?" $ do
+    H.h1 $ H.toHtml (hName hackathon) <> " registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
     DH.label "name" view $ H.strong "Full name"
@@ -144,15 +144,17 @@ registerView recaptcha view = DH.form view "?" $ do
         "Please note that we have ordered the T-Shirts and cannot guarantee "
         "that you will receive one if you register at this time."
 
-    H.p $ "In what size would you like the free ZuriHac T-Shirt?"
+    H.p $ "In what size would you like the free " <> H.toHtml (hName hackathon) <> " T-Shirt?"
 
     H.p $ do
         "The sizes should be fairly standard. "
+        {- TODO only works with a more generic link.
         "You can see the "
         H.a H.! A.href "https://zfoh.ch/images/zurihac2019/tshirts-sizing.png"
             H.! A.target "_blank" $
             "specifications here"
         "."
+        -}
 
     DH.label "tshirt.cut" view "Cut"
     DH.inputSelect "tshirt.cut" view

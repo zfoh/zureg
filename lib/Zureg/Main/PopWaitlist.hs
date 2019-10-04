@@ -24,6 +24,7 @@ main = do
     config      <- Config.load "zureg.json"
     dbConfig    <- Config.section config "database"
     emailConfig <- Config.section config "sendEmail"
+    hackathon   <- Config.section config "hackathon"
 
     uuids <- forM args $
         maybe (fail "could not parse uuid") return .  E.uuidFromText . T.pack
@@ -54,5 +55,5 @@ main = do
             Database.writeEvents db uuid [event]
             IO.hPutStrLn IO.stderr $
                 "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
-            sendPopWaitlistEmail mailer rinfo uuid
+            sendPopWaitlistEmail mailer hackathon rinfo uuid
             IO.hPutStrLn IO.stderr "OK"

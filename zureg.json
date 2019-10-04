@@ -1,4 +1,10 @@
 {
+  "hackathon": {
+    "name": "ZuriHac 2019",
+    "baseUrl": "https://zureg.zfoh.ch",
+    "contactUrl": "https://zfoh.ch/zurihac2019/#contact",
+    "slackUrl": "https://slack.zurihac.info/"
+  },
   "scanner": {
     "secret": "endofunctor"
   },

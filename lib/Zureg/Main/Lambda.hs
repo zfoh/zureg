@@ -53,6 +53,7 @@ main = do
     rcConfig      <- Config.section config "recaptcha"
     emailConfig   <- Config.section config "sendEmail"
     scannerConfig <- Config.section config "scanner"
+    hackathon     <- Config.section config "hackathon"
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->
@@ -70,7 +71,7 @@ main = do
 
                 case mbReg of
                     Nothing -> html $
-                        Views.register (ReCaptcha.clientHtml recaptcha) view
+                        Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
 
                     Just info | waitlist -> do
                         -- You're on the waitlist
@@ -80,14 +81,14 @@ main = do
                         Database.writeEvents db uuid
                             [Register info, Waitlist wlinfo]
                         Database.putEmail db (riEmail info) uuid
-                        sendWaitlistEmail sendEmail info uuid
+                        sendWaitlistEmail sendEmail hackathon info uuid
                         html $ Views.registerWaitlist uuid info
                     Just info -> do
                         -- Success registration
                         uuid <- E.uuidNextRandom
                         Database.writeEvents db uuid [Register info]
                         Database.putEmail db (riEmail info) uuid
-                        sendRegisterSuccessEmail sendEmail info uuid
+                        sendRegisterSuccessEmail sendEmail hackathon info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
