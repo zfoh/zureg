@@ -193,10 +193,11 @@ qrimg qrdata = fromMaybe "Could not generate QR code" $ do
     version <- QRCode.version 2
     matrix  <- QRCode.encode version QRCode.L QRCode.Alphanumeric qrdata
     let array = QRCode.toArray matrix :: Array.Array (Int, Int) JP.Pixel8
+        moduleSize = 16 -- QR-Code version 2 has 25x25 modules, so this amounts to an image size of 400px
         image = JP.generateImage
-            (\x y -> array Array.! (x, y))
-            (QRCode.width matrix + 1)
-            (QRCode.width matrix + 1)
+            (\x y -> array Array.! (x `div` moduleSize, y `div` moduleSize))
+            (moduleSize * (QRCode.width matrix + 1))
+            (moduleSize * (QRCode.width matrix + 1))
 
         base64 = Base64.encode $ JP.encodePng image
         src    = "data:image/png;base64," <> H.unsafeLazyByteStringValue base64
