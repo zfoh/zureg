@@ -6,17 +6,16 @@ This application needs to be compiled on two different platforms:
 
 1.  Your machine, to be able to run the export and mail tools.
 
-    You can use `make build` to perform this build.
+    You can a regular `stack build` to perform this build.
 
 2.  Amazon Linux, so we can run a binary on AWS Lambda.
 
     We use docker for this purpose so the binary gets linked to the right
     versions of the different C libraries.
 
-    In order to build a docker container, use `make docker`.  This will drop you
-    into a bash shell inside the container.  From there, you can use `make
-    build` to compile the project, and `make lambda` to create a zip file that
-    can run on AWS Lambda.
+    In order to build this binary, use `make build`.  This can take a while if
+    it's the first time you run it, since it will bootstrap an Amazon Linux
+    container image, install stack on it, and compile our project.
 
 ## Deploying
 
