@@ -8,9 +8,7 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Zureg.Model.Csv
-    ( itemHeader
-    ) where
+module Zureg.Model.Csv () where
 
 import           Zureg.Model
 import qualified Data.Time              as Time
@@ -18,11 +16,14 @@ import qualified Eventful               as E
 import           Data.Csv               as CSV
 import qualified Data.HashMap.Strict    as HM
 
-instance ToNamedRecord Registrant where
+instance ToNamedRecord a => ToNamedRecord (Registrant a) where
     toNamedRecord Registrant {..}
         =  HM.unions [ namedRecord [ "UUID" .= rUuid ]
                      , toNamedRecord rState
                      , toNamedRecord rInfo
+                     , case rAdditionalInfo of
+                        Just ai -> toNamedRecord ai
+                        Nothing -> HM.empty
                      , namedRecord [ "Scanned" .= rScanned ]
                      ]
 
@@ -39,49 +40,20 @@ instance ToNamedRecord RegisterInfo => ToNamedRecord (Maybe RegisterInfo)  where
 
 instance ToNamedRecord RegisterInfo where
     toNamedRecord RegisterInfo {..}  
-        = HM.unions [ namedRecord [ "Name"               .= riName 
-                                  , "Name on Badge"      .= riBadgeName 
-                                  , "Email"              .= riEmail 
-                                  , "Affiliation"        .= riAffiliation 
-                                  , "AskMeAbout"         .= riAskMeAbout 
-                                  , "Beginner Track"     .= tiBeginner tiTrackInterest
-                                  , "Intermediate Track" .= tiIntermediate tiTrackInterest
-                                  , "Advanced Track"     .= tiAdvanced tiTrackInterest
-                                  , "GhcDevOps Track"    .= tiGhcDevOps tiTrackInterest
-                                  , "Mentor"             .= riMentor
-                                  , "Registered At"      .= riRegisteredAt
-                                  ]
-                    , toNamedRecord riTShirt
-                    , toNamedRecord riProject
-                    ]
-
-instance ToNamedRecord (Maybe (TShirtCut, TShirtSize)) where
-    toNamedRecord mbTshirt =
-        namedRecord [ "T-Shirt Cut" .= fmap fst mbTshirt
-                    , "T-Shirt Size" .= fmap snd mbTshirt
-                    ]
-
-instance ToNamedRecord Project where
-    toNamedRecord Project {..}
-        = HM.unions [ namedRecord [ "Project Name"              .= pName
-                                  , "Project Website"           .= pWebsite
-                                  , "Project Short Description" .= pShortDescription
-                                  ] 
-                    , toNamedRecord pContributorLevel 
-                    ]
-            
-instance ToNamedRecord ContributorLevel where
-    toNamedRecord ContributorLevel {..}
-        = namedRecord [ "CL Beginner"     .= clBeginner
-                      , "CL Intermediate" .= clIntermediate
-                      , "CL Advanced"     .= clAdvanced
+        = namedRecord [ "Name"               .= riName 
+                      , "Name on Badge"      .= riBadgeName 
+                      , "Email"              .= riEmail 
+                      , "Affiliation"        .= riAffiliation 
+                      , "AskMeAbout"         .= riAskMeAbout 
+                      , "Registered At"      .= riRegisteredAt
                       ]
+         
            
 instance ToField RegisterState where
     toField Registered = toField ("Registered" :: String)
     toField Confirmed  = toField ("Confirmed" :: String)
     toField Cancelled  = toField ("Cancelled" :: String)
-    toField Waitlisted  = toField ("Waitlisted" :: String)
+    toField Waitlisted = toField ("Waitlisted" :: String)
 
 instance ToField Bool where
     toField True  = toField ("true" :: String)
@@ -92,41 +64,3 @@ instance ToField E.UUID where
 
 instance ToField Time.UTCTime where
     toField time' = toField (show time' :: String)
-
-instance ToField TShirtCut where
-    toField Female = toField ("female" :: String)
-    toField Male   = toField ("male" :: String)
-
-instance ToField TShirtSize where
-    toField S   = toField ("S" :: String) 
-    toField M   = toField ("M" :: String) 
-    toField L   = toField ("L" :: String) 
-    toField XL  = toField ("XL" :: String) 
-    toField XXL = toField ("XXL" :: String) 
-
-itemHeader :: Header
-itemHeader = header
-                [ "UUID"
-                , "State"
-                , "Scanned"
-                , "Name"
-                , "Name on Badge"
-                , "Email"
-                , "Affiliation"
-                , "AskMeAbout"
-                , "Beginner Track"
-                , "Intermediate Track"
-                , "Advanced Track"
-                , "GhcDevOps Track"
-                , "Mentor"
-                , "T-Shirt Cut"
-                , "T-Shirt Size"
-                , "Mentor"
-                , "Project Name"
-                , "Project Website"
-                , "Project Short Description"
-                , "CL Beginner"
-                , "CL Intermediate"
-                , "CL Advanced"
-                , "Registered At"
-                ]

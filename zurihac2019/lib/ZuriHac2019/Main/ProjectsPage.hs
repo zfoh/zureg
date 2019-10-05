@@ -1,6 +1,6 @@
 -- | Generate the projects page for the main website.  Ugly.
 {-# LANGUAGE OverloadedStrings #-}
-module Zureg.Main.ProjectsPage
+module ZuriHac2019.Main.ProjectsPage
     ( main
     ) where
 
@@ -13,9 +13,10 @@ import qualified System.IO                       as IO
 import qualified Text.Blaze.Html.Renderer.Pretty as Pretty
 import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as HA
-import           Zureg.Model
+import           Zureg.Model                     as Zureg
+import           ZuriHac2019.Model               as ZH19
 
-renderProject :: RegisterInfo -> Project -> Maybe H.Html
+renderProject :: Zureg.RegisterInfo -> ZH19.Project -> Maybe H.Html
 renderProject contact project = do
     name <- pName project
     return $ do
@@ -37,14 +38,15 @@ renderProject contact project = do
 
         maybe mempty (H.p . H.toHtml) (pShortDescription project)
 
-renderProjects :: [Registrant] -> H.Html
+renderProjects :: [Registrant ZH19.RegisterInfo] -> H.Html
 renderProjects registrants = H.ul H.! HA.class_ "projects" $ mconcat $ do
     registrant <- L.sortOn sortKey registrants
     contact    <- maybeToList $ rInfo registrant
-    html       <- maybeToList $ renderProject contact (riProject contact)
+    project    <- maybeToList $ riProject <$> rAdditionalInfo registrant
+    html       <- maybeToList $ renderProject contact project
     return $ H.li html
   where
-    sortKey r = rInfo r >>= fmap T.toLower . pName . riProject
+    sortKey r = rAdditionalInfo r >>= fmap T.toLower . pName . riProject
 
 main :: IO ()
 main = do
@@ -55,7 +57,7 @@ main = do
         [exportPath] -> do
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant]
+                :: IO [Registrant ZH19.RegisterInfo]
 
             putStr $ Pretty.renderHtml $ renderProjects registrants
         _ -> do

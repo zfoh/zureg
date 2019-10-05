@@ -2,6 +2,7 @@ resolver: lts-13.25
 packages:
 - .
 extra-deps:
+- ../
 - 'digestive-functors-0.8.4.0'
 - 'digestive-functors-blaze-0.6.2.0'
 - 'eventful-dynamodb-0.2.0'

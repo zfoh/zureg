@@ -1,6 +1,9 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Export
     ( main
+    , loadConfig
     ) where
 
 import           Control.Monad              (forM, when)
@@ -14,8 +17,9 @@ import           System.FilePath            (takeExtension)
 import qualified System.IO                  as IO
 import qualified Zureg.Config               as Config
 import qualified Zureg.Database             as Database
+import qualified Zureg.Hackathon            as Hackathon
 import           Zureg.Model
-import qualified Zureg.Model.Csv            as MCSV
+import           Zureg.Model.Csv            ()
 
 progressMapM :: (a -> IO b) -> [a] -> IO [b]
 progressMapM f xs = forM (zip [1 :: Int ..] xs) $ \(n, x) -> do
@@ -40,12 +44,16 @@ parseOptions = Options
         OA.help    ".csv or .json export path" <>
         OA.metavar "PATH")
 
-main :: IO ()
-main = do
+loadConfig :: IO Config.Config
+loadConfig = Config.load "zureg.json"
+
+main :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a)
+     => Config.Config -> Hackathon.Handle a -> IO ()
+main config Hackathon.Handle {..} = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
-    config   <- Config.load "zureg.json"
-    dbConfig <- Config.section config "database"
+
+    dbConfig <- Config.section "database" config
 
     exists <- doesFileExist (oPath opts)
     when exists $ fail $ oPath opts ++ " already exists"
@@ -55,10 +63,10 @@ main = do
             Just s  -> (== Just s) . rState
 
     encode <- case takeExtension (oPath opts) of
-        ".json" -> return A.encode
-        ".csv"  -> return $ CSV.encodeByName MCSV.itemHeader
+        ".json" -> return (A.encode :: [Registrant a] -> BL.ByteString)
+        ".csv"  -> return $ CSV.encodeByName hCsvHeader
         ext     -> do
-            IO.hPutStrLn IO.stderr $ "Unkown extension: " ++ ext
+            IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure
 
     Database.withHandle dbConfig $ \db -> do

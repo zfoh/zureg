@@ -2,14 +2,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Zureg.Model
-    ( Hackathon (..)
-
-    , TShirtCut (..)
-    , TShirtSize (..)
-    , TrackInterest (..)
-    , ContributorLevel (..)
-    , Project (..)
-    , RegisterInfo (..)
+    ( RegisterInfo (..)
     , WaitlistInfo (..)
     , PopWaitlistInfo (..)
     , ScanInfo (..)
@@ -31,41 +24,7 @@ import qualified Eventful               as E
 import           Text.Read              (readMaybe)
 
 --------------------------------------------------------------------------------
--- Hackathon
-
-data Hackathon = Hackathon
-    { hName       :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
-    , hBaseUrl    :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
-    , hContactUrl :: !T.Text -- ^ URL of the hackathon homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
-    , hSlackUrl   :: !T.Text -- ^ Slack URL, e.g. "https://slack.zurihac.info/"
-    } deriving (Eq, Show)
-
---------------------------------------------------------------------------------
 -- Events
-
-data TShirtCut = Female | Male deriving (Bounded, Enum, Eq, Show)
-
-data TShirtSize = S | M | L | XL | XXL deriving (Bounded, Enum, Eq, Show)
-
-data TrackInterest = TrackInterest
-    { tiBeginner     :: !Bool
-    , tiIntermediate :: !Bool
-    , tiAdvanced     :: !Bool
-    , tiGhcDevOps    :: !Bool
-    } deriving (Eq, Show)
-
-data ContributorLevel = ContributorLevel
-    { clBeginner     :: !Bool
-    , clIntermediate :: !Bool
-    , clAdvanced     :: !Bool
-    } deriving (Eq, Show)
-
-data Project = Project
-    { pName             :: !(Maybe T.Text)
-    , pWebsite          :: !(Maybe T.Text)
-    , pShortDescription :: !(Maybe T.Text)
-    , pContributorLevel :: !ContributorLevel
-    } deriving (Eq, Show)
 
 data RegisterInfo = RegisterInfo
     { riName          :: !T.Text
@@ -73,10 +32,6 @@ data RegisterInfo = RegisterInfo
     , riEmail         :: !T.Text
     , riAffiliation   :: !(Maybe T.Text)
     , riAskMeAbout    :: !(Maybe T.Text)
-    , tiTrackInterest :: !TrackInterest
-    , riTShirt        :: !(Maybe (TShirtCut, TShirtSize))
-    , riMentor        :: !Bool
-    , riProject       :: !Project
     , riRegisteredAt  :: !Time.UTCTime
     } deriving (Eq, Show)
 
@@ -92,8 +47,8 @@ data ScanInfo = ScanInfo
     { siScannedAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
-data Event
-    = Register RegisterInfo
+data Event a
+    = Register RegisterInfo a
     | Waitlist WaitlistInfo
     | PopWaitlist PopWaitlistInfo
     | Scan ScanInfo
@@ -107,22 +62,23 @@ data Event
 data RegisterState = Registered | Confirmed | Cancelled | Waitlisted
     deriving (Bounded, Enum, Eq, Read, Show)
 
-data Registrant = Registrant
-    { rUuid    :: E.UUID
-    , rInfo    :: Maybe RegisterInfo
-    , rState   :: Maybe RegisterState
-    , rScanned :: Bool
+data Registrant a = Registrant
+    { rUuid           :: E.UUID
+    , rInfo           :: Maybe RegisterInfo
+    , rAdditionalInfo :: Maybe a
+    , rState          :: Maybe RegisterState
+    , rScanned        :: Bool
     } deriving (Eq, Show)
 
-registrantProjection :: E.UUID -> E.Projection Registrant Event
+registrantProjection :: E.UUID -> E.Projection (Registrant a) (Event a)
 registrantProjection uuid = E.Projection
-    { E.projectionSeed         = Registrant uuid Nothing Nothing False
+    { E.projectionSeed         = Registrant uuid Nothing Nothing Nothing False
     , E.projectionEventHandler = \registrant event -> case event of
         Cancel     -> registrant {rState = Just Cancelled}
         Confirm    -> case rState registrant of
                         Just Registered -> registrant {rState = Just Confirmed}
                         _               -> registrant
-        Register i -> registrant {rInfo = Just i, rState = Just Registered}
+        Register i a -> registrant {rInfo = Just i, rAdditionalInfo = Just a, rState = Just Registered}
         Waitlist _ -> registrant {rState = Just Waitlisted}
         PopWaitlist _ | Just Waitlisted <- rState registrant ->
             registrant {rState = Just Registered}
@@ -130,17 +86,11 @@ registrantProjection uuid = E.Projection
         _ -> registrant
     }
 
-$(A.deriveJSON A.options ''TShirtSize)
-$(A.deriveJSON A.options ''TShirtCut)
-$(A.deriveJSON A.options ''TrackInterest)
-$(A.deriveJSON A.options ''ContributorLevel)
-$(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegisterInfo)
 $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''ScanInfo)
 $(A.deriveJSON A.options ''Event)
-$(A.deriveJSON A.options ''Hackathon)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
 
@@ -153,5 +103,5 @@ parseRegisterState str = case readMaybe str of
         "Can't parse register state, try one of: " ++
         L.intercalate ", " (map show [minBound :: RegisterState .. maxBound])
 
-registrantRegisteredAt :: Registrant -> Maybe Time.UTCTime
+registrantRegisteredAt :: Registrant a -> Maybe Time.UTCTime
 registrantRegisteredAt registrant = riRegisteredAt <$> rInfo registrant

@@ -1,12 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Main.Lambda
     ( main
+    , loadConfig
     ) where
 
+import           Control.Applicative           (liftA2)
 import           Control.Exception             (throwIO)
 import           Control.Monad                 (when)
+import qualified Data.Aeson                    as A
 import qualified Data.Aeson.TH.Extended        as A
 import           Data.Maybe                    (isNothing)
 import qualified Data.Text                     as T
@@ -21,6 +25,7 @@ import qualified Text.Digestive                as D
 import qualified Zureg.Config                  as Config
 import qualified Zureg.Database                as Database
 import           Zureg.Form
+import qualified Zureg.Hackathon               as Hackathon
 import           Zureg.Model
 import qualified Zureg.ReCaptcha               as ReCaptcha
 import qualified Zureg.SendEmail               as SendEmail
@@ -38,22 +43,23 @@ html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
     Serverless.response200 . RenderHtml.renderHtml
 
-main :: IO ()
-main = do
+loadConfig :: IO Config.Config
+loadConfig = do
     progName <- getProgName
     args     <- getArgs
-
-    config <- case args of
+    case args of
         [configPath] -> Config.load configPath
         _            -> do
             IO.hPutStr IO.stderr $ "Usage: " ++ progName ++ " config.json"
             exitFailure
 
-    dbConfig      <- Config.section config "database"
-    rcConfig      <- Config.section config "recaptcha"
-    emailConfig   <- Config.section config "sendEmail"
-    scannerConfig <- Config.section config "scanner"
-    hackathon     <- Config.section config "hackathon"
+main :: forall a. (A.FromJSON a, A.ToJSON a)
+     => Config.Config -> Hackathon.Handle a -> IO ()
+main config hackathon = do
+    dbConfig        <- Config.section "database" config
+    rcConfig        <- Config.section "recaptcha" config
+    emailConfig     <- Config.section "sendEmail" config
+    scannerConfig   <- Config.section "scanner" config
 
     Database.withHandle dbConfig $ \db ->
         ReCaptcha.withHandle rcConfig $ \recaptcha ->
@@ -65,36 +71,37 @@ main = do
                     ReCaptcha.verify recaptcha (Serverless.reqBody req)
                 (view, mbReg) <- Serverless.runForm req "register" $ D.checkM
                     "Email address already registered"
-                    (fmap isNothing . Database.lookupEmail db . riEmail)
-                    registerForm
-                let waitlist = True
+                    (fmap isNothing . Database.lookupEmail db . riEmail . fst)
+                    (liftA2 (,)
+                        registerForm
+                        (Hackathon.hRegisterForm hackathon))
 
                 case mbReg of
                     Nothing -> html $
                         Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
 
-                    Just info | waitlist -> do
+                    Just (info, additionalInfo) | Hackathon.cWaitlist (Hackathon.hConfig hackathon) -> do
                         -- You're on the waitlist
                         uuid <- E.uuidNextRandom
                         time <- Time.getCurrentTime
                         let wlinfo = WaitlistInfo time
                         Database.writeEvents db uuid
-                            [Register info, Waitlist wlinfo]
+                            [Register info additionalInfo, Waitlist wlinfo]
                         Database.putEmail db (riEmail info) uuid
-                        sendWaitlistEmail sendEmail hackathon info uuid
+                        sendWaitlistEmail sendEmail (Hackathon.hConfig hackathon) info uuid
                         html $ Views.registerWaitlist uuid info
-                    Just info -> do
+                    Just (info, additionalInfo) -> do
                         -- Success registration
                         uuid <- E.uuidNextRandom
-                        Database.writeEvents db uuid [Register info]
+                        Database.writeEvents db uuid [Register info additionalInfo]
                         Database.putEmail db (riEmail info) uuid
-                        sendRegisterSuccessEmail sendEmail hackathon info uuid
+                        sendRegisterSuccessEmail sendEmail (Hackathon.hConfig hackathon) info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db uuid
-                html $ Views.ticket registrant
+                registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+                html $ Views.ticket hackathon registrant
 
             ["scanner"] | reqHttpMethod == "GET" ->
                 scannerAuthorized req scannerConfig $
@@ -104,15 +111,15 @@ main = do
                 scannerAuthorized req scannerConfig $ do
                     time <- Time.getCurrentTime
                     uuid <- getUuidParam req
-                    registrant <- Database.getRegistrant db uuid
-                    Database.writeEvents db uuid [Scan $ ScanInfo time]
-                    html $ Views.scan registrant
+                    registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+                    Database.writeEvents db uuid [Scan $ ScanInfo time :: Event a]
+                    html $ Views.scan hackathon registrant
 
             ["confirm"] -> do
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db uuid
+                registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                 case rState registrant of 
-                  Just Registered -> Database.writeEvents db uuid [Confirm]
+                  Just Registered -> Database.writeEvents db uuid [Confirm :: Event a]
                   _               -> return ()
                 return $ Serverless.response302 $ "ticket?uuid=" <> E.uuidToText uuid
                    
@@ -121,9 +128,9 @@ main = do
                     cancelForm (lookupUuidParam req)
                 case mbCancel of
                     Just (uuid, True) -> do
-                        registrant <- Database.getRegistrant db uuid
+                        registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                         -- TODO: Check that not yet cancelled?
-                        Database.writeEvents db uuid [Cancel]
+                        Database.writeEvents db uuid [Cancel :: Event a]
                         case rInfo registrant of
                             Nothing -> return ()
                             Just info ->  Database.deleteEmail db $ riEmail info

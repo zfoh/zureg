@@ -1,11 +1,13 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Badges
     ( Badge
     , previewBadge
     , registrantToBadge
 
     , main
+    , loadConfig
     ) where
 
 import           Control.Monad        (guard)
@@ -18,7 +20,9 @@ import qualified Data.Text            as T
 import           System.Environment   (getArgs, getProgName)
 import           System.Exit          (exitFailure)
 import qualified System.IO            as IO
+import qualified Zureg.Config         as Config
 import           Zureg.Model
+import qualified Zureg.Hackathon      as Hackathon
 
 data Badge = Badge
     { bLine1 :: T.Text
@@ -40,7 +44,7 @@ instance Csv.ToNamedRecord Badge where
         , "Line 3" Csv..= bLine3
         ]
 
-registrantToBadge :: Registrant -> Maybe Badge
+registrantToBadge :: Registrant a -> Maybe Badge
 registrantToBadge Registrant {..} = do
     state <- rState
     guard $ state `elem` [Confirmed, Registered]
@@ -50,8 +54,11 @@ registrantToBadge Registrant {..} = do
         bLine3 = riAskMeAbout
     pure Badge {..}
 
-main :: IO ()
-main = do
+loadConfig :: IO Config.Config
+loadConfig = Config.load "zureg.json"
+
+main :: forall a. A.FromJSON a => Hackathon.Handle a -> IO ()
+main _ = do
     progName <- getProgName
     args     <- getArgs
 
@@ -59,7 +66,7 @@ main = do
         [exportPath] -> do
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant]
+                :: IO [Registrant a]
 
             BL.putStr $ Csv.encodeByName badgeCsvHeader $
                 mapMaybe registrantToBadge registrants
