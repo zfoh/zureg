@@ -59,7 +59,7 @@ build/zip.txt: build/zureg-lambda.zip build/bucket.txt
 	aws s3api put-object \
 		--profile $(AWS_PROFILE) \
 		--region $(AWS_REGION) \
-		--bucket $(shell cat deploy/bucket.txt) \
+		--bucket $(shell cat build/bucket.txt) \
 		--key $(ZIP) \
 		--body build/zureg-lambda.zip
 	echo $(ZIP) >build/zip.txt
@@ -76,6 +76,13 @@ deploy: build/zip.txt build/bucket.txt
 		--parameter-overrides \
 			SourceS3Bucket=$(shell cat build/bucket.txt) \
 			SourceS3Key=$(shell cat build/zip.txt)
+
+# Undo the deployment.
+teardown:
+	aws cloudformation delete-stack \
+		--profile $(AWS_PROFILE) \
+		--region $(AWS_REGION) \
+		--stack-name zureg-stack
 
 # Use this if you run out of disk space.
 .PHONY: nuke-docker
