@@ -1,0 +1,15 @@
+Hello {{info.name}},
+
+Thank you for participating in ZuriHac 2019!  In order to further improve the
+event next year, we would really appreciate it if you could fill in this
+feedback form:
+
+    https://forms.gle/Tk8oNDdvrxXTe9Qk9
+
+Most of the fields are optional and we only use the data for statistics for next
+year -- it is not shared with any third parties.
+
+On behalf of the ZuriHac organisers and the Zurich Friends of Haskell,
+Jasper Van der Jeugt
+Juri Chomé
+Farhad Mehta
