@@ -10,6 +10,8 @@ Copyright:      2018 Jasper Van der Jeugt
 License:        BSD-3-Clause
 License-file:   LICENSE
 Build-type:     Simple
+Tested-with:    GHC==8.6.5
+
 Extra-source-files:
   CHANGELOG.md
   README.md
