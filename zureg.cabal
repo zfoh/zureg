@@ -1,6 +1,8 @@
 Cabal-version:  2.2
 Name:           zureg
 Version:        0.1.0.0
+Category:       Application
+Synopsis:       Hackathon registration system
 Description:    Please see the README on GitHub at <https://github.com/zfoh/zureg#readme>
 Homepage:       https://github.com/zfoh/zureg#readme
 Bug-reports:    https://github.com/zfoh/zureg/issues
@@ -82,3 +84,6 @@ Library
     urlencoded               >= 0.4  && < 0.5,
     uuid                     >= 1.3  && < 1.4,
     vector                   >= 0.12 && < 1.13
+
+  Autogen-modules:
+    Paths_zureg
