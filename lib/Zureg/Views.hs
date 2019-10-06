@@ -226,10 +226,12 @@ scanner = H.docTypeHtml $ do
         H.script H.! A.type_ "text/JavaScript" $ "scanner();"
 
 fileJsQr :: B.ByteString
-fileJsQr = $(Embed.embedFile "static/jsQR-807b073.js")
+fileJsQr =
+    $(Embed.makeRelativeToProject "static/jsQR-807b073.js" >>= Embed.embedFile)
 
 fileScanner :: B.ByteString
-fileScanner = $(Embed.embedFile "static/scanner.js")
+fileScanner =
+    $(Embed.makeRelativeToProject "static/scanner.js" >>= Embed.embedFile)
 
 scan :: Hackathon.Handle a -> Registrant a -> H.Html
 scan hackathon registrant@Registrant {..} = H.ul $ do
