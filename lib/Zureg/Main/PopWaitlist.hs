@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.PopWaitlist
     ( main
-    , loadConfig
     ) where
 
-import           Control.Monad             (forM, when, forM_)
+import           Control.Monad             (forM, forM_, when)
 import qualified Data.Aeson                as A
 import qualified Data.Text                 as T
 import qualified Data.Time                 as Time
@@ -13,24 +13,16 @@ import qualified Eventful                  as E
 import           System.Environment        (getArgs, getProgName)
 import           System.Exit               (exitFailure)
 import qualified System.IO                 as IO
-import qualified Zureg.Config              as Config
 import qualified Zureg.Database            as Database
-import qualified Zureg.Hackathon           as Hackathon
+import           Zureg.Hackathon           (Hackathon (..))
 import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 
-loadConfig :: IO Config.Config
-loadConfig = Config.load "zureg.json"
-
-main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
-     => Config.Config -> Hackathon.Handle a -> IO ()
-main config hackathon = do
+main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main hackathon@Hackathon {..} = do
     progName <- getProgName
     args     <- getArgs
-
-    dbConfig    <- Config.section "database" config
-    emailConfig <- Config.section "sendEmail" config
 
     uuids <- forM args $
         maybe (fail "could not parse uuid") return .  E.uuidFromText . T.pack
@@ -43,8 +35,8 @@ main config hackathon = do
             ]
         exitFailure
 
-    Database.withHandle dbConfig $ \db ->
-        SendEmail.withHandle emailConfig $ \mailer ->
+    Database.withHandle databaseConfig $ \db ->
+        SendEmail.withHandle sendEmailConfig $ \mailer ->
         forM_ uuids $ \uuid -> do
             registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
             event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
@@ -61,5 +53,5 @@ main config hackathon = do
             Database.writeEvents db uuid [event]
             IO.hPutStrLn IO.stderr $
                 "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
-            sendPopWaitlistEmail mailer (Hackathon.hConfig hackathon) rinfo uuid
+            sendPopWaitlistEmail mailer hackathon rinfo uuid
             IO.hPutStrLn IO.stderr "OK"

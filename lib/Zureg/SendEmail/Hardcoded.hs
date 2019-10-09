@@ -1,5 +1,6 @@
 -- | A number of hardcoded emails.
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 module Zureg.SendEmail.Hardcoded
     ( sendRegisterSuccessEmail
     , sendWaitlistEmail
@@ -8,88 +9,88 @@ module Zureg.SendEmail.Hardcoded
 
 import qualified Data.Text       as T
 import qualified Eventful        as E
-import           Zureg.Hackathon as Hackathon
+import           Zureg.Hackathon
 import           Zureg.Model
 import qualified Zureg.SendEmail as SendEmail
 
 sendRegisterSuccessEmail
-    :: SendEmail.Handle -> Hackathon.Config -> RegisterInfo -> E.UUID -> IO ()
-sendRegisterSuccessEmail sendEmail hackathon info uuid = SendEmail.sendEmail
+    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> E.UUID -> IO ()
+sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
-    (cName hackathon <> " Registration Confirmation") $ T.unlines
+    (name <> " Registration Confirmation") $ T.unlines
     [ "Hello " <> riName info <> ","
     , ""
-    , "Your registration for " <> cName hackathon <> " was successful."
+    , "Your registration for " <> name <> " was successful."
     , ""
     , "We look forward to seeing you there!"
     , ""
     , "You can view (and cancel) your registration here:"
     , ""
-    , "    " <> cBaseUrl hackathon <> "/ticket?uuid=" <> E.uuidToText uuid
+    , "    " <> baseUrl <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    " <> cContactUrl hackathon
+    , "    " <> contactUrl
     , ""
     , "For various questions, or socializing with other attendees,"
     , "you can join our Slack organisation:"
     , ""
-    , "    " <> cSlackUrl hackathon
+    , "    " <> slackUrl
     , ""
     , "Warm regards"
-    , "The " <> cName hackathon <> " Registration Bot"
+    , "The " <> name <> " Registration Bot"
     ]
 
 sendWaitlistEmail
-    :: SendEmail.Handle -> Hackathon.Config -> RegisterInfo -> E.UUID -> IO ()
-sendWaitlistEmail sendEmail hackathon info uuid = SendEmail.sendEmail
+    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> E.UUID -> IO ()
+sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
-    (cName hackathon <> ": You're on the waitlist") $ T.unlines
+    (name <> ": You're on the waitlist") $ T.unlines
     [ "Hello " <> riName info <> ","
     , ""
-    , "You have been added to the waitlist for " <> cName hackathon <> "."
+    , "You have been added to the waitlist for " <> name <> "."
     , ""
     , "We will let you know when places become available."
     , ""
     , "You can view your status here:"
     , ""
-    , "    " <> cBaseUrl hackathon <> "/ticket?uuid=" <> E.uuidToText uuid
+    , "    " <> baseUrl <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    " <> cContactUrl hackathon
+    , "    " <> contactUrl
     , ""
     , "Warm regards"
-    , "The " <> cName hackathon <> " Registration Bot"
+    , "The " <> name <> " Registration Bot"
     ]
 
 sendPopWaitlistEmail
-    :: SendEmail.Handle -> Hackathon.Config -> RegisterInfo -> E.UUID -> IO ()
-sendPopWaitlistEmail sendEmail hackathon info uuid = SendEmail.sendEmail
+    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> E.UUID -> IO ()
+sendPopWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
-    (cName hackathon <> ": You are now registered!") $ T.unlines
+    (name <> ": You are now registered!") $ T.unlines
     [ "Hello " <> riName info <> ","
     , ""
-    , "Great news!  Some places for " <> cName hackathon <> " became available."
+    , "Great news!  Some places for " <> name <> " became available."
     , "You have been removed from the waiting list and are now"
-    , "registered to attend " <> cName hackathon <> "."
+    , "registered to attend " <> name <> "."
     , ""
     , "You can view your registration here:"
     , ""
-    , "    " <> cBaseUrl hackathon <> "/ticket?uuid=" <> E.uuidToText uuid
+    , "    " <> baseUrl <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    " <> cContactUrl hackathon
+    , "    " <> contactUrl
     , ""
     , "For various questions, or socializing with other attendees,"
     , "you can join our Slack organisation:"
     , ""
-    , "    " <> cSlackUrl hackathon
+    , "    " <> slackUrl
     , ""
     , "Warm regards"
-    , "The " <> cName hackathon <> " Registration Bot"
+    , "The " <> name <> " Registration Bot"
     ]

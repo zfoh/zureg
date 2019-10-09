@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Email
     ( main
-    , loadConfig
     ) where
 
 import           Control.Monad      (forM_, unless)
@@ -16,7 +16,7 @@ import           System.Environment (getArgs, getProgName)
 import           System.Exit        (exitFailure)
 import qualified System.IO          as IO
 import qualified Text.Mustache      as Mustache
-import qualified Zureg.Config       as Config
+import           Zureg.Hackathon    (Hackathon)
 import qualified Zureg.Hackathon    as Hackathon
 import           Zureg.Model
 import qualified Zureg.SendEmail    as SendEmail
@@ -37,16 +37,10 @@ confirm = do
     line <- getLine
     unless (line == "yes") $ fail "aborted"
 
-loadConfig :: IO Config.Config
-loadConfig = Config.load "zureg.json"
-
-main :: forall a. (A.FromJSON a, A.ToJSON a)
-     => Config.Config -> Hackathon.Handle a -> IO ()
-main config _ = do
+main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main Hackathon.Hackathon {..} = do
     progName <- getProgName
     args     <- getArgs
-
-    sendEmailConfig <- Config.section "sendEmail" config
 
     case args of
         [exportPath, templatePath, statefile, subject] -> do

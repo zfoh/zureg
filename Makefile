@@ -18,6 +18,7 @@ build/bin/zureg-lambda: build/image.txt $(SOURCES)
 		--rm \
 		$(shell cat build/image.txt) \
 		stack --local-bin-path build/bin -j1 --copy-bins build
+	touch $@
 
 # Put all code and dependencies in a zip file we can run on AWS Lambda.
 build/zureg-lambda.zip: build/bin/zureg-lambda

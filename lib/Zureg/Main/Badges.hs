@@ -7,7 +7,6 @@ module Zureg.Main.Badges
     , registrantToBadge
 
     , main
-    , loadConfig
     ) where
 
 import           Control.Monad        (guard)
@@ -20,9 +19,8 @@ import qualified Data.Text            as T
 import           System.Environment   (getArgs, getProgName)
 import           System.Exit          (exitFailure)
 import qualified System.IO            as IO
-import qualified Zureg.Config         as Config
+import           Zureg.Hackathon      (Hackathon)
 import           Zureg.Model
-import qualified Zureg.Hackathon      as Hackathon
 
 data Badge = Badge
     { bLine1 :: T.Text
@@ -54,10 +52,7 @@ registrantToBadge Registrant {..} = do
         bLine3 = riAskMeAbout
     pure Badge {..}
 
-loadConfig :: IO Config.Config
-loadConfig = Config.load "zureg.json"
-
-main :: forall a. A.FromJSON a => Hackathon.Handle a -> IO ()
+main :: forall a. A.FromJSON a => Hackathon a -> IO ()
 main _ = do
     progName <- getProgName
     args     <- getArgs

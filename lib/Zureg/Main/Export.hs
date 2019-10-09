@@ -3,7 +3,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Export
     ( main
-    , loadConfig
     ) where
 
 import           Control.Monad              (forM, when)
@@ -15,8 +14,8 @@ import           System.Directory           (doesFileExist)
 import           System.Exit                (exitFailure)
 import           System.FilePath            (takeExtension)
 import qualified System.IO                  as IO
-import qualified Zureg.Config               as Config
 import qualified Zureg.Database             as Database
+import           Zureg.Hackathon            (Hackathon)
 import qualified Zureg.Hackathon            as Hackathon
 import           Zureg.Model
 import           Zureg.Model.Csv            ()
@@ -44,16 +43,12 @@ parseOptions = Options
         OA.help    ".csv or .json export path" <>
         OA.metavar "PATH")
 
-loadConfig :: IO Config.Config
-loadConfig = Config.load "zureg.json"
-
-main :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a)
-     => Config.Config -> Hackathon.Handle a -> IO ()
-main config Hackathon.Handle {..} = do
+main
+    :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a)
+     => Hackathon a -> IO ()
+main Hackathon.Hackathon {..} = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
-
-    dbConfig <- Config.section "database" config
 
     exists <- doesFileExist (oPath opts)
     when exists $ fail $ oPath opts ++ " already exists"
@@ -64,12 +59,12 @@ main config Hackathon.Handle {..} = do
 
     encode <- case takeExtension (oPath opts) of
         ".json" -> return (A.encode :: [Registrant a] -> BL.ByteString)
-        ".csv"  -> return $ CSV.encodeByName hCsvHeader
+        ".csv"  -> return $ CSV.encodeByName csvHeader
         ext     -> do
             IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure
 
-    Database.withHandle dbConfig $ \db -> do
+    Database.withHandle databaseConfig $ \db -> do
         uuids       <- Database.getRegistrantUuids db
         registrants <- progressMapM (Database.getRegistrant db) uuids
         BL.writeFile (oPath opts) $ encode $ filter predicate registrants

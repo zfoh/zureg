@@ -32,7 +32,8 @@ import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Zureg.Form                  as Form
-import           Zureg.Hackathon             as Hackathon
+import           Zureg.Hackathon             (Hackathon)
+import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
@@ -99,7 +100,7 @@ template head' body = H.docTypeHtml $ do
         head'
     H.body body
 
-register :: Hackathon.Handle a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
+register :: Hackathon a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 register hackathon recaptcha view =
     template (ReCaptcha.chScript recaptcha) $
     Form.registerView hackathon recaptcha view
@@ -117,7 +118,7 @@ registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
     H.p $ H.toHtml riName <> ", your have been added to the waitlist."
     H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
 
-ticket :: Hackathon.Handle a -> Registrant a -> H.Html
+ticket :: Hackathon a -> Registrant a -> H.Html
 ticket hackathon r@Registrant {..} = template
     (H.style $ do
         "img.qr {"
@@ -139,7 +140,7 @@ ticket hackathon r@Registrant {..} = template
         H.div $ do
             H.h1 $ registerState rState
             whenJust rInfo $ registrantInfo
-            whenJust rAdditionalInfo $ hTicketView hackathon
+            whenJust rAdditionalInfo $ Hackathon.ticketView hackathon
 
         case registrantRegisteredAt r of
             Just at | at >= tShirtDeadline -> H.p $ do
@@ -233,7 +234,7 @@ fileScanner :: B.ByteString
 fileScanner =
     $(Embed.makeRelativeToProject "static/scanner.js" >>= Embed.embedFile)
 
-scan :: Hackathon.Handle a -> Registrant a -> H.Html
+scan :: Hackathon a -> Registrant a -> H.Html
 scan hackathon registrant@Registrant {..} = H.ul $ do
     H.li $ H.strong $ case rState of
         Nothing         -> red "❌ Not registered"
@@ -251,8 +252,8 @@ scan hackathon registrant@Registrant {..} = H.ul $ do
     case registrantRegisteredAt registrant of
         Just at | at >= tShirtDeadline -> H.li $ H.strong $ red "Pick up T-Shirt later!"
         _                              -> mempty
-    
-    whenJust rAdditionalInfo $ \ri -> H.li (hScanView hackathon ri)
+
+    whenJust rAdditionalInfo $ \ri -> H.li (Hackathon.scanView hackathon ri)
 
   where
     red x = H.span H.! A.style "color: #aa0000" $ x
