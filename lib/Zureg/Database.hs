@@ -5,6 +5,7 @@
 {-# LANGUAGE TypeFamilies      #-}
 module Zureg.Database
     ( Config (..)
+    , defaultConfig
     , Handle
     , withHandle
     , writeEvents
@@ -42,6 +43,9 @@ data Config = Config
     { cRegistrantTable :: !T.Text
     , cEmailTable      :: !T.Text
     }
+
+defaultConfig :: Config
+defaultConfig = Config "registrants" "emails"
 
 data Handle = Handle
     { hConfig :: !Config

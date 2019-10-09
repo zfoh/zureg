@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
-module ZuriHac2019.Views (
-      ticketView
+module Zureg.Hackathon.ZuriHac2019.Views
+    ( ticketView
     , scanView
     ) where
 
-import           Data.List         (intercalate)
-import qualified Text.Blaze.Html5  as H
+import           Data.List                         (intercalate)
+import qualified Text.Blaze.Html5                  as H
 
-import           ZuriHac2019.Model as ZH19
+import           Zureg.Hackathon.ZuriHac2019.Model as ZH19
 
 ticketView :: ZH19.RegisterInfo -> H.Html
 ticketView RegisterInfo {..} = do

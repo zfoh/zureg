@@ -1,21 +1,17 @@
-{-# LANGUAGE
-    TemplateHaskell,
-    FlexibleContexts,
-    FlexibleInstances,
-    RecordWildCards,
-    OverloadedStrings
-    #-}
-
-module ZuriHac2019.Model (
-      TShirtCut (..)
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
+module Zureg.Hackathon.ZuriHac2019.Model
+    ( TShirtCut (..)
     , TShirtSize (..)
     , TrackInterest (..)
     , ContributorLevel (..)
     , Project (..)
     , RegisterInfo (..)
-
     , csvHeader
-) where
+    ) where
 
 import qualified Data.Aeson.TH.Extended as A
 import           Data.Csv               as Csv
@@ -72,10 +68,10 @@ instance Csv.ToNamedRecord Project where
         = HM.unions [ namedRecord [ "Project Name"              .= pName
                                   , "Project Website"           .= pWebsite
                                   , "Project Short Description" .= pShortDescription
-                                  ] 
-                    , toNamedRecord pContributorLevel 
+                                  ]
+                    , toNamedRecord pContributorLevel
                     ]
-            
+
 instance Csv.ToNamedRecord ContributorLevel where
     toNamedRecord ContributorLevel {..}
         = namedRecord [ "CL Beginner"     .= clBeginner
@@ -88,14 +84,14 @@ instance Csv.ToField TShirtCut where
     toField Male   = toField ("male" :: String)
 
 instance Csv.ToField TShirtSize where
-    toField S   = toField ("S" :: String) 
-    toField M   = toField ("M" :: String) 
-    toField L   = toField ("L" :: String) 
-    toField XL  = toField ("XL" :: String) 
-    toField XXL = toField ("XXL" :: String) 
+    toField S   = toField ("S" :: String)
+    toField M   = toField ("M" :: String)
+    toField L   = toField ("L" :: String)
+    toField XL  = toField ("XL" :: String)
+    toField XXL = toField ("XXL" :: String)
 
 instance Csv.ToNamedRecord RegisterInfo where
-    toNamedRecord RegisterInfo {..}  
+    toNamedRecord RegisterInfo {..}
         = HM.unions [ namedRecord [ "Beginner Track"     .= tiBeginner tiTrackInterest
                                   , "Intermediate Track" .= tiIntermediate tiTrackInterest
                                   , "Advanced Track"     .= tiAdvanced tiTrackInterest

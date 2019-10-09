@@ -1,17 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
-module ZuriHac2019.Form (
-      additionalInfoForm
+module Zureg.Hackathon.ZuriHac2019.Form
+    ( additionalInfoForm
     , additionalInfoView
     ) where
 
-import qualified Data.Text                   as T
-import qualified Text.Blaze.Html5            as H
-import qualified Text.Blaze.Html5.Attributes as A
-import qualified Text.Digestive              as D
-import qualified Text.Digestive.Blaze.Html5  as DH
-
-import           Zureg.Hackathon             as Hackathon
-import           ZuriHac2019.Model           as ZH19
+import qualified Data.Text                         as T
+import qualified Text.Blaze.Html5                  as H
+import qualified Text.Blaze.Html5.Attributes       as A
+import qualified Text.Digestive                    as D
+import qualified Text.Digestive.Blaze.Html5        as DH
+import           Zureg.Hackathon.ZuriHac2019.Model as ZH19
 
 additionalInfoForm :: Monad m => D.Form H.Html m ZH19.RegisterInfo
 additionalInfoForm = RegisterInfo
@@ -49,8 +47,8 @@ additionalInfoForm = RegisterInfo
         (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
         (D.text Nothing)
 
-additionalInfoView :: Hackathon.Config -> D.View H.Html -> H.Html
-additionalInfoView hackathon view = do
+additionalInfoView :: D.View H.Html -> H.Html
+additionalInfoView view = do
     H.p $ H.strong "Track Interest (optional)"
     H.p $ do
         "Let us know which track(s) you would participate in.  Note that we "
@@ -76,7 +74,7 @@ additionalInfoView hackathon view = do
         "Please note that we have ordered the T-Shirts and cannot guarantee "
         "that you will receive one if you register at this time."
 
-    H.p $ "In what size would you like the free " <> H.toHtml (cName hackathon) <> " T-Shirt?"
+    H.p $ "In what size would you like the free T-Shirt?"
 
     H.p $ do
         "The sizes should be fairly standard. "

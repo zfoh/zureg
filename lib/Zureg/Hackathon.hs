@@ -1,30 +1,38 @@
-{-# LANGUAGE TemplateHaskell #-}
-module Zureg.Hackathon (
-      Config (..)
-    , Handle (..)
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE Rank2Types                #-}
+{-# LANGUAGE TemplateHaskell           #-}
+module Zureg.Hackathon
+    ( Hackathon (..)
+    , withHackathonFromEnv
     ) where
 
-import qualified Data.Aeson.TH.Extended as A
-import qualified Data.Csv               as Csv
-import qualified Data.Text              as T
-import qualified Text.Blaze.Html5       as H
-import qualified Text.Digestive         as D
+import qualified Data.Aeson                  as Aeson
+import qualified Data.Csv                    as Csv
+import           Data.List                   (intercalate)
+import           Data.Maybe                  (fromMaybe)
+import           System.Environment          (lookupEnv)
+import           Zureg.Hackathon.Interface
+import qualified Zureg.Hackathon.ZuriHac2019 as ZuriHac2019
 
-data Config = Config
-    { cName       :: !T.Text -- ^ Name of the Hackathon, e.g. "ZuriHac 2020"
-    , cBaseUrl    :: !T.Text -- ^ Base URL, e.g. "https://zureg.zfoh.ch"
-    , cContactUrl :: !T.Text -- ^ URL of the hackathon homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
-    , cSlackUrl   :: !T.Text -- ^ Slack URL, e.g. "https://slack.zurihac.info/"
-    , cWaitlist   :: !Bool   -- ^ When 'True', new registrants are added to the waitlist
-    } deriving (Eq, Show)
+-- | Load the hackathon stored in the 'ZUREG_HACKATHON' environment variable.
+withHackathonFromEnv
+    :: (forall r. (Eq r, Csv.ToNamedRecord r, Aeson.FromJSON r, Aeson.ToJSON r)
+        => Hackathon r -> IO a)
+    -> IO a
+withHackathonFromEnv f = do
+    mbHackathonName <- lookupEnv "ZUREG_HACKATHON"
+    sh <- fromMaybe (fail message) (mbHackathonName >>= flip lookup hackathons)
+    case sh of SomeHackathon h -> f h
+  where
+    message =
+        "Environment variable ZUREG_HACKATHON should be set to one of: " ++
+        intercalate ", " (map fst hackathons)
 
-$(A.deriveJSON A.options ''Config)
+data SomeHackathon =
+       forall r. (Eq r, Csv.ToNamedRecord r, Aeson.FromJSON r, Aeson.ToJSON r)
+    => SomeHackathon (Hackathon r)
 
-data Handle a = Handle
-    { hConfig       :: Config
-    , hRegisterForm :: D.Form H.Html IO a
-    , hRegisterView :: D.View H.Html -> H.Html
-    , hTicketView   :: a -> H.Html
-    , hScanView     :: a -> H.Html
-    , hCsvHeader    :: Csv.Header
-    }
+hackathons :: [(String, IO SomeHackathon)]
+hackathons =
+    [ ("zurihac2019", SomeHackathon <$> ZuriHac2019.newHackathon)
+    ]

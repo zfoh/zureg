@@ -17,9 +17,10 @@ import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Text.Digestive.Blaze.Html5  as DH
+import           Zureg.Hackathon             (Hackathon)
+import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
-import qualified Zureg.Hackathon             as Hackathon
 
 -- | The 'IO' in this type signature is because we want to get the registration
 -- time.
@@ -49,9 +50,9 @@ registerForm = RegisterInfo
         (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
         (D.text Nothing)
 
-registerView :: Hackathon.Handle a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
-registerView Hackathon.Handle {..} recaptcha view = DH.form view "?" $ do
-    H.h1 $ H.toHtml (Hackathon.cName hConfig) <> " registration"
+registerView :: Hackathon a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
+registerView h recaptcha view = DH.form view "?" $ do
+    H.h1 $ H.toHtml (Hackathon.name h) <> " registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
     DH.label "name" view $ H.strong "Full name"
@@ -92,7 +93,7 @@ registerView Hackathon.Handle {..} recaptcha view = DH.form view "?" $ do
     DH.inputText "askMeAbout" view
     H.br
 
-    hRegisterView view
+    Hackathon.registerView h view
 
     ReCaptcha.chForm recaptcha
 
