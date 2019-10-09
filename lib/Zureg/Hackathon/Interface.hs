@@ -11,8 +11,9 @@ import qualified Zureg.ReCaptcha  as ReCaptcha
 import qualified Zureg.SendEmail  as SendEmail
 
 data Hackathon a = Hackathon
+    {
     -- | Name of the Hackathon, e.g. "ZuriHac 2020"
-    { name            :: T.Text
+      name            :: T.Text
     -- | Base URL, e.g. "https://zureg.zfoh.ch"
     , baseUrl         :: T.Text
     -- | URL of the contact homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
