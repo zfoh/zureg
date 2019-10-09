@@ -21,12 +21,11 @@ build/bin/zureg-lambda: build/image.txt $(SOURCES)
 	touch $@
 
 # Put all code and dependencies in a zip file we can run on AWS Lambda.
-build/zureg-lambda.zip: build/bin/zureg-lambda
+build/zureg-lambda.zip: build/bin/zureg-lambda deploy/main.py deploy/env.json
 	mkdir -p build/zureg-lambda
 	ln -fs $(PWD)/build/bin/zureg-lambda build/zureg-lambda/hsmain
 	ln -fs $(PWD)/deploy/main.py         build/zureg-lambda/main.py
-	ln -fs $(PWD)/deploy/main.py         build/zureg-lambda/main.py
-	ln -fs $(PWD)/zureg.json             build/zureg-lambda/zureg.json
+	ln -fs $(PWD)/deploy/env.json        build/zureg-lambda/env.json
 	zip $@ -j build/zureg-lambda/*
 	ls -lh $@
 
@@ -90,3 +89,7 @@ teardown:
 nuke-docker:
 	-docker container list -qa | xargs docker rm
 	-docker image list -qa | xargs docker image rm -f
+
+.PHONY: clean
+clean:
+	rm -rf build
