@@ -7,7 +7,8 @@ Parameters:
 
 Resources:
   # This table stores participant registration using event sourcing: we only
-  # store events.
+  # store events.  This is the only table that can be considered the ground
+  # truth; the other tables are derived from events in this table.
   RegDatabase:
     Type: 'AWS::DynamoDB::Table'
     DeletionPolicy: 'Retain'
@@ -42,6 +43,22 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 3
         WriteCapacityUnits: 3
+
+  # This holds the number of registrants and other statistics.
+  SummariesDatabase:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: 'Delete'
+    Properties:
+      TableName: 'summaries'
+      AttributeDefinitions:
+      - AttributeName: 'name'
+        AttributeType: 'S'
+      KeySchema:
+      - AttributeName: 'name'
+        KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 2
 
   # This is the lambda we deploy.  It says Python but it's really just a
   # simple wrapper around a Haskell binary.

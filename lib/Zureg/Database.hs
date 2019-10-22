@@ -11,13 +11,18 @@ module Zureg.Database
     , writeEvents
     , getRegistrant
     , getRegistrantUuids
+
     , putEmail
     , deleteEmail
     , lookupEmail
+
+    , RegistrantsSummary (..)
+    , lookupRegistrantsSummary
+    , putRegistrantsSummary
     ) where
 
 import           Control.Exception       (Exception, throwIO)
-import           Control.Lens            ((&), (.~), (^.))
+import           Control.Lens            (ix, (&), (.~), (^.), (^?))
 import           Control.Monad           (forM, void, when)
 import           Control.Monad.Trans     (liftIO)
 import qualified Data.Aeson              as A
@@ -29,6 +34,7 @@ import qualified Eventful                as E
 import qualified Eventful.Store.DynamoDB as E
 import qualified Network.AWS             as Aws
 import qualified Network.AWS.DynamoDB    as DynamoDB
+import           Text.Read               (readMaybe)
 import           Zureg.Model
 
 data DatabaseException
@@ -42,10 +48,13 @@ instance Exception DatabaseException
 data Config = Config
     { cRegistrantTable :: !T.Text
     , cEmailTable      :: !T.Text
+    , cSummariesTable  :: !T.Text
     }
 
+$(A.deriveJSON A.options ''Config)
+
 defaultConfig :: Config
-defaultConfig = Config "registrants" "emails"
+defaultConfig = Config "registrants" "emails" "summaries"
 
 data Handle = Handle
     { hConfig :: !Config
@@ -68,14 +77,25 @@ withHandle hConfig@Config {..} f = do
             , E.dynamoDBEventStoreConfigEventAttributeName   = "event"
             }
 
-
     f Handle {..}
+
 
 writeEvents :: A.ToJSON a => Handle -> E.UUID -> [Event a] -> IO ()
 writeEvents Handle {..} uuid events = do
     mbError <- Aws.runResourceT $ Aws.runAWS hAwsEnv $
         E.storeEvents hWriter E.AnyVersion uuid $ map A.toJSON events
     maybe (return ()) (throwIO . WriterException) mbError
+
+
+--------------------------------------------------------------------------------
+-- Some utilities for working with DynamoDB
+
+avs :: T.Text -> DynamoDB.AttributeValue
+avs t = DynamoDB.attributeValue & DynamoDB.avS .~ Just t
+
+avi :: Int -> DynamoDB.AttributeValue
+avi n = DynamoDB.attributeValue & DynamoDB.avN .~ Just (T.pack $ show n)
+
 
 getRegistrant :: A.FromJSON a => Handle -> E.UUID -> IO (Registrant a)
 getRegistrant Handle {..} uuid = do
@@ -119,26 +139,22 @@ putEmail :: Handle -> T.Text -> E.UUID -> IO ()
 putEmail Handle {..} email uuid = Aws.runResourceT $ Aws.runAWS hAwsEnv $
     void $ Aws.send $ DynamoDB.putItem (cEmailTable hConfig)
         & DynamoDB.piItem .~ HMS.fromList
-            [ ("email", DynamoDB.attributeValue & DynamoDB.avS .~ Just email)
-            , ("uuid",  DynamoDB.attributeValue &
-                DynamoDB.avS .~ Just (E.uuidToText uuid))
+            [ ("email", avs email)
+            , ("uuid",  avs (E.uuidToText uuid))
             ]
 
 deleteEmail :: Handle -> T.Text -> IO ()
 deleteEmail Handle {..} email = Aws.runResourceT $ Aws.runAWS hAwsEnv $
     void $ Aws.send $ DynamoDB.deleteItem (cEmailTable hConfig)
-        & DynamoDB.diKey .~ HMS.fromList 
-        [ ("email", DynamoDB.attributeValue & DynamoDB.avS .~ Just email)]
+        & DynamoDB.diKey .~ HMS.fromList [("email", avs email)]
 
 lookupEmail :: Handle -> T.Text -> IO (Maybe E.UUID)
 lookupEmail Handle {..} email = Aws.runResourceT $ Aws.runAWS hAwsEnv $ do
     response <- Aws.send $ DynamoDB.query (cEmailTable hConfig)
         & DynamoDB.qKeyConditionExpression .~ Just "email = :e"
-        & DynamoDB.qExpressionAttributeValues .~ HMS.singleton ":e" emailAv
+        & DynamoDB.qExpressionAttributeValues .~ HMS.singleton ":e" (avs email)
 
     return $ itemUuid =<< listToMaybe (response ^. DynamoDB.qrsItems)
-  where
-    emailAv = DynamoDB.attributeValue & DynamoDB.avS .~ Just email
 
 itemUuid :: HMS.HashMap T.Text DynamoDB.AttributeValue -> Maybe E.UUID
 itemUuid item = do
@@ -146,4 +162,50 @@ itemUuid item = do
     text <- uuid ^. DynamoDB.avS
     E.uuidFromText text
 
-$(A.deriveJSON A.options ''Config)
+data RegistrantsSummary = RegistrantsSummary
+    { rsTotal :: Int
+    } deriving (Show)
+
+$(A.deriveJSON A.options ''RegistrantsSummary)
+
+registrantsSummaryToAttributeValue
+    :: RegistrantsSummary -> DynamoDB.AttributeValue
+registrantsSummaryToAttributeValue RegistrantsSummary {..} =
+    DynamoDB.attributeValue & DynamoDB.avM .~ HMS.fromList
+        [ ("total", avi rsTotal)
+        ]
+
+registrantsSummaryFromAttributeValue
+    :: DynamoDB.AttributeValue -> Maybe RegistrantsSummary
+registrantsSummaryFromAttributeValue av = RegistrantsSummary
+    <$> getInt "total"
+  where
+    getInt :: T.Text -> Maybe Int
+    getInt key = do
+        txt <- av ^? DynamoDB.avM . ix key . DynamoDB.avN . traverse
+        readMaybe $ T.unpack txt
+
+putRegistrantsSummary :: Handle -> RegistrantsSummary -> IO ()
+putRegistrantsSummary Handle {..} summary =
+    Aws.runResourceT $ Aws.runAWS hAwsEnv $ void $ Aws.send $
+    DynamoDB.putItem (cSummariesTable hConfig)
+        & DynamoDB.piItem .~ HMS.fromList
+            [ ("name", avs "registrants")
+            , ("summary", av)
+            ]
+  where
+    av = registrantsSummaryToAttributeValue summary
+
+lookupRegistrantsSummary :: Handle -> IO RegistrantsSummary
+lookupRegistrantsSummary Handle {..} =
+    Aws.runResourceT $ Aws.runAWS hAwsEnv $ do
+        rsp <- Aws.send $ DynamoDB.getItem (cSummariesTable hConfig)
+            & DynamoDB.giKey .~ HMS.fromList [("name", avs "registrants")]
+
+        av <- maybe
+            (liftIO $ throwIO $ NotFoundException "registrants summary") return
+            (rsp ^? DynamoDB.girsItem . ix "summary")
+
+        maybe
+            (liftIO $ throwIO $ DecodeException "registrants summary") return
+            (registrantsSummaryFromAttributeValue av)
