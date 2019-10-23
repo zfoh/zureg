@@ -72,8 +72,7 @@ Resources:
   ZuregLambda:
     Type: 'AWS::Lambda::Function'
     Properties:
-      # TODO(jaspervdj): This should be renamed to 'zureg-web'.
-      FunctionName: 'zureg-lambda'
+      FunctionName: 'zureg-web'
       Handler: 'main.web_handler'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
       Runtime: 'python3.6'
