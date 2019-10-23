@@ -8,7 +8,7 @@ build: build/zureg-lambda.zip
 
 # We need docker to build binaries that run on amazon's linux version, which is
 # why this command is a bit more complicated than just `stack install`.
-build/bin/zureg-lambda: build/image.txt $(SOURCES)
+build/bin/zureg-web: build/image.txt $(SOURCES)
 	mkdir -p build/bin
 	docker run \
 		-m 4GB \
@@ -21,11 +21,12 @@ build/bin/zureg-lambda: build/image.txt $(SOURCES)
 	touch $@
 
 # Put all code and dependencies in a zip file we can run on AWS Lambda.
-build/zureg-lambda.zip: build/bin/zureg-lambda deploy/main.py deploy/env.json
+build/zureg-lambda.zip: build/bin/zureg-web deploy/main.py deploy/env.json
 	mkdir -p build/zureg-lambda
-	ln -fs $(PWD)/build/bin/zureg-lambda build/zureg-lambda/hsmain
-	ln -fs $(PWD)/deploy/main.py         build/zureg-lambda/main.py
-	ln -fs $(PWD)/deploy/env.json        build/zureg-lambda/env.json
+	ln -fs $(PWD)/build/bin/zureg-janitor build/zureg-lambda/zureg-janitor
+	ln -fs $(PWD)/build/bin/zureg-web 	  build/zureg-lambda/zureg-web
+	ln -fs $(PWD)/deploy/main.py      	  build/zureg-lambda/main.py
+	ln -fs $(PWD)/deploy/env.json     	  build/zureg-lambda/env.json
 	zip $@ -j build/zureg-lambda/*
 	ls -lh $@
 
