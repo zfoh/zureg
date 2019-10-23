@@ -11,6 +11,7 @@ import qualified Zureg.Database  as Database
 import           Zureg.Hackathon (Hackathon)
 import qualified Zureg.Hackathon as Hackathon
 import qualified Zureg.Lambda    as Lambda
+import           Zureg.Model
 
 
 --------------------------------------------------------------------------------
@@ -33,6 +34,17 @@ instance A.ToJSON Response where
 
 main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
 main hackathon =
-    Database.withHandle (Hackathon.databaseConfig hackathon) $ \_db ->
-    Lambda.main IO.stdin IO.stdout (ErrorResponse . show) $ \Request ->
-    pure $ MessageResponse "Hi, I'm the janitor!"
+    Database.withHandle (Hackathon.databaseConfig hackathon) $ \db ->
+    Lambda.main IO.stdin IO.stdout (ErrorResponse . show) $ \Request -> do
+    uuids       <- Database.getRegistrantUuids db
+    registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
+
+    let summary = Database.RegistrantsSummary
+            { Database.rsTotal = length registrants
+            }
+
+    Database.putRegistrantsSummary db summary
+    pure $ MessageResponse $ "Computed summary: " ++ renderSummary summary
+
+renderSummary :: Database.RegistrantsSummary -> String
+renderSummary rs = show (Database.rsTotal rs) ++ " total"

@@ -84,6 +84,9 @@ Resources:
 
   # This is the role of the lambda: the permissions it needs.  We need access to
   # logs, and to the database.
+  #
+  # TODO(jaspervdj): Possibly we can split this up into a web role and a janitor
+  # role.
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -102,11 +105,14 @@ Resources:
           Version: '2012-10-17'
           Statement:
           - Effect: 'Allow'
-            Action: ['dynamodb:PutItem', 'dynamodb:Query']
+            Action: ['dynamodb:PutItem', 'dynamodb:Query', 'dynamodb:Scan']
             Resource: {'Fn::GetAtt': ['RegDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['dynamodb:PutItem', 'dynamodb:Query', 'dynamodb:DeleteItem']
             Resource: {'Fn::GetAtt': ['EmailDatabase', 'Arn']}
+          - Effect: 'Allow'
+            Action: ['dynamodb:PutItem']
+            Resource: {'Fn::GetAtt': ['SummariesDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['ses:SendEmail']
             Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailAddress}'}
@@ -165,3 +171,21 @@ Resources:
       Code:
         S3Bucket: {'Ref': 'SourceS3Bucket'}
         S3Key: {'Ref': 'SourceS3Key'}
+
+  JanitorRule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Description: 'Invoke the zureg janitor regularly'
+      ScheduleExpression: 'rate(4 hours)'
+      State: 'ENABLED'
+      Targets:
+      - Arn: {'Fn::GetAtt': ['JanitorLambda', 'Arn']}
+        Id: 'JanitorTarget'
+
+  JanitorInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: {'Fn::GetAtt': ['JanitorLambda', 'Arn']}
+      Principal: 'events.amazonaws.com'
+      SourceArn: {'Fn::GetAtt': ['JanitorRule', 'Arn']}
