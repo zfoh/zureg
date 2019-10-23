@@ -75,7 +75,8 @@ deploy: build/zip.txt build/bucket.txt
 		--capabilities CAPABILITY_IAM \
 		--parameter-overrides \
 			SourceS3Bucket=$(shell cat build/bucket.txt) \
-			SourceS3Key=$(shell cat build/zip.txt)
+			SourceS3Key=$(shell cat build/zip.txt) \
+			EmailAddress=$(shell jq -r '.ZUREG_EMAIL' deploy/env.json)
 
 # Undo the deployment.
 teardown:
