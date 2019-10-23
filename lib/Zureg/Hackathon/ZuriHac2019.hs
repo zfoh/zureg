@@ -18,6 +18,7 @@ newHackathon :: IO (Hackathon RegisterInfo)
 newHackathon = do
     scannerSecret   <- T.pack <$> getEnv "ZUREG_SCANNER_SECRET"
     reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
+    email           <- T.pack <$> getEnv "ZUREG_EMAIL"
 
     return Hackathon.Hackathon
         { Hackathon.name = "ZuriHac 2019"
@@ -34,7 +35,7 @@ newHackathon = do
 
         , Hackathon.databaseConfig = Database.defaultConfig
         , Hackathon.sendEmailConfig = SendEmail.Config
-            { SendEmail.cFrom = "ZuriHac Registration Bot <zureg@zfoh.ch>"
+            { SendEmail.cFrom = "ZuriHac Registration Bot <" <> email <> ">"
             }
         , Hackathon.reCaptchaConfig = ReCaptcha.Config
             { ReCaptcha.cEnabled = True
