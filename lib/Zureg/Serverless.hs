@@ -19,20 +19,17 @@ module Zureg.Serverless
     , runForm
     ) where
 
-import qualified Control.Concurrent.Async   as Async
-import           Control.Exception          (Exception, fromException, throwIO)
-import qualified Data.Aeson                 as A
-import qualified Data.Aeson.TH.Extended     as A
-import qualified Data.ByteString            as B
-import qualified Data.ByteString.Lazy       as BL
-import qualified Data.ByteString.Lazy.Char8 as BL8
-import qualified Data.HashMap.Strict        as HMS
-import qualified Data.Text                  as T
-import qualified Data.Text.Lazy             as TL
-import qualified Data.URLEncoded            as UrlEncoded
-import qualified Data.Vector                as V
-import qualified System.IO                  as IO
-import qualified Text.Digestive             as D
+import           Control.Exception      (Exception, fromException, throwIO)
+import qualified Data.Aeson             as A
+import qualified Data.Aeson.TH.Extended as A
+import qualified Data.HashMap.Strict    as HMS
+import qualified Data.Text              as T
+import qualified Data.Text.Lazy         as TL
+import qualified Data.URLEncoded        as UrlEncoded
+import qualified Data.Vector            as V
+import qualified System.IO              as IO
+import qualified Text.Digestive         as D
+import qualified Zureg.Lambda           as Lambda
 
 data Request = Request
     { reqHttpMethod            :: !T.Text
@@ -86,34 +83,18 @@ $(A.deriveJSON A.options ''Request)
 $(A.deriveJSON A.options ''Response)
 
 main :: IO.Handle -> IO.Handle -> (Request -> IO Response) -> IO ()
-main ih oh f =
-    loop
+main ih oh =
+    -- We're really just wrapping 'Lambda.main' with more specific
+    -- request/response types and error handling.
+    Lambda.main ih oh errorResponse
   where
-    loop = do
-        eof <- IO.hIsEOF ih
-        if eof
-            then return ()
-            else do
-                input <- B.hGetLine ih
-                output <- respond input
-                BL8.hPutStrLn oh output
-                IO.hFlush oh
-                loop
-
-    respond :: B.ByteString -> IO BL.ByteString
-    respond input = do
-        thread <- Async.async $ do
-            case A.eitherDecode' (BL.fromChunks [input]) of
-                Right x  -> f x
-                Left err -> throwIO $ ServerlessException 400 $
-                    "Could not parse request JSON: " ++ show err
-
-        errOrRsp <- Async.waitCatch thread
-        case errOrRsp of
-            Right r -> return $ A.encode r
-            Left  e -> return $ A.encode $ responseHtml $ case fromException e of
-                Just (ServerlessException c m) -> response c (TL.pack m)
-                _ -> response 500 (TL.pack (show e))
+    errorResponse exception
+        | Just (ServerlessException c m) <- fromException exception =
+            responseHtml $ response c (TL.pack m)
+        | Just (Lambda.ParseInputJsonException err) <- fromException exception =
+            responseHtml $ response 400 $ TL.pack $
+            "Could not parse request: " ++ err
+        | otherwise = responseHtml $ response 500 (TL.pack (show exception))
 
 runForm
     :: Request -> T.Text -> D.Form v IO a -> IO (D.View v, Maybe a)

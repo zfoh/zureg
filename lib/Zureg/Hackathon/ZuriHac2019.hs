@@ -38,8 +38,8 @@ newHackathon = do
             { SendEmail.cFrom = "ZuriHac Registration Bot <" <> email <> ">"
             }
         , Hackathon.reCaptchaConfig = ReCaptcha.Config
-            { ReCaptcha.cEnabled = True
-            , ReCaptcha.cSiteKey = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
+            { ReCaptcha.cEnabled   = False
+            , ReCaptcha.cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
             , ReCaptcha.cSecretKey = reCaptchaSecret
             }
         , Hackathon.scannerSecret = scannerSecret

@@ -35,16 +35,21 @@ class Process:
 
     return response
 
-hsmain: Optional[Process] = None
+processes: Dict[str, Process] = {}
 
-def handler(event: dict, context: dict) -> dict:
-  global hsmain
+def get_process(name: str) -> Process:
+  if name in processes:
+    return processes[name]
 
-  if not hsmain:
-    with open('env.json') as f:
-      env: Dict[str, str] = json.loads(f.read())
+  with open('env.json') as f:
+    env: Dict[str, str] = json.loads(f.read())
 
-    binary = os.environ['LAMBDA_TASK_ROOT'] + '/hsmain'
-    hsmain = Process([binary], env)
+  binary = os.environ['LAMBDA_TASK_ROOT'] + '/' + name
+  processes[name] = Process([binary], env)
+  return processes[name]
 
-  return hsmain.handler(event)
+def web_handler(event: dict, context: dict) -> dict:
+  return get_process('zureg-web').handler(event)
+
+def janitor_handler(event: dict, context: dict) -> dict:
+  return get_process('zureg-janitor').handler(event)

@@ -12,7 +12,8 @@ Parameters:
 
 Resources:
   # This table stores participant registration using event sourcing: we only
-  # store events.
+  # store events.  This is the only table that can be considered the ground
+  # truth; the other tables are derived from events in this table.
   RegDatabase:
     Type: 'AWS::DynamoDB::Table'
     DeletionPolicy: 'Retain'
@@ -48,13 +49,31 @@ Resources:
         ReadCapacityUnits: 3
         WriteCapacityUnits: 3
 
+  # This holds the number of registrants and other statistics.
+  SummariesDatabase:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: 'Delete'
+    Properties:
+      TableName: 'summaries'
+      AttributeDefinitions:
+      - AttributeName: 'name'
+        AttributeType: 'S'
+      KeySchema:
+      - AttributeName: 'name'
+        KeyType: 'HASH'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 2
+
   # This is the lambda we deploy.  It says Python but it's really just a
   # simple wrapper around a Haskell binary.
+  #
+  # TODO(jaspervdj): This should be renamed to 'WebLambda'.
   ZuregLambda:
     Type: 'AWS::Lambda::Function'
     Properties:
-      FunctionName: 'zureg-lambda'
-      Handler: 'main.handler'
+      FunctionName: 'zureg-web'
+      Handler: 'main.web_handler'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
       Runtime: 'python3.6'
       Timeout: 10
@@ -65,6 +84,9 @@ Resources:
 
   # This is the role of the lambda: the permissions it needs.  We need access to
   # logs, and to the database.
+  #
+  # TODO(jaspervdj): Possibly we can split this up into a web role and a janitor
+  # role.
   LambdaExecutionRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -75,25 +97,29 @@ Resources:
           Principal: {'Service': ['lambda.amazonaws.com']}
           Action: ['sts:AssumeRole']
       Path: '/'
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
       Policies:
       - PolicyName: 'root'
         PolicyDocument:
           Version: '2012-10-17'
           Statement:
           - Effect: 'Allow'
-            Action: ['logs:*']
-            Resource: 'arn:aws:logs:*:*:*'
-          - Effect: 'Allow'
-            Action: ['dynamodb:PutItem', 'dynamodb:Query']
+            Action: ['dynamodb:PutItem', 'dynamodb:Query', 'dynamodb:Scan']
             Resource: {'Fn::GetAtt': ['RegDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['dynamodb:PutItem', 'dynamodb:Query', 'dynamodb:DeleteItem']
             Resource: {'Fn::GetAtt': ['EmailDatabase', 'Arn']}
           - Effect: 'Allow'
+            Action: ['dynamodb:PutItem']
+            Resource: {'Fn::GetAtt': ['SummariesDatabase', 'Arn']}
+          - Effect: 'Allow'
             Action: ['ses:SendEmail']
             Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailAddress}'}
 
-  # Allow ApiGateway to invoke the function
+  # Allow ApiGateway to invoke the function.
+  #
+  # TODO(jaspervdj): This should be renamed to 'WebLambdaPermission'.
   LambdaPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
@@ -132,3 +158,34 @@ Resources:
     Properties:
       RestApiId: {'Ref': 'Api'}
       StageName: 'beta'
+
+  JanitorLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: 'zureg-janitor'
+      Handler: 'main.janitor_handler'
+      Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
+      Runtime: 'python3.6'
+      Timeout: 10
+      MemorySize: 512  # If not, requests to DDB time out...
+      Code:
+        S3Bucket: {'Ref': 'SourceS3Bucket'}
+        S3Key: {'Ref': 'SourceS3Key'}
+
+  JanitorRule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Description: 'Invoke the zureg janitor regularly'
+      ScheduleExpression: 'rate(4 hours)'
+      State: 'ENABLED'
+      Targets:
+      - Arn: {'Fn::GetAtt': ['JanitorLambda', 'Arn']}
+        Id: 'JanitorTarget'
+
+  JanitorInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: {'Fn::GetAtt': ['JanitorLambda', 'Arn']}
+      Principal: 'events.amazonaws.com'
+      SourceArn: {'Fn::GetAtt': ['JanitorRule', 'Arn']}

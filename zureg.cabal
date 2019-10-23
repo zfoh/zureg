@@ -38,10 +38,12 @@ Library
     Zureg.Hackathon.ZuriHac2019.Form
     Zureg.Hackathon.ZuriHac2019.Model
     Zureg.Hackathon.ZuriHac2019.Views
+    Zureg.Lambda
     Zureg.Main.Badges
     Zureg.Main.Email
     Zureg.Main.Export
-    Zureg.Main.Lambda
+    Zureg.Main.Janitor
+    Zureg.Main.Web
     Zureg.Main.PopWaitlist
     Zureg.Model
     Zureg.Model.Csv
@@ -102,9 +104,9 @@ Executable zureg-export
   Import:  exe
   Main-is: Export.hs
 
-Executable zureg-lambda
+Executable zureg-web
   Import:  exe
-  Main-is: Lambda.hs
+  Main-is: Web.hs
 
 Executable zureg-email
   Import:  exe
@@ -121,3 +123,7 @@ Executable zureg-pop-waitlist
 Executable zureg-badges
   Import:  exe
   Main-is: Badges.hs
+
+Executable zureg-janitor
+  Import:  exe
+  Main-is: Janitor.hs
