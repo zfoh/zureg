@@ -2,8 +2,13 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   SourceS3Bucket:
     Type: 'String'
+    Description: 'S3 Bucket that the code of the lambdas are stored in.'
   SourceS3Key:
     Type: 'String'
+    Description: 'S3 Key of the web lambda.'
+  EmailAddress:
+    Type: 'String'
+    Description: 'Email address that the registration bot sends email from.'
 
 Resources:
   # This table stores participant registration using event sourcing: we only
@@ -103,7 +108,7 @@ Resources:
             Resource: {'Fn::GetAtt': ['EmailDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['ses:SendEmail']
-            Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/zureg@zfoh.ch'}
+            Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailAddress}'}
 
   # Allow ApiGateway to invoke the function
   LambdaPermission:
