@@ -46,7 +46,6 @@ data Project = Project
 data RegisterInfo = RegisterInfo
     { tiTrackInterest :: !TrackInterest
     , riTShirt        :: !(Maybe (TShirtCut, TShirtSize))
-    , riMentor        :: !Bool
     , riProject       :: !Project
     } deriving (Eq, Show)
 
@@ -96,7 +95,6 @@ instance Csv.ToNamedRecord RegisterInfo where
                                   , "Intermediate Track" .= tiIntermediate tiTrackInterest
                                   , "Advanced Track"     .= tiAdvanced tiTrackInterest
                                   , "GhcDevOps Track"    .= tiGhcDevOps tiTrackInterest
-                                  , "Mentor"             .= riMentor
                                   ]
                     , toNamedRecord riTShirt
                     , toNamedRecord riProject
@@ -115,10 +113,8 @@ csvHeader = Csv.header
     , "Intermediate Track"
     , "Advanced Track"
     , "GhcDevOps Track"
-    , "Mentor"
     , "T-Shirt Cut"
     , "T-Shirt Size"
-    , "Mentor"
     , "Project Name"
     , "Project Website"
     , "Project Short Description"

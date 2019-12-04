@@ -17,9 +17,6 @@ ticketView RegisterInfo {..} = do
             "T-Shirt: "
             <> (H.toHtml.show $ fst rTShirt) <> ", "
             <> (H.toHtml.show $ snd rTShirt)
-            <>  case riMentor of
-                    True  -> ", Mentorshirt"  <> H.br
-                    False -> H.br
         Nothing -> mempty
     "Track interest(s): "
     H.toHtml $ intercalate ", " $
@@ -33,5 +30,4 @@ scanView RegisterInfo {..} = case riTShirt of
     Nothing      -> "No T-Shirt"
     Just rTShirt -> "T-Shirt: " <> H.strong (
         (H.toHtml.show $ fst rTShirt) <> ", " <>
-        (H.toHtml.show $ snd rTShirt) <> ", " <>
-        (if riMentor then "Navy" else "Espresso"))
+        (H.toHtml.show $ snd rTShirt))

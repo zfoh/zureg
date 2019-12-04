@@ -28,7 +28,6 @@ additionalInfoForm = RegisterInfo
                     [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]] ++
                     [(Nothing, "I don't want a T-Shirt")])
                     (Just (Just M))))
-    <*> ("mentor" D..: D.bool Nothing)
     <*> ("project" D..: (Project
             <$> "name" D..: optionalText
             <*> "website" D..: optionalText
@@ -89,17 +88,6 @@ additionalInfoView view = do
     H.br
     DH.label "tshirt.size" view "Size"
     DH.inputSelect "tshirt.size" view
-    H.br
-
-    H.p $ H.strong "Mentors (optional)"
-    H.p $ do
-        "Every year, we are looking for volunteers to help Haskell newcomers "
-        "with questions. The idea is that people can call on your help if you "
-        "happen to be around, however you won't be busy with this full-time. "
-        "You will get a different t-shirt so that people can visibly identify "
-        "you as a mentor."
-    DH.inputCheckbox "mentor" view H.! A.class_ "checkbox"
-    DH.label "mentor" view $ "I want to be a mentor"
     H.br
 
     H.p $ H.strong "Project (optional)"
