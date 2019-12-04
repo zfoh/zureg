@@ -13,7 +13,8 @@ import           Zureg.Hackathon.ZuriHac2020.Model as ZH20
 
 additionalInfoForm :: Monad m => D.Form H.Html m ZH20.RegisterInfo
 additionalInfoForm = RegisterInfo
-    <$> "trackInterest" D..: (TrackInterest
+    <$> "hosting" D..: D.bool Nothing
+    <*> "trackInterest" D..: (TrackInterest
             <$> "beginner" D..: D.bool Nothing
             <*> "intermediate" D..: D.bool Nothing
             <*> "advanced" D..: D.bool Nothing
@@ -48,6 +49,16 @@ additionalInfoForm = RegisterInfo
 
 additionalInfoView :: D.View H.Html -> H.Html
 additionalInfoView view = do
+    H.p $ H.strong "Hosting Interest"
+    H.p $ do
+        "Zurich can be an expensive city, for example if you are a student or "
+        "if you are employed in a country with lower wages. "
+        "If you live near Zurich, you can help out by hosting someone on a "
+        "couch or spare bedroom during the event."
+    DH.inputCheckbox "hosting" view H.! A.class_ "checkbox"
+    DH.label "hosting" view $ "I can host someone near Zurich"
+    H.br
+
     H.p $ H.strong "Track Interest (optional)"
     H.p $ do
         "Let us know which track(s) you would participate in.  Note that we "
@@ -68,17 +79,11 @@ additionalInfoView view = do
     H.br
 
     H.p $ H.strong "T-Shirt"
-
-    H.p $ H.strong $ do
-        "Please note that we have ordered the T-Shirts and cannot guarantee "
-        "that you will receive one if you register at this time."
-
     H.p $ "In what size would you like the free T-Shirt?"
-
     H.p $ do
         "The sizes should be fairly standard. "
         "You can see the "
-        H.a H.! A.href "https://zfoh.ch/images/zurihac2020/tshirts-sizing.png"
+        H.a H.! A.href "https://zfoh.ch/images/zurihac2019/tshirts-sizing.png"
             H.! A.target "_blank" $
             "specifications here"
         "."

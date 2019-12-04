@@ -20,10 +20,10 @@ ticketView RegisterInfo {..} = do
         Nothing -> mempty
     "Track interest(s): "
     H.toHtml $ intercalate ", " $
-        ["Beginner" | tiBeginner tiTrackInterest]
-        ++ ["Intermediate" | tiIntermediate tiTrackInterest]
-        ++ ["Advanced" | tiAdvanced tiTrackInterest]
-        ++ ["GHC DevOps" | tiGhcDevOps tiTrackInterest]
+        ["Beginner" | tiBeginner riTrackInterest]
+        ++ ["Intermediate" | tiIntermediate riTrackInterest]
+        ++ ["Advanced" | tiAdvanced riTrackInterest]
+        ++ ["GHC DevOps" | tiGhcDevOps riTrackInterest]
 
 scanView :: ZH20.RegisterInfo -> H.Html
 scanView RegisterInfo {..} = case riTShirt of
