@@ -25,7 +25,6 @@ import           Zureg.Model
 data Badge = Badge
     { bLine1 :: T.Text
     , bLine2 :: Maybe T.Text
-    , bLine3 :: Maybe T.Text
     }
 
 previewBadge :: Badge -> T.Text
@@ -39,7 +38,6 @@ instance Csv.ToNamedRecord Badge where
     toNamedRecord Badge {..} = Csv.namedRecord
         [ "Line 1" Csv..= bLine1
         , "Line 2" Csv..= bLine2
-        , "Line 3" Csv..= bLine3
         ]
 
 registrantToBadge :: Registrant a -> Maybe Badge
@@ -49,7 +47,6 @@ registrantToBadge Registrant {..} = do
     RegisterInfo {..} <- rInfo
     let bLine1 = fromMaybe riName riBadgeName
         bLine2 = riAffiliation
-        bLine3 = riAskMeAbout
     pure Badge {..}
 
 main :: forall a. A.FromJSON a => Hackathon a -> IO ()

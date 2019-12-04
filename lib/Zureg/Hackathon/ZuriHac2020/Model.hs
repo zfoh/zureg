@@ -111,7 +111,6 @@ csvHeader = Csv.header
     , "Name on Badge"
     , "Email"
     , "Affiliation"
-    , "AskMeAbout"
     , "Beginner Track"
     , "Intermediate Track"
     , "Advanced Track"

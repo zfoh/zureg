@@ -44,7 +44,6 @@ instance ToNamedRecord RegisterInfo where
                       , "Name on Badge"      .= riBadgeName 
                       , "Email"              .= riEmail 
                       , "Affiliation"        .= riAffiliation 
-                      , "AskMeAbout"         .= riAskMeAbout 
                       , "Registered At"      .= riRegisteredAt
                       ]
          
