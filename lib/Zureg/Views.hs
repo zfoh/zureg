@@ -26,7 +26,6 @@ import qualified Data.ByteString.Base64.Lazy as Base64
 import qualified Data.FileEmbed              as Embed
 import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
-import qualified Data.Time                   as Time
 import qualified Eventful                    as E
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
@@ -37,12 +36,6 @@ import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
 import           Zureg.Model
 import qualified Zureg.ReCaptcha             as ReCaptcha
-
-tShirtDeadline :: Time.UTCTime
-tShirtDeadline = Time.UTCTime (Time.fromGregorian 2019 5 7) (15 * 3600)
-
-badgesDeadline :: Time.UTCTime
-badgesDeadline = Time.UTCTime (Time.fromGregorian 2019 6 6) (16 * 3600 + 8 * 60)
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -119,7 +112,7 @@ registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
     H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
 
 ticket :: Hackathon a -> Registrant a -> H.Html
-ticket hackathon r@Registrant {..} = template
+ticket hackathon Registrant {..} = template
     (H.style $ do
         "img.qr {"
         "  display: block;"
@@ -142,18 +135,12 @@ ticket hackathon r@Registrant {..} = template
             whenJust rInfo $ registrantInfo
             whenJust rAdditionalInfo $ Hackathon.ticketView hackathon
 
-        case registrantRegisteredAt r of
-            Just at | at >= tShirtDeadline -> H.p $ do
-                "Because you registered after the T-Shirt were ordered,"
-                " you will not be able to pick one up on the first day."
-            _                              -> mempty
-
         when (rState == Just Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
                 H.input H.! A.type_ "submit"
                     H.! A.value "Take me back to the registration"
 
-        when (rState == Just Registered) $
+        when (Hackathon.confirmation hackathon && rState == Just Registered) $
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
                     H.! A.value (H.toValue (E.uuidToText rUuid))
@@ -244,14 +231,9 @@ scan hackathon registrant@Registrant {..} = H.ul $ do
         Just Waitlisted -> red "⌛ on the waitlist"
 
     H.li $ case (registrantRegisteredAt registrant, registrantToBadge registrant) of
-        (Just at, _) | at >= badgesDeadline -> red "No Badge (late registration)"
         (_, Nothing)                        -> red "No Badge"
         (_, Just badge)                     ->
             "Badge: " <> H.strong (H.toHtml $ previewBadge badge)
-
-    case registrantRegisteredAt registrant of
-        Just at | at >= tShirtDeadline -> H.li $ H.strong $ red "Pick up T-Shirt later!"
-        _                              -> mempty
 
     whenJust rAdditionalInfo $ \ri -> H.li (Hackathon.scanView hackathon ri)
 

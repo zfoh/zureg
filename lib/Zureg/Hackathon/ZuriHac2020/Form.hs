@@ -13,7 +13,12 @@ import           Zureg.Hackathon.ZuriHac2020.Model as ZH20
 
 additionalInfoForm :: Monad m => D.Form H.Html m ZH20.RegisterInfo
 additionalInfoForm = RegisterInfo
-    <$> "hosting" D..: D.bool Nothing
+    <$> "askMeAbout" D..: optionalText
+    <*> "hosting" D..: D.bool Nothing
+    <*> "region" D..: D.choice (
+            [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]] ++
+            [(Nothing, "I'd rather not say")])
+            (Just Nothing)
     <*> "trackInterest" D..: (TrackInterest
             <$> "beginner" D..: D.bool Nothing
             <*> "intermediate" D..: D.bool Nothing
@@ -49,6 +54,14 @@ additionalInfoForm = RegisterInfo
 
 additionalInfoView :: D.View H.Html -> H.Html
 additionalInfoView view = do
+    H.h2 "Optional information"
+    DH.label "askMeAbout" view $ H.strong "Ask me about"
+    H.p $ do
+        "Topic(s) that you want to display on your badge.  It's a good ice "
+        "breaker for people who want to chat with you."
+    DH.inputText "askMeAbout" view
+    H.br
+
     H.p $ H.strong "Hosting Interest"
     H.p $ do
         "Zurich can be an expensive city, for example if you are a student or "
@@ -59,7 +72,14 @@ additionalInfoView view = do
     DH.label "hosting" view $ "I can host someone near Zurich"
     H.br
 
-    H.p $ H.strong "Track Interest (optional)"
+    H.p $ H.strong "Region"
+    DH.label "region" view $ do
+        "From what area will you travel to ZuriHac?  This is purely for our "
+        "statistics."
+    DH.inputSelect "region" view
+    H.br
+
+    H.h2 "Track Interest (optional)"
     H.p $ do
         "Let us know which track(s) you would participate in.  Note that we "
         "are still in the process of organizing these, so this serves as an "
@@ -78,7 +98,7 @@ additionalInfoView view = do
     DH.label "trackInterest.ghcDevOps" view $ "GHC DevOps Track"
     H.br
 
-    H.p $ H.strong "T-Shirt"
+    H.h2 "T-Shirt"
     H.p $ "In what size would you like the free T-Shirt?"
     H.p $ do
         "The sizes should be fairly standard. "
@@ -95,7 +115,7 @@ additionalInfoView view = do
     DH.inputSelect "tshirt.size" view
     H.br
 
-    H.p $ H.strong "Project (optional)"
+    H.h2 "Project (optional)"
     H.p $ do
         "Do you have a project or an idea to hack on with others? Do you have "
         "something you want to teach people?"

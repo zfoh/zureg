@@ -54,6 +54,7 @@ registerView h recaptcha view = DH.form view "?" $ do
     H.h1 $ H.toHtml (Hackathon.name h) <> " registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
+    H.h2 $ "Basic information"
     DH.label "name" view $ H.strong "Full name"
     DH.inputText "name" view
     H.br

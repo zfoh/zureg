@@ -23,6 +23,17 @@ data TShirtCut = Female | Male deriving (Bounded, Enum, Eq, Show)
 
 data TShirtSize = S | M | L | XL | XXL deriving (Bounded, Enum, Eq, Show)
 
+data Region
+    = Switzerland
+    | Europe
+    | Asia
+    | MiddleEast
+    | NorthAmerica
+    | CentralAmerica
+    | SouthAmerica
+    | Oceania
+    deriving (Bounded, Enum, Eq, Show)
+
 data TrackInterest = TrackInterest
     { tiBeginner     :: !Bool
     , tiIntermediate :: !Bool
@@ -44,7 +55,9 @@ data Project = Project
     } deriving (Eq, Show)
 
 data RegisterInfo = RegisterInfo
-    { riHosting       :: !Bool
+    { riAskMeAbout    :: !(Maybe T.Text)
+    , riHosting       :: !Bool
+    , riRegion        :: !(Maybe Region)
     , riTrackInterest :: !TrackInterest
     , riTShirt        :: !(Maybe (TShirtCut, TShirtSize))
     , riProject       :: !Project
@@ -52,6 +65,7 @@ data RegisterInfo = RegisterInfo
 
 $(A.deriveJSON A.options ''TShirtSize)
 $(A.deriveJSON A.options ''TShirtCut)
+$(A.deriveJSON A.options ''Region)
 $(A.deriveJSON A.options ''TrackInterest)
 $(A.deriveJSON A.options ''ContributorLevel)
 $(A.deriveJSON A.options ''Project)
@@ -79,6 +93,9 @@ instance Csv.ToNamedRecord ContributorLevel where
                       , "CL Advanced"     .= clAdvanced
                       ]
 
+instance Csv.ToField Region where
+    toField = toField . show
+
 instance Csv.ToField TShirtCut where
     toField Female = toField ("female" :: String)
     toField Male   = toField ("male" :: String)
@@ -92,7 +109,9 @@ instance Csv.ToField TShirtSize where
 
 instance Csv.ToNamedRecord RegisterInfo where
     toNamedRecord RegisterInfo {..}
-        = HM.unions [ namedRecord [ "Hosting"            .= riHosting
+        = HM.unions [ namedRecord [ "AskMeAbout"         .= riAskMeAbout
+                                  , "Hosting"            .= riHosting
+                                  , "Region"             .= riRegion
                                   , "Beginner Track"     .= tiBeginner riTrackInterest
                                   , "Intermediate Track" .= tiIntermediate riTrackInterest
                                   , "Advanced Track"     .= tiAdvanced riTrackInterest
@@ -111,7 +130,9 @@ csvHeader = Csv.header
     , "Name on Badge"
     , "Email"
     , "Affiliation"
+    , "AskMeAbout"
     , "Hosting"
+    , "Region"
     , "Beginner Track"
     , "Intermediate Track"
     , "Advanced Track"

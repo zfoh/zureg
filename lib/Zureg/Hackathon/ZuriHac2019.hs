@@ -26,6 +26,7 @@ newHackathon = do
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2019/#contact"
         , Hackathon.slackUrl = "https://slack.zurihac.info/"
         , Hackathon.waitlist = True
+        , Hackathon.confirmation = True
 
         , Hackathon.registerForm = ZH19.additionalInfoForm
         , Hackathon.registerView = ZH19.additionalInfoView

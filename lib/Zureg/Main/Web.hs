@@ -89,7 +89,7 @@ main hackathon =
                     Database.writeEvents db uuid [Scan $ ScanInfo time :: Event a]
                     html $ Views.scan hackathon registrant
 
-            ["confirm"] -> do
+            ["confirm"] | Hackathon.confirmation hackathon -> do
                 uuid <- getUuidParam req
                 registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                 case rState registrant of
