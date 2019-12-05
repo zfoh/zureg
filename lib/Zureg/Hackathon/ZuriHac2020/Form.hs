@@ -16,8 +16,8 @@ additionalInfoForm = RegisterInfo
     <$> "askMeAbout" D..: optionalText
     <*> "hosting" D..: D.bool Nothing
     <*> "region" D..: D.choice (
-            [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]] ++
-            [(Nothing, "I'd rather not say")])
+            (Nothing, "I'd rather not say") :
+            [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]])
             (Just Nothing)
     <*> "trackInterest" D..: (TrackInterest
             <$> "beginner" D..: D.bool Nothing
@@ -67,7 +67,8 @@ additionalInfoView view = do
         "Zurich can be an expensive city, for example if you are a student or "
         "if you are employed in a country with lower wages. "
         "If you live near Zurich, you can help out by hosting someone on a "
-        "couch or spare bedroom during the event."
+        "couch or spare bedroom during the event. "
+        "We will contact you later through email to get this set up."
     DH.inputCheckbox "hosting" view H.! A.class_ "checkbox"
     DH.label "hosting" view $ "I can host someone near Zurich"
     H.br

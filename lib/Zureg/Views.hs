@@ -57,7 +57,7 @@ template head' body = H.docTypeHtml $ do
             "}"
             "input[type=\"submit\"]:hover { background: #efefef; }"
             "input, select {"
-            "    width: 100%;"
+            "    width: calc(100% - 30px);"
             "    margin: 6px auto 20px auto;"
             "    font-size: 20px;"
             "    display: block;"
