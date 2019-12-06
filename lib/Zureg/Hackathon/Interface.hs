@@ -22,6 +22,8 @@ data Hackathon a = Hackathon
     , slackUrl        :: T.Text
     -- | When 'True', new registrants are added to the waitlist
     , waitlist        :: Bool
+    -- | When 'True', registrants can/must confirm their registration.
+    , confirmation    :: Bool
 
     -- | Registration form
     , registerForm    :: D.Form H.Html IO a

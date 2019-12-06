@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Zureg.Hackathon.ZuriHac2019
+module Zureg.Hackathon.ZuriHac2020
     ( newHackathon
     ) where
 
@@ -8,9 +8,9 @@ import           System.Environment                (getEnv)
 import qualified Zureg.Database                    as Database
 import           Zureg.Hackathon.Interface         (Hackathon)
 import qualified Zureg.Hackathon.Interface         as Hackathon
-import           Zureg.Hackathon.ZuriHac2019.Form  as ZH19
-import           Zureg.Hackathon.ZuriHac2019.Model as ZH19
-import           Zureg.Hackathon.ZuriHac2019.Views as ZH19
+import           Zureg.Hackathon.ZuriHac2020.Form  as ZH20
+import           Zureg.Hackathon.ZuriHac2020.Model as ZH20
+import           Zureg.Hackathon.ZuriHac2020.Views as ZH20
 import qualified Zureg.ReCaptcha                   as ReCaptcha
 import qualified Zureg.SendEmail                   as SendEmail
 
@@ -21,25 +21,25 @@ newHackathon = do
     email           <- T.pack <$> getEnv "ZUREG_EMAIL"
 
     return Hackathon.Hackathon
-        { Hackathon.name = "ZuriHac 2019"
+        { Hackathon.name = "ZuriHac 2020"
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
-        , Hackathon.contactUrl = "https://zfoh.ch/zurihac2019/#contact"
+        , Hackathon.contactUrl = "https://zfoh.ch/zurihac2020/#contact"
         , Hackathon.slackUrl = "https://slack.zurihac.info/"
-        , Hackathon.waitlist = True
-        , Hackathon.confirmation = True
+        , Hackathon.waitlist = False
+        , Hackathon.confirmation = False
 
-        , Hackathon.registerForm = ZH19.additionalInfoForm
-        , Hackathon.registerView = ZH19.additionalInfoView
-        , Hackathon.ticketView = ZH19.ticketView
-        , Hackathon.scanView = ZH19.scanView
-        , Hackathon.csvHeader = ZH19.csvHeader
+        , Hackathon.registerForm = ZH20.additionalInfoForm
+        , Hackathon.registerView = ZH20.additionalInfoView
+        , Hackathon.ticketView = ZH20.ticketView
+        , Hackathon.scanView = ZH20.scanView
+        , Hackathon.csvHeader = ZH20.csvHeader
 
         , Hackathon.databaseConfig = Database.defaultConfig
         , Hackathon.sendEmailConfig = SendEmail.Config
             { SendEmail.cFrom = "ZuriHac Registration Bot <" <> email <> ">"
             }
         , Hackathon.reCaptchaConfig = ReCaptcha.Config
-            { ReCaptcha.cEnabled   = False
+            { ReCaptcha.cEnabled   = True
             , ReCaptcha.cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
             , ReCaptcha.cSecretKey = reCaptchaSecret
             }

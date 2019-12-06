@@ -27,12 +27,11 @@ import           Text.Read              (readMaybe)
 -- Events
 
 data RegisterInfo = RegisterInfo
-    { riName          :: !T.Text
-    , riBadgeName     :: !(Maybe T.Text)
-    , riEmail         :: !T.Text
-    , riAffiliation   :: !(Maybe T.Text)
-    , riAskMeAbout    :: !(Maybe T.Text)
-    , riRegisteredAt  :: !Time.UTCTime
+    { riName         :: !T.Text
+    , riBadgeName    :: !(Maybe T.Text)
+    , riEmail        :: !T.Text
+    , riAffiliation  :: !(Maybe T.Text)
+    , riRegisteredAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
 data WaitlistInfo = WaitlistInfo

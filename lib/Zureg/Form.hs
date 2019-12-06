@@ -34,7 +34,6 @@ registerForm = RegisterInfo
             <$> "email" D..: simpleEmailCheck (T.strip <$> D.text Nothing)
             <*> "confirmEmail" D..: (T.strip <$> D.text Nothing))
     <*> "affiliation" D..: optionalText
-    <*> "askMeAbout" D..: optionalText
     <*> D.monadic (Time.getCurrentTime >>= return . pure)
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
@@ -55,6 +54,7 @@ registerView h recaptcha view = DH.form view "?" $ do
     H.h1 $ H.toHtml (Hackathon.name h) <> " registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
+    H.h2 $ "Basic information"
     DH.label "name" view $ H.strong "Full name"
     DH.inputText "name" view
     H.br
@@ -84,13 +84,6 @@ registerView h recaptcha view = DH.form view "?" $ do
         "Affiliations that you want to display on your badge (e.g.: employer, "
         "university, open source project...)"
     DH.inputText "affiliation" view
-    H.br
-
-    DH.label "askMeAbout" view $ H.strong "Ask me about (optional)"
-    H.p $ do
-        "Topic(s) that you want to display on your badge.  It's a good ice "
-        "breaker for people who want to chat with you."
-    DH.inputText "askMeAbout" view
     H.br
 
     Hackathon.registerView h view

@@ -122,8 +122,9 @@ Resources:
   # TODO(jaspervdj): This should be renamed to 'WebLambdaPermission'.
   LambdaPermission:
     Type: 'AWS::Lambda::Permission'
+    DependsOn: ['ZuregLambda', 'Api']
     Properties:
-      Action: 'lambda:invokeFunction'
+      Action: 'lambda:InvokeFunction'
       FunctionName: {'Fn::GetAtt': ['ZuregLambda', 'Arn']}
       Principal: 'apigateway.amazonaws.com'
       SourceArn: {'Fn::Sub': 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*'}
