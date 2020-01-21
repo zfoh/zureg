@@ -16,7 +16,7 @@ ticketView RegisterInfo {..} = do
         Just rTShirt ->
             "T-Shirt: "
             <> (H.toHtml.show $ fst rTShirt) <> ", "
-            <> (H.toHtml.show $ snd rTShirt)
+            <> (H.toHtml.show $ snd rTShirt) <> H.br
         Nothing -> mempty
     "Track interest(s): "
     H.toHtml $ intercalate ", " $
