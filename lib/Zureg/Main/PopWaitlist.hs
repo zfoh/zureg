@@ -3,6 +3,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.PopWaitlist
     ( main
+    , popWaitinglistUUIDs
     ) where
 
 import           Control.Monad             (forM, forM_, when)
@@ -18,6 +19,33 @@ import           Zureg.Hackathon           (Hackathon (..))
 import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
+
+popWaitinglistUUIDs :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
+                    => Hackathon a
+                    -> [E.UUID]
+                    -> IO ()
+popWaitinglistUUIDs hackathon@Hackathon{..} uuids =
+    Database.withHandle databaseConfig $ \db ->
+    SendEmail.withHandle sendEmailConfig $ \mailer ->
+    forM_ uuids $ \uuid -> do
+        registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+        event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
+        let registrant' = E.projectionEventHandler
+                (registrantProjection uuid) registrant event
+
+        -- Sanity checks
+        rinfo <- case rInfo registrant' of
+            Nothing                       -> fail "missing info?"
+            _ | registrant == registrant' -> fail "not waitlisted?"
+            Just i                        -> return i
+
+        IO.hPutStrLn IO.stderr "Writing event..."
+        Database.writeEvents db uuid [event]
+        IO.hPutStrLn IO.stderr $
+            "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
+        sendPopWaitlistEmail mailer hackathon rinfo uuid
+        IO.hPutStrLn IO.stderr "OK"
+
 
 main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
 main hackathon@Hackathon {..} = do
@@ -35,23 +63,4 @@ main hackathon@Hackathon {..} = do
             ]
         exitFailure
 
-    Database.withHandle databaseConfig $ \db ->
-        SendEmail.withHandle sendEmailConfig $ \mailer ->
-        forM_ uuids $ \uuid -> do
-            registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
-            event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
-            let registrant' = E.projectionEventHandler
-                    (registrantProjection uuid) registrant event
-
-            -- Sanity checks
-            rinfo <- case rInfo registrant' of
-                Nothing                       -> fail "missing info?"
-                _ | registrant == registrant' -> fail "not waitlisted?"
-                Just i                        -> return i
-
-            IO.hPutStrLn IO.stderr "Writing event..."
-            Database.writeEvents db uuid [event]
-            IO.hPutStrLn IO.stderr $
-                "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
-            sendPopWaitlistEmail mailer hackathon rinfo uuid
-            IO.hPutStrLn IO.stderr "OK"
+    popWaitinglistUUIDs hackathon uuids
