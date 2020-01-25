@@ -19,11 +19,18 @@ This application needs to be compiled on two different platforms:
 
 ## Deploying
 
-Use `make deploy` to deploy the CloudFormation stack.  This will drop the zip
-file you created using `make lambda` into an S3 bucket, from where it will be
-accessed by AWS Lambda. 
-To select a non-default AWS account, use `make deploy AWS_PROFILE=<profile>`, 
-where `<profile>` is the profile's name in the AWS credentials file.
+1.  Make sure you have access to an AWS account, and that you have the
+    credentials saved in `~/.aws/credentials`.  You can use:
+
+        aws sts get-caller-identity
+
+    to make sure this is working.
+
+2.  Run `make deploy` to deploy the Zureg stack.
+
+    To select a non-default AWS account, use
+    `make deploy AWS_PROFILE=<profile>`, where `<profile>` is the profile's
+    name in the AWS credentials file.
 
 ### Resources
 
