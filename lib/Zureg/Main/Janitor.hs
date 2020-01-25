@@ -39,6 +39,10 @@ main hackathon =
     uuids       <- Database.getRegistrantUuids db
     registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
 
+    freeSpaces <- numOfFreeSpaces registrants (capacity hackathon)
+
+    popWaitinglistUUIDs hackathon $ take freeSpaces $ waitingListUUIDs registrants
+
     let summary = Database.RegistrantsSummary
             { Database.rsTotal = length registrants
             }
@@ -48,3 +52,6 @@ main hackathon =
 
 renderSummary :: Database.RegistrantsSummary -> String
 renderSummary rs = show (Database.rsTotal rs) ++ " total"
+
+waitingListUUIDs :: [Registrant a] -> [E.UUID]
+waitingListUUIDs = map rUuid . filter ((Waitlisted ==) . rState)
