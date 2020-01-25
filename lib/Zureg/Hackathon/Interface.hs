@@ -20,8 +20,8 @@ data Hackathon a = Hackathon
     , contactUrl      :: T.Text
     -- | Slack URL, e.g. "https://slack.zurihac.info/"
     , slackUrl        :: T.Text
-    -- | When 'True', new registrants are added to the waitlist
-    , waitlist        :: Bool
+    -- | Total capacity of the event
+    , capacity        :: Int
     -- | When 'True', registrants can/must confirm their registration.
     , confirmation    :: Bool
 

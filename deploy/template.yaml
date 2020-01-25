@@ -111,7 +111,7 @@ Resources:
             Action: ['dynamodb:PutItem', 'dynamodb:Query', 'dynamodb:DeleteItem']
             Resource: {'Fn::GetAtt': ['EmailDatabase', 'Arn']}
           - Effect: 'Allow'
-            Action: ['dynamodb:PutItem']
+            Action: ['dynamodb:PutItem', 'dynamodb:GetItem']
             Resource: {'Fn::GetAtt': ['SummariesDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['ses:SendEmail']
