@@ -5,12 +5,17 @@ module Zureg.Main.Janitor
     ( main
     ) where
 
+import           Control.Monad (guard)
 import qualified Data.Aeson      as A
+import           Data.List (sortOn)
+import qualified Data.Time       as Time
+import qualified Eventful        as E
 import qualified System.IO       as IO
 import qualified Zureg.Database  as Database
 import           Zureg.Hackathon (Hackathon)
 import qualified Zureg.Hackathon as Hackathon
 import qualified Zureg.Lambda    as Lambda
+import           Zureg.Main.PopWaitlist (popWaitinglistUUIDs)
 import           Zureg.Model
 import Data.Maybe
 
@@ -49,24 +54,27 @@ isAttending Confirmed = True
 isAttending Registered = True
 isAttending _ = False
 
-main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
 main hackathon =
     Database.withHandle (Hackathon.databaseConfig hackathon) $ \db ->
     Lambda.main IO.stdin IO.stdout (ErrorResponse . show) $ \Request -> do
     uuids       <- Database.getRegistrantUuids db
     registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
 
-    let capacity = Hackathon.capacity hackathon
-    let attending = countByState isAttending registrants
+    let capacity   = Hackathon.capacity hackathon
+        attending  = countByState isAttending registrants
+        freeSpaces = capacity - attending
 
-    popWaitinglistUUIDs hackathon $ take freeSpaces $ waitingListUUIDs registrants
+    popWaitinglistUUIDs hackathon
+      $ take freeSpaces
+      $ waitingListUUIDs registrants
 
     let summary = Database.RegistrantsSummary
             { Database.rsTotal = length registrants
             , Database.rsWaiting  = countByState isWaiting registrants
             , Database.rsConfirmed = countByState isConfirmed registrants
             , Database.rsAttending = attending
-            , Database.rsAvailable = capacity - attending
+            , Database.rsAvailable = freeSpaces
             }
 
     Database.putRegistrantsSummary db summary
@@ -79,5 +87,19 @@ renderSummary rs = show (Database.rsTotal rs) ++ " total, " ++
   show (Database.rsConfirmed rs) ++ " confirmed, " ++
   show (Database.rsAvailable rs) ++ " available"
 
+-- This is to put Nothings to the end of a sorted list
+newtype Fifo = Fifo (Maybe Time.UTCTime) deriving Eq
+
+instance Ord Fifo where
+    compare (Fifo Nothing)  (Fifo Nothing)  = EQ
+    compare (Fifo Nothing)  (Fifo (Just _)) = GT
+    compare (Fifo (Just _)) (Fifo Nothing)  = LT
+    compare (Fifo (Just x)) (Fifo (Just y)) = compare x y
+
 waitingListUUIDs :: [Registrant a] -> [E.UUID]
-waitingListUUIDs = map rUuid . filter ((Waitlisted ==) . rState)
+waitingListUUIDs = map rUuid
+                 . sortOn (Fifo . fmap riRegisteredAt . rInfo)
+                 . mapMaybe (\r -> do
+                                s <- rState r
+                                guard $ isWaiting s
+                                return r)
