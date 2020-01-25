@@ -56,11 +56,15 @@ main hackathon =
     uuids       <- Database.getRegistrantUuids db
     registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
 
+    let capacity = Hackathon.capacity hackathon
+    let attending = countByState isAttending registrants
+
     let summary = Database.RegistrantsSummary
             { Database.rsTotal = length registrants
             , Database.rsWaiting  = countByState isWaiting registrants
             , Database.rsConfirmed = countByState isConfirmed registrants
-            , Database.rsAttending = countByState isAttending registrants
+            , Database.rsAttending = attending
+            , Database.rsAvailable = capacity - attending
             }
 
     Database.putRegistrantsSummary db summary
@@ -70,4 +74,5 @@ renderSummary :: Database.RegistrantsSummary -> String
 renderSummary rs = show (Database.rsTotal rs) ++ " total, " ++
   show (Database.rsWaiting rs) ++ " waiting, " ++
   show (Database.rsAttending rs) ++ " attending, " ++
-  show (Database.rsConfirmed rs) ++ " confirmed"
+  show (Database.rsConfirmed rs) ++ " confirmed, " ++
+  show (Database.rsAvailable rs) ++ " available"
