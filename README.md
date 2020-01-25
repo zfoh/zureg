@@ -26,11 +26,22 @@ This application needs to be compiled on two different platforms:
 
     to make sure this is working.
 
-2.  Run `make deploy` to deploy the Zureg stack.
+2.  Update `deploy/env.json` to set the email you will be contacting attendees
+	_from_.  In the AWS Console, navigate to
+	"Simple Email Service > Email addresses" and verify this email address.
+
+3.  Run `make deploy` to deploy the Zureg stack.
 
     To select a non-default AWS account, use
     `make deploy AWS_PROFILE=<profile>`, where `<profile>` is the profile's
     name in the AWS credentials file.
+
+4.  In the AWS Console, navigate to "API Gateway > Stages > beta" and browse
+    to the "invoke URL" followed by `/register`.  You should now see the
+    registration page.
+
+5.  As a test, register using an email address you verified (by default, AWS
+    will not let you send email to random people).
 
 ### Resources
 
