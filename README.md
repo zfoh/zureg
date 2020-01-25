@@ -1,5 +1,10 @@
 # zureg
 
+## Dependencies
+
+-   `docker`, for building a binary that will run on AWS lambda.
+-   `jq`, used in the Makefile to read JSON files.
+
 ## Building
 
 This application needs to be compiled on two different platforms:
@@ -19,11 +24,29 @@ This application needs to be compiled on two different platforms:
 
 ## Deploying
 
-Use `make deploy` to deploy the CloudFormation stack.  This will drop the zip
-file you created using `make lambda` into an S3 bucket, from where it will be
-accessed by AWS Lambda. 
-To select a non-default AWS account, use `make deploy AWS_PROFILE=<profile>`, 
-where `<profile>` is the profile's name in the AWS credentials file.
+1.  Make sure you have access to an AWS account, and that you have the
+    credentials saved in `~/.aws/credentials`.  You can use:
+
+        aws sts get-caller-identity
+
+    to make sure this is working.
+
+2.  Update `deploy/env.json` to set the email you will be contacting attendees
+	_from_.  In the AWS Console, navigate to
+	"Simple Email Service > Email addresses" and verify this email address.
+
+3.  Run `make deploy` to deploy the Zureg stack.
+
+    To select a non-default AWS account, use
+    `make deploy AWS_PROFILE=<profile>`, where `<profile>` is the profile's
+    name in the AWS credentials file.
+
+4.  In the AWS Console, navigate to "API Gateway > Stages > beta" and browse
+    to the "invoke URL" followed by `/register`.  You should now see the
+    registration page.
+
+5.  As a test, register using an email address you verified (by default, AWS
+    will not let you send email to random people).
 
 ### Resources
 

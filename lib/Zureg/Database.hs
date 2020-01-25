@@ -164,6 +164,10 @@ itemUuid item = do
 
 data RegistrantsSummary = RegistrantsSummary
     { rsTotal :: Int
+    , rsWaiting :: Int
+    , rsConfirmed :: Int
+    , rsAttending :: Int
+    , rsAvailable :: Int
     } deriving (Show)
 
 $(A.deriveJSON A.options ''RegistrantsSummary)
@@ -172,13 +176,19 @@ registrantsSummaryToAttributeValue
     :: RegistrantsSummary -> DynamoDB.AttributeValue
 registrantsSummaryToAttributeValue RegistrantsSummary {..} =
     DynamoDB.attributeValue & DynamoDB.avM .~ HMS.fromList
-        [ ("total", avi rsTotal)
+        [ ("total", avi rsTotal),
+          ("waiting", avi rsWaiting ),
+          ("confirmed", avi rsConfirmed),
+          ("attending", avi rsAttending),
+          ("available", avi rsAvailable)
         ]
+
 
 registrantsSummaryFromAttributeValue
     :: DynamoDB.AttributeValue -> Maybe RegistrantsSummary
 registrantsSummaryFromAttributeValue av = RegistrantsSummary
-    <$> getInt "total"
+    <$> getInt "total" <*> getInt "waiting" <*> getInt "confirmed"
+    <*> getInt "attending" <*> getInt "available"
   where
     getInt :: T.Text -> Maybe Int
     getInt key = do

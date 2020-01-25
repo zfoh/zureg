@@ -12,6 +12,8 @@ import           Zureg.Hackathon (Hackathon)
 import qualified Zureg.Hackathon as Hackathon
 import qualified Zureg.Lambda    as Lambda
 import           Zureg.Model
+import Data.Maybe
+
 
 
 --------------------------------------------------------------------------------
@@ -31,6 +33,21 @@ instance A.ToJSON Response where
     toJSON (MessageResponse msg) = A.object ["message" A..= msg]
     toJSON (ErrorResponse   err) = A.object ["error"   A..= err]
 
+countByState ::(RegisterState -> Bool) -> [Registrant a] -> Int
+countByState f registrants = length $ filter f $ mapMaybe rState registrants
+
+isWaiting :: RegisterState -> Bool
+isWaiting Waitlisted = True
+isWaiting _ = False
+
+isConfirmed :: RegisterState -> Bool
+isConfirmed Confirmed = True
+isConfirmed _ = False
+
+isAttending :: RegisterState -> Bool
+isAttending Confirmed = True
+isAttending Registered = True
+isAttending _ = False
 
 main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
 main hackathon =
@@ -39,19 +56,28 @@ main hackathon =
     uuids       <- Database.getRegistrantUuids db
     registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
 
-    freeSpaces <- numOfFreeSpaces registrants (capacity hackathon)
+    let capacity = Hackathon.capacity hackathon
+    let attending = countByState isAttending registrants
 
     popWaitinglistUUIDs hackathon $ take freeSpaces $ waitingListUUIDs registrants
 
     let summary = Database.RegistrantsSummary
             { Database.rsTotal = length registrants
+            , Database.rsWaiting  = countByState isWaiting registrants
+            , Database.rsConfirmed = countByState isConfirmed registrants
+            , Database.rsAttending = attending
+            , Database.rsAvailable = capacity - attending
             }
 
     Database.putRegistrantsSummary db summary
     pure $ MessageResponse $ "Computed summary: " ++ renderSummary summary
 
 renderSummary :: Database.RegistrantsSummary -> String
-renderSummary rs = show (Database.rsTotal rs) ++ " total"
+renderSummary rs = show (Database.rsTotal rs) ++ " total, " ++
+  show (Database.rsWaiting rs) ++ " waiting, " ++
+  show (Database.rsAttending rs) ++ " attending, " ++
+  show (Database.rsConfirmed rs) ++ " confirmed, " ++
+  show (Database.rsAvailable rs) ++ " available"
 
 waitingListUUIDs :: [Registrant a] -> [E.UUID]
 waitingListUUIDs = map rUuid . filter ((Waitlisted ==) . rState)
