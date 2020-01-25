@@ -49,12 +49,15 @@ main hackathon =
                     (liftA2 (,)
                         registerForm
                         (Hackathon.registerForm hackathon))
+                registrantsSummary <- Database.lookupRegistrantsSummary db
+                let atCapacity = Database.rsTotal registrantsSummary
+                                   >= Hackathon.capacity hackathon
 
                 case mbReg of
                     Nothing -> html $
                         Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
 
-                    Just (info, additionalInfo) | Hackathon.waitlist hackathon -> do
+                    Just (info, additionalInfo) | atCapacity -> do
                         -- You're on the waitlist
                         uuid <- E.uuidNextRandom
                         time <- Time.getCurrentTime
