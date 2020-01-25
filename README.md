@@ -1,5 +1,10 @@
 # zureg
 
+## Dependencies
+
+-   `docker`, for building a binary that will run on AWS lambda.
+-   `jq`, used in the Makefile to read JSON files.
+
 ## Building
 
 This application needs to be compiled on two different platforms:
