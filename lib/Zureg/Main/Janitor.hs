@@ -64,17 +64,18 @@ main hackathon =
     let capacity   = Hackathon.capacity hackathon
         attending  = countByState isAttending registrants
         freeSpaces = capacity - attending
+        waitingRegistrants = waitingListUUIDs registrants
+        registrantsToPop = take freeSpaces waitingRegistrants
+        freeSpacesLeft = freeSpaces - length registrantsToPop
 
-    popWaitinglistUUIDs hackathon
-      $ take freeSpaces
-      $ waitingListUUIDs registrants
+    popWaitinglistUUIDs hackathon registrantsToPop
 
     let summary = Database.RegistrantsSummary
             { Database.rsTotal = length registrants
             , Database.rsWaiting  = countByState isWaiting registrants
             , Database.rsConfirmed = countByState isConfirmed registrants
             , Database.rsAttending = attending
-            , Database.rsAvailable = freeSpaces
+            , Database.rsAvailable = freeSpacesLeft
             }
 
     Database.putRegistrantsSummary db summary
