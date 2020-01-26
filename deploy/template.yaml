@@ -32,6 +32,8 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 3
         WriteCapacityUnits: 3
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
 
   # This table maps email addresses to UUIDs.
   EmailDatabase:
@@ -48,6 +50,8 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 3
         WriteCapacityUnits: 3
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
 
   # This holds the number of registrants and other statistics.
   SummariesDatabase:
