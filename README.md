@@ -60,6 +60,21 @@ We use ReCaptcha to protect against bot registrations.  Your secret key goes
 into `deploy/recaptcha`, and this gets embedded into the Haskell binary (a bit
 ugly, I know).
 
+### AWS account requirements
+
+It is recommended you don't use your main AWS account for deploying but create a
+user with "Programmatic access". In AWS Console, navigate to "My Security
+credentials > Users > Add user", and you need to give it a set of permissions
+"Attach existing policies directly" :
+`AWSLambdaFullAccess`, `IAMFullAccess`, `AmazonS3FullAccess`,
+`AmazonDynamoDBFullAccess`, `AmazonSESFullAccess`,
+`AmazonAPIGatewayAdministrator`, `AWSCloudFormationFullAccess`
+
+To be able to send email to the registrants you will need to move your account
+out of the sandbox. For instructions how to do it, follow:
+https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html
+
+
 ## Tools
 
 ### zureg-export
