@@ -50,9 +50,7 @@ main hackathon =
                         registerForm
                         (Hackathon.registerForm hackathon))
                 registrantsSummary <- Database.lookupRegistrantsSummary db
-                let atCapacity = Database.rsTotal registrantsSummary
-                                   >= Hackathon.capacity hackathon
-
+                let atCapacity = Database.rsAvailable registrantsSummary <= 0
                 case mbReg of
                     Nothing -> html $
                         Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
