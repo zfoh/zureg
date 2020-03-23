@@ -57,7 +57,7 @@ def make_proxy_server(process):
 
 if __name__ == '__main__':
   print('starting lambda process...', file=sys.stderr)
-  process = main.Process(['stack', 'exec', 'zureg-lambda', 'zureg.json'])
+  process = main.Process(['stack', 'exec', 'zureg-web'])
 
   port = 8080
   print('starting server on http://localhost:{}/ ...'.format(port),
