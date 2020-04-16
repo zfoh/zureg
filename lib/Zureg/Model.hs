@@ -6,6 +6,7 @@ module Zureg.Model
     , WaitlistInfo (..)
     , PopWaitlistInfo (..)
     , ScanInfo (..)
+    , UncancelInfo (..)
     , Event (..)
 
     , RegisterState (..)
@@ -46,6 +47,10 @@ data ScanInfo = ScanInfo
     { siScannedAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
+data UncancelInfo = UncancelInfo
+    { uiUncanceledAt :: !Time.UTCTime
+    } deriving (Eq, Show)
+
 data Event a
     = Register RegisterInfo a
     | Waitlist WaitlistInfo
@@ -53,6 +58,7 @@ data Event a
     | Scan ScanInfo
     | Confirm
     | Cancel
+    | Uncancel UncancelInfo
     deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
@@ -82,6 +88,8 @@ registrantProjection uuid = E.Projection
         PopWaitlist _ | Just Waitlisted <- rState registrant ->
             registrant {rState = Just Registered}
         Scan _ -> registrant {rScanned = True}
+        Uncancel _ | Just Cancelled <- rState registrant ->
+            registrant {rState = Just Registered}
         _ -> registrant
     }
 
@@ -89,6 +97,7 @@ $(A.deriveJSON A.options ''RegisterInfo)
 $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''ScanInfo)
+$(A.deriveJSON A.options ''UncancelInfo)
 $(A.deriveJSON A.options ''Event)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
