@@ -37,7 +37,7 @@ confirm = do
     line <- getLine
     unless (line == "yes") $ fail "aborted"
 
-main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main :: forall e a. (A.FromJSON a, A.ToJSON a) => Hackathon e a -> IO ()
 main Hackathon.Hackathon {..} = do
     progName <- getProgName
     args     <- getArgs

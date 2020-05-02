@@ -93,7 +93,7 @@ template head' body = H.docTypeHtml $ do
         head'
     H.body body
 
-register :: Hackathon a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
+register :: Hackathon e a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 register hackathon recaptcha view =
     template (ReCaptcha.chScript recaptcha) $
     Form.registerView hackathon recaptcha view
@@ -111,7 +111,7 @@ registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
     H.p $ H.toHtml riName <> ", your have been added to the waitlist."
     H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
 
-ticket :: Hackathon a -> Registrant a -> H.Html
+ticket :: Hackathon e a -> Registrant a -> H.Html
 ticket hackathon Registrant {..} = template
     (H.style $ do
         "img.qr {"
@@ -221,7 +221,7 @@ fileScanner :: B.ByteString
 fileScanner =
     $(Embed.makeRelativeToProject "static/scanner.js" >>= Embed.embedFile)
 
-scan :: Hackathon a -> Registrant a -> H.Html
+scan :: Hackathon e a -> Registrant a -> H.Html
 scan hackathon registrant@Registrant {..} = H.ul $ do
     H.li $ H.strong $ case rState of
         Nothing         -> red "❌ Not registered"

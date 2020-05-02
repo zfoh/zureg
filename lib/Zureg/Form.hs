@@ -49,7 +49,7 @@ registerForm = RegisterInfo
         (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
         (D.text Nothing)
 
-registerView :: Hackathon a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
+registerView :: Hackathon e a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
 registerView h recaptcha view = DH.form view "?" $ do
     H.h1 $ H.toHtml (Hackathon.name h) <> " registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
