@@ -7,10 +7,14 @@ import qualified Data.Text        as T
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Digestive   as D
 import qualified Zureg.Database   as Database
+import           Zureg.Model      (CustomEventHandler)
 import qualified Zureg.ReCaptcha  as ReCaptcha
 import qualified Zureg.SendEmail  as SendEmail
 
-data Hackathon a = Hackathon
+-- | A Hackathon.  This 'a' is the additional information that is specific to
+-- this hackathon.  'e' are custom events in the event sourcing that modify
+-- this additional info using a 'CustomEventHandler'.
+data Hackathon e a = Hackathon
     {
     -- | Name of the Hackathon, e.g. "ZuriHac 2020"
       name            :: T.Text
@@ -44,4 +48,7 @@ data Hackathon a = Hackathon
     , reCaptchaConfig :: ReCaptcha.Config
     -- | Secret for the scanner
     , scannerSecret   :: T.Text
+
+    -- | Process custom events to modify the registrant state
+    , customEventHandler :: CustomEventHandler e a
     }

@@ -14,7 +14,7 @@ import           Zureg.Model
 import qualified Zureg.SendEmail as SendEmail
 
 sendRegisterSuccessEmail
-    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> E.UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon e a -> RegisterInfo -> E.UUID -> IO ()
 sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
@@ -43,7 +43,7 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmai
     ]
 
 sendWaitlistEmail
-    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> E.UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon e a -> RegisterInfo -> E.UUID -> IO ()
 sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)
@@ -67,7 +67,7 @@ sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     ]
 
 sendPopWaitlistEmail
-    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> E.UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon e a -> RegisterInfo -> E.UUID -> IO ()
 sendPopWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     (riEmail info)

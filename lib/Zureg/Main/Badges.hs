@@ -49,7 +49,7 @@ registrantToBadge Registrant {..} = do
         bLine2 = riAffiliation
     pure Badge {..}
 
-main :: forall a. A.FromJSON a => Hackathon a -> IO ()
+main :: forall e a. A.FromJSON a => Hackathon e a -> IO ()
 main _ = do
     progName <- getProgName
     args     <- getArgs

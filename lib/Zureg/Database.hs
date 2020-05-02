@@ -80,7 +80,8 @@ withHandle hConfig@Config {..} f = do
     f Handle {..}
 
 
-writeEvents :: A.ToJSON a => Handle -> E.UUID -> [Event a] -> IO ()
+writeEvents
+    :: (A.ToJSON a, A.ToJSON e) => Handle -> E.UUID -> [Event e a] -> IO ()
 writeEvents Handle {..} uuid events = do
     mbError <- Aws.runResourceT $ Aws.runAWS hAwsEnv $
         E.storeEvents hWriter E.AnyVersion uuid $ map A.toJSON events
@@ -97,8 +98,10 @@ avi :: Int -> DynamoDB.AttributeValue
 avi n = DynamoDB.attributeValue & DynamoDB.avN .~ Just (T.pack $ show n)
 
 
-getRegistrant :: A.FromJSON a => Handle -> E.UUID -> IO (Registrant a)
-getRegistrant Handle {..} uuid = do
+getRegistrant
+    :: (A.FromJSON a, A.FromJSON e)
+    => Handle -> CustomEventHandler e a -> E.UUID -> IO (Registrant a)
+getRegistrant Handle {..} ceh uuid = do
     values <- Aws.runResourceT $ Aws.runAWS hAwsEnv $
         E.getEvents hReader (E.allEvents uuid)
     events <- forM values $ \val ->
@@ -108,7 +111,7 @@ getRegistrant Handle {..} uuid = do
 
     when (null events) $ throwIO $ NotFoundException $
         "UUID " ++ show uuid ++ " not found"
-    return $ E.latestProjection (registrantProjection uuid) events
+    return $ E.latestProjection (registrantProjection ceh uuid) events
 
 -- | Perform a scan of the table to just return everything with version ID 0.
 getRegistrantUuids :: Handle -> IO [E.UUID]

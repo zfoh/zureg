@@ -17,8 +17,11 @@ import qualified Zureg.Hackathon.ZuriHac2020 as ZuriHac2020
 
 -- | Load the hackathon stored in the 'ZUREG_HACKATHON' environment variable.
 withHackathonFromEnv
-    :: (forall r. (Eq r, Csv.ToNamedRecord r, Aeson.FromJSON r, Aeson.ToJSON r)
-        => Hackathon r -> IO a)
+    :: (forall e r. ( Eq r
+                    , Csv.ToNamedRecord r, Aeson.FromJSON r, Aeson.ToJSON r
+                    , Aeson.FromJSON e, Aeson.ToJSON e
+                    )
+        => Hackathon e r -> IO a)
     -> IO a
 withHackathonFromEnv f = do
     mbHackathonName <- lookupEnv "ZUREG_HACKATHON"
@@ -30,8 +33,10 @@ withHackathonFromEnv f = do
         intercalate ", " (map fst hackathons)
 
 data SomeHackathon =
-       forall r. (Eq r, Csv.ToNamedRecord r, Aeson.FromJSON r, Aeson.ToJSON r)
-    => SomeHackathon (Hackathon r)
+       forall e r. ( Eq r, Csv.ToNamedRecord r, Aeson.FromJSON r, Aeson.ToJSON r
+                   , Aeson.FromJSON e, Aeson.ToJSON e
+                   )
+    => SomeHackathon (Hackathon e r)
 
 hackathons :: [(String, IO SomeHackathon)]
 hackathons =

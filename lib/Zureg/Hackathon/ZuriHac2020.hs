@@ -4,6 +4,7 @@ module Zureg.Hackathon.ZuriHac2020
     ) where
 
 import qualified Data.Text                         as T
+import           Data.Void                         (Void)
 import           System.Environment                (getEnv)
 import qualified Zureg.Database                    as Database
 import           Zureg.Hackathon.Interface         (Hackathon)
@@ -14,7 +15,7 @@ import           Zureg.Hackathon.ZuriHac2020.Views as ZH20
 import qualified Zureg.ReCaptcha                   as ReCaptcha
 import qualified Zureg.SendEmail                   as SendEmail
 
-newHackathon :: IO (Hackathon RegisterInfo)
+newHackathon :: IO (Hackathon Void RegisterInfo)
 newHackathon = do
     scannerSecret   <- T.pack <$> getEnv "ZUREG_SCANNER_SECRET"
     reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
@@ -44,4 +45,6 @@ newHackathon = do
             , ReCaptcha.cSecretKey = reCaptchaSecret
             }
         , Hackathon.scannerSecret = scannerSecret
+
+        , Hackathon.customEventHandler = \_ e -> e
         }

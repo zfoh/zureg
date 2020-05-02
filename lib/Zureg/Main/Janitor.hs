@@ -54,15 +54,17 @@ isAttending Confirmed = True
 isAttending Registered = True
 isAttending _ = False
 
-main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
-main hackathon =
-    Database.withHandle (Hackathon.databaseConfig hackathon) $ \db ->
+main
+    :: forall e a. (Eq a, A.FromJSON a, A.ToJSON a, A.FromJSON e, A.ToJSON e)
+    => Hackathon e a -> IO ()
+main hackathon@Hackathon.Hackathon {..} =
+    Database.withHandle databaseConfig $ \db ->
     Lambda.main IO.stdin IO.stdout (ErrorResponse . show) $ \Request -> do
     uuids       <- Database.getRegistrantUuids db
-    registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
+    registrants <- mapM (Database.getRegistrant db customEventHandler) uuids
+        :: IO [Registrant a]
 
-    let capacity   = Hackathon.capacity hackathon
-        attending  = countByState isAttending registrants
+    let attending  = countByState isAttending registrants
         freeSpaces = capacity - attending
         waitingRegistrants = waitingListUUIDs registrants
         registrantsToPop = take freeSpaces waitingRegistrants
