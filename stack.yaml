@@ -1,9 +1,10 @@
-resolver: lts-13.25
+resolver: lts-15.6
 packages:
 - .
 extra-deps:
-- 'digestive-functors-0.8.4.0'
+- 'digestive-functors-0.8.4.2'
 - 'digestive-functors-blaze-0.6.2.0'
 - 'eventful-dynamodb-0.2.0'
 - 'qrcode-0.1.2'
-- 'urlencoded-0.4.2.0'
+- git: 'https://github.com/jaspervdj/urlencoded.git'
+  commit: 'ec8d4a0ad0f9906916c992a002e1e9be319c9ee3'
