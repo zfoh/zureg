@@ -11,7 +11,6 @@ module Zureg.Model
 
     , RegisterState (..)
     , Registrant (..)
-    , CustomEventHandler
     , registrantProjection
 
     , parseRegisterState
@@ -52,7 +51,7 @@ data UncancelInfo = UncancelInfo
     { uiUncanceledAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
-data Event e a
+data Event a
     = Register RegisterInfo a
     | Waitlist WaitlistInfo
     | PopWaitlist PopWaitlistInfo
@@ -60,7 +59,6 @@ data Event e a
     | Confirm
     | Cancel
     | Uncancel UncancelInfo
-    | Custom e  -- Can be used for Hackathon-specific events.
     deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
@@ -77,13 +75,8 @@ data Registrant a = Registrant
     , rScanned        :: Bool
     } deriving (Eq, Show)
 
-type CustomEventHandler e a = e -> Maybe a -> Maybe a
-
-registrantProjection
-    :: CustomEventHandler e a  -- ^ Process Hackathon-specific events.
-    -> E.UUID                  -- ^ UUID for the registrant.
-    -> E.Projection (Registrant a) (Event e a)
-registrantProjection f uuid = E.Projection
+registrantProjection :: E.UUID -> E.Projection (Registrant a) (Event a)
+registrantProjection uuid = E.Projection
     { E.projectionSeed         = Registrant uuid Nothing Nothing Nothing False
     , E.projectionEventHandler = \registrant event -> case event of
         Cancel     -> registrant {rState = Just Cancelled}
@@ -97,8 +90,6 @@ registrantProjection f uuid = E.Projection
         Scan _ -> registrant {rScanned = True}
         Uncancel _ | Just Cancelled <- rState registrant ->
             registrant {rState = Just Registered}
-        Custom e ->
-            registrant {rAdditionalInfo = f e $ rAdditionalInfo registrant}
         _ -> registrant
     }
 

@@ -44,10 +44,8 @@ parseOptions = Options
         OA.metavar "PATH")
 
 main
-    :: forall e a. ( A.FromJSON e
-                   , CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a
-                   )
-     => Hackathon e a -> IO ()
+    :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a)
+     => Hackathon a -> IO ()
 main Hackathon.Hackathon {..} = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
@@ -68,6 +66,5 @@ main Hackathon.Hackathon {..} = do
 
     Database.withHandle databaseConfig $ \db -> do
         uuids       <- Database.getRegistrantUuids db
-        registrants <- progressMapM
-            (Database.getRegistrant db customEventHandler) uuids
+        registrants <- progressMapM (Database.getRegistrant db) uuids
         BL.writeFile (oPath opts) $ encode $ filter predicate registrants

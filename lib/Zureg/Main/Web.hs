@@ -19,7 +19,7 @@ import qualified Text.Blaze.Html.Renderer.Text as RenderHtml
 import qualified Text.Blaze.Html5              as H
 import qualified Text.Digestive                as D
 import qualified Zureg.Database                as Database
-import qualified Zureg.Form                    as Form
+import           Zureg.Form
 import           Zureg.Hackathon               (Hackathon)
 import qualified Zureg.Hackathon               as Hackathon
 import           Zureg.Model
@@ -33,13 +33,11 @@ html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
     Serverless.response200 . RenderHtml.renderHtml
 
-main
-    :: forall e a. (A.FromJSON a, A.ToJSON a, A.FromJSON e, A.ToJSON e)
-    => Hackathon e a -> IO ()
-main hackathon@Hackathon.Hackathon {..} =
-    Database.withHandle databaseConfig $ \db ->
-    ReCaptcha.withHandle reCaptchaConfig $ \recaptcha ->
-    SendEmail.withHandle sendEmailConfig $ \sendEmail ->
+main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main hackathon =
+    Database.withHandle (Hackathon.databaseConfig hackathon) $ \db ->
+    ReCaptcha.withHandle (Hackathon.reCaptchaConfig hackathon) $ \recaptcha ->
+    SendEmail.withHandle (Hackathon.sendEmailConfig hackathon) $ \sendEmail ->
     Serverless.main IO.stdin IO.stdout $ \req@Serverless.Request {..} ->
         case Serverless.requestPath req of
             ["register"] -> do
@@ -49,7 +47,7 @@ main hackathon@Hackathon.Hackathon {..} =
                     "Email address already registered"
                     (fmap isNothing . Database.lookupEmail db . riEmail . fst)
                     (liftA2 (,)
-                        Form.registerForm
+                        registerForm
                         (Hackathon.registerForm hackathon))
                 registrantsSummary <- Database.lookupRegistrantsSummary db
                 let atCapacity = Database.rsAvailable registrantsSummary <= 0
@@ -63,25 +61,21 @@ main hackathon@Hackathon.Hackathon {..} =
                         time <- Time.getCurrentTime
                         let wlinfo = WaitlistInfo time
                         Database.writeEvents db uuid
-                            [ Register info additionalInfo
-                            , Waitlist wlinfo :: Event e a
-                            ]
+                            [Register info additionalInfo, Waitlist wlinfo]
                         Database.putEmail db (riEmail info) uuid
                         sendWaitlistEmail sendEmail hackathon info uuid
                         html $ Views.registerWaitlist uuid info
                     Just (info, additionalInfo) -> do
                         -- Success registration
                         uuid <- E.uuidNextRandom
-                        Database.writeEvents db uuid
-                            [Register info additionalInfo :: Event e a]
+                        Database.writeEvents db uuid [Register info additionalInfo]
                         Database.putEmail db (riEmail info) uuid
                         sendRegisterSuccessEmail sendEmail hackathon info uuid
                         html $ Views.registerSuccess uuid info
 
             ["ticket"] | reqHttpMethod == "GET" -> do
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db customEventHandler uuid
-                    :: IO (Registrant a)
+                registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                 html $ Views.ticket hackathon registrant
 
             ["scanner"] | reqHttpMethod == "GET" ->
@@ -92,30 +86,26 @@ main hackathon@Hackathon.Hackathon {..} =
                 scannerAuthorized req $ do
                     time <- Time.getCurrentTime
                     uuid <- getUuidParam req
-                    registrant <- Database.getRegistrant
-                        db customEventHandler uuid :: IO (Registrant a)
-                    Database.writeEvents db uuid
-                        [Scan $ ScanInfo time :: Event e a]
+                    registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+                    Database.writeEvents db uuid [Scan $ ScanInfo time :: Event a]
                     html $ Views.scan hackathon registrant
 
             ["confirm"] | Hackathon.confirmation hackathon -> do
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db customEventHandler uuid
-                    :: IO (Registrant a)
+                registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                 case rState registrant of
-                  Just Registered -> Database.writeEvents db uuid [Confirm :: Event e a]
+                  Just Registered -> Database.writeEvents db uuid [Confirm :: Event a]
                   _               -> return ()
                 return $ Serverless.response302 $ "ticket?uuid=" <> E.uuidToText uuid
 
             ["cancel"] -> do
                 (view, mbCancel) <- Serverless.runForm req "cancel" $
-                    Form.cancelForm (lookupUuidParam req)
+                    cancelForm (lookupUuidParam req)
                 case mbCancel of
                     Just (uuid, True) -> do
-                        registrant <- Database.getRegistrant
-                            db customEventHandler uuid :: IO (Registrant a)
+                        registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                         -- TODO: Check that not yet cancelled?
-                        Database.writeEvents db uuid [Cancel :: Event e a]
+                        Database.writeEvents db uuid [Cancel :: Event a]
                         case rInfo registrant of
                             Nothing -> return ()
                             Just info ->  Database.deleteEmail db $ riEmail info
