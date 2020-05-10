@@ -2,12 +2,14 @@
 {-# LANGUAGE DeriveGeneric         #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE OverloadedStrings     #-}
 module Zureg.Hackathon.ZuriHac2020.Discord
     ( configFromEnv
     , aboutMe
     , getWelcomeChannelId
-    , createUniqueInviteUrl
+    , generateTempInviteUrl
+    , canJoinDiscord
     ) where
 
 import qualified Data.Aeson              as Aeson
@@ -18,6 +20,7 @@ import           GHC.Generics            (Generic)
 import qualified Network.HTTP.Client     as Http
 import qualified Network.HTTP.Client.TLS as Http
 import           System.Environment      (getEnv)
+import           Zureg.Model             (RegisterState (..))
 
 data Config = Config
     { accessToken :: !T.Text
@@ -80,9 +83,18 @@ instance Aeson.FromJSON Invite
 inviteToUrl :: Invite -> T.Text
 inviteToUrl invite = "https://discord.gg/" <> code invite
 
-createUniqueInviteUrl :: Config -> T.Text -> IO T.Text
-createUniqueInviteUrl conf channelId =
+generateTempInviteUrl :: Config -> T.Text -> IO T.Text
+generateTempInviteUrl conf channelId =
     fmap inviteToUrl $
     request conf ("/channels/" <> channelId <> "/invites") $ Post $ Aeson.object
     [ "max_uses" Aeson..= (1 :: Int)
+    , "max_age"  Aeson..= (10 * 60 :: Int)
     ]
+
+canJoinDiscord :: Maybe RegisterState -> Bool
+canJoinDiscord = \case
+    Nothing         -> False
+    Just Cancelled  -> False
+    Just Registered -> True
+    Just Confirmed  -> True
+    Just Waitlisted -> False

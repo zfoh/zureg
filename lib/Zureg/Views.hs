@@ -1,4 +1,5 @@
 -- | HTML responses.
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -17,25 +18,27 @@ module Zureg.Views
     , scan
     ) where
 
-import qualified Codec.Binary.QRCode         as QRCode
-import qualified Codec.Picture               as JP
-import           Control.Monad               (unless, when)
-import qualified Data.Array                  as Array
-import qualified Data.ByteString             as B
-import qualified Data.ByteString.Base64.Lazy as Base64
-import qualified Data.FileEmbed              as Embed
-import           Data.Maybe                  (fromMaybe)
-import qualified Data.Text                   as T
-import qualified Eventful                    as E
-import qualified Text.Blaze.Html5            as H
-import qualified Text.Blaze.Html5.Attributes as A
-import qualified Text.Digestive              as D
-import qualified Zureg.Form                  as Form
-import           Zureg.Hackathon             (Hackathon)
-import qualified Zureg.Hackathon             as Hackathon
-import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
+import qualified Codec.Binary.QRCode                 as QRCode
+import qualified Codec.Picture                       as JP
+import           Control.Monad                       (unless, when)
+import qualified Data.Array                          as Array
+import qualified Data.ByteString                     as B
+import qualified Data.ByteString.Base64.Lazy         as Base64
+import qualified Data.FileEmbed                      as Embed
+import           Data.Maybe                          (fromMaybe)
+import qualified Data.Text                           as T
+import qualified Eventful                            as E
+import qualified Text.Blaze.Html5                    as H
+import qualified Text.Blaze.Html5.Attributes         as A
+import qualified Text.Digestive                      as D
+import qualified Zureg.Form                          as Form
+import           Zureg.Hackathon                     (Hackathon)
+import qualified Zureg.Hackathon                     as Hackathon
+import           Zureg.Hackathon.ZuriHac2020.Discord (canJoinDiscord)
+import           Zureg.Main.Badges                   (previewBadge,
+                                                      registrantToBadge)
 import           Zureg.Model
-import qualified Zureg.ReCaptcha             as ReCaptcha
+import qualified Zureg.ReCaptcha                     as ReCaptcha
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -140,6 +143,17 @@ ticket hackathon Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Take me back to the registration"
 
+        when (canJoinDiscord rState) $ do
+            H.p $ do
+                "ZuriHac 2020 will take place as an online event.  To "
+                "coordinate the hackathon, we use Discord as a chat and voice "
+                "platform.  You can join the Discord server here:"
+            H.form H.! A.method "GET" H.! A.action "chat" $ do
+                H.input H.! A.type_ "hidden" H.! A.name "uuid"
+                    H.! A.value (H.toValue (E.uuidToText rUuid))
+                H.input H.! A.type_ "submit"
+                    H.! A.value "Generate Discord invite"
+
         when (Hackathon.confirmation hackathon && rState == Just Registered) $
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
@@ -147,7 +161,11 @@ ticket hackathon Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Confirm my registration and access ticket"
 
-        unless (rState == Just Cancelled) $
+        unless (rState == Just Cancelled) $ do
+            H.p $ do
+                "If you can no longer attend "
+                H.toHtml (Hackathon.name hackathon) <> ", we ask that you "
+                "cancel your registration because space is limited."
             H.form H.! A.method "GET" H.! A.action "cancel" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
                     H.! A.value (H.toValue (E.uuidToText rUuid))

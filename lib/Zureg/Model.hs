@@ -7,6 +7,7 @@ module Zureg.Model
     , PopWaitlistInfo (..)
     , ScanInfo (..)
     , UncancelInfo (..)
+    , JoinChatInfo (..)
     , Event (..)
 
     , RegisterState (..)
@@ -51,6 +52,10 @@ data UncancelInfo = UncancelInfo
     { uiUncanceledAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
+data JoinChatInfo = JoinChatInfo
+    { gdiiJoinChatAt :: !Time.UTCTime
+    } deriving (Eq, Show)
+
 data Event a
     = Register RegisterInfo a
     | Waitlist WaitlistInfo
@@ -59,6 +64,7 @@ data Event a
     | Confirm
     | Cancel
     | Uncancel UncancelInfo
+    | JoinChat JoinChatInfo
     deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
@@ -98,6 +104,7 @@ $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''ScanInfo)
 $(A.deriveJSON A.options ''UncancelInfo)
+$(A.deriveJSON A.options ''JoinChatInfo)
 $(A.deriveJSON A.options ''Event)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)

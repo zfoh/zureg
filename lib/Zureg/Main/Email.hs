@@ -8,7 +8,7 @@ module Zureg.Main.Email
 import           Control.Monad      (forM_, unless)
 import qualified Data.Aeson         as A
 import qualified Data.HashSet       as HS
-import           Data.Maybe         (listToMaybe, maybe)
+import           Data.Maybe         (listToMaybe)
 import qualified Data.Text          as T
 import qualified Data.Text.IO       as T
 import           System.Directory   (doesFileExist)
