@@ -18,8 +18,6 @@ data Hackathon a = Hackathon
     , baseUrl         :: T.Text
     -- | URL of the contact homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
     , contactUrl      :: T.Text
-    -- | Slack URL, e.g. "https://slack.zurihac.info/"
-    , slackUrl        :: T.Text
     -- | Total capacity of the event
     , capacity        :: Int
     -- | When 'True', registrants can/must confirm their registration.

@@ -25,7 +25,7 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmai
     , ""
     , "We look forward to seeing you there!"
     , ""
-    , "You can view (and cancel) your registration here:"
+    , "You can view your registration and join our chat here:"
     , ""
     , "    " <> baseUrl <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
@@ -33,10 +33,6 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmai
     , ""
     , "    " <> contactUrl
     , ""
-    , "For various questions, or socializing with other attendees,"
-    , "you can join our Slack organisation:"
-    , ""
-    , "    " <> slackUrl
     , ""
     , "Warm regards"
     , "The " <> name <> " Registration Bot"
@@ -78,18 +74,13 @@ sendPopWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     , "You have been removed from the waiting list and are now"
     , "registered to attend " <> name <> "."
     , ""
-    , "You can view your registration here:"
+    , "You can view your registration and join our chat here:"
     , ""
     , "    " <> baseUrl <> "/ticket?uuid=" <> E.uuidToText uuid
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
     , "    " <> contactUrl
-    , ""
-    , "For various questions, or socializing with other attendees,"
-    , "you can join our Slack organisation:"
-    , ""
-    , "    " <> slackUrl
     , ""
     , "Warm regards"
     , "The " <> name <> " Registration Bot"

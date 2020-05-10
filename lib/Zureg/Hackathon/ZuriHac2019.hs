@@ -24,7 +24,6 @@ newHackathon = do
         { Hackathon.name = "ZuriHac 2019"
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2019/#contact"
-        , Hackathon.slackUrl = "https://slack.zurihac.info/"
         , Hackathon.capacity = 500
         , Hackathon.confirmation = True
 
