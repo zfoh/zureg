@@ -24,7 +24,7 @@ newHackathon = do
         { Hackathon.name = "ZuriHac 2020"
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2020/#contact"
-        , Hackathon.capacity = 1000
+        , Hackathon.capacity = 2000
         , Hackathon.confirmation = False
 
         , Hackathon.registerForm = ZH20.additionalInfoForm
