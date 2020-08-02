@@ -45,6 +45,9 @@ This application needs to be compiled on two different platforms:
     to the "invoke URL" followed by `/register`.  You should now see the
     registration page.
 
+    If you see `NotFoundException registrants summary` instead. make sure to run
+    the `zureg-janitor` lambda once to bootstrap the summary.
+
 5.  As a test, register using an email address you verified (by default, AWS
     will not let you send email to random people).
 
