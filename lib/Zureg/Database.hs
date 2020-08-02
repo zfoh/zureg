@@ -22,7 +22,7 @@ module Zureg.Database
     ) where
 
 import           Control.Exception       (Exception, throwIO)
-import           Control.Lens            (ix, (&), (.~), (^.), (^?))
+import           Control.Lens            (ix, (&), (.~), (^.), (^?), (<&>))
 import           Control.Monad           (forM, void, when)
 import           Control.Monad.Trans     (liftIO)
 import qualified Data.Aeson              as A
@@ -33,7 +33,9 @@ import qualified Data.Text               as T
 import qualified Eventful                as E
 import qualified Eventful.Store.DynamoDB as E
 import qualified Network.AWS             as Aws
+import qualified Network.AWS.Data        as Aws
 import qualified Network.AWS.DynamoDB    as DynamoDB
+import           System.Environment      (lookupEnv)
 import           Text.Read               (readMaybe)
 import           Zureg.Model
 
@@ -65,7 +67,11 @@ data Handle = Handle
 
 withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle hConfig@Config {..} f = do
-    hAwsEnv <- Aws.newEnv Aws.Discover
+
+    -- AWS region is not retrieved correctly from environment variables, and neither from the AWS profile.
+    awsRegion <- regionFromEnv
+
+    hAwsEnv <- Aws.newEnv Aws.Discover <&> maybe id (Aws.envRegion .~) awsRegion
 
     let hWriter = E.dynamoDBEventStoreWriter dynamoConfig
         hReader = E.dynamoDBEventStoreReader dynamoConfig
@@ -78,6 +84,14 @@ withHandle hConfig@Config {..} f = do
             }
 
     f Handle {..}
+  where
+    regionFromEnv = do
+        maybeRegion <- lookupEnv "AWS_REGION"
+        pure $ case maybeRegion of
+            Just region -> case Aws.fromText $ T.pack region of
+                Right r -> Just r
+                Left _ -> Nothing
+            Nothing -> Nothing
 
 
 writeEvents :: A.ToJSON a => Handle -> E.UUID -> [Event a] -> IO ()
