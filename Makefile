@@ -48,7 +48,8 @@ build/bucket.txt:
 	aws s3api create-bucket \
 		--profile $(AWS_PROFILE) \
 		--region $(AWS_REGION) \
-		--bucket $(BUCKET)
+		--bucket $(BUCKET) \
+		--create-bucket-configuration LocationConstraint=${AWS_REGION}
 	echo $(BUCKET) >$@
 
 # A text file with the name of the zip file with the lambda's code.  Similarly
