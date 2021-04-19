@@ -5,6 +5,13 @@
 
 packages:
 - completed:
+    hackage: amazonka-1.6.1@sha256:f58b63e83876f93aa03c54e54b3eb8ba9358af93819d41f4a5a8f8b7d8b8399c,3544
+    pantry-tree:
+      size: 992
+      sha256: d792656a70ee42df262a599bc6608bda069e33092d665c3438a6eeeaf7db4fb2
+  original:
+    hackage: amazonka-1.6.1
+- completed:
     hackage: digestive-functors-0.8.4.2@sha256:badff1797b6dcd860a48ed4558985b2f6bec501e1016fa5afd9d7d6b0d8e4c08,3364
     pantry-tree:
       size: 1682
@@ -33,22 +40,26 @@ packages:
   original:
     hackage: qrcode-0.1.2
 - completed:
-    cabal-file:
-      size: 1656
-      sha256: a2bbd4fb65bf49700cff89599c267c54630d01c07e3ed340592035e9507899b1
+    hackage: unliftio-core-0.1.2.0@sha256:b0a7652ffce2284a6cebe05c99eb60573a8fb6631163f34b0b30a80b4a78cb23,1081
+    pantry-tree:
+      size: 328
+      sha256: 9d970bf5f98e68e8fc129b04d6c9d8eb1e641c7556ffd0f0a168a259335b6fd7
+  original:
+    hackage: unliftio-core-0.1.2.0
+- completed:
     name: urlencoded
     version: 0.4.2.0
-    git: https://github.com/jaspervdj/urlencoded.git
+    git: git@github.com:jaspervdj/urlencoded.git
     pantry-tree:
       size: 329
-      sha256: 2250b5c8b3d5f344e63076674d7100f059b56746a9247eefd78316262a7fab8b
-    commit: ec8d4a0ad0f9906916c992a002e1e9be319c9ee3
+      sha256: d99871e8aa64d8d325435139f0d7389175cd5471e6e116564865b97f65e83135
+    commit: 79e31ed9279c820bb89e36824464fdfb4b7b968a
   original:
-    git: https://github.com/jaspervdj/urlencoded.git
-    commit: ec8d4a0ad0f9906916c992a002e1e9be319c9ee3
+    git: git@github.com:jaspervdj/urlencoded.git
+    commit: 79e31ed9279c820bb89e36824464fdfb4b7b968a
 snapshots:
 - completed:
-    size: 491387
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/15/6.yaml
-    sha256: 8d81505a6de861e167a58534ab62330afb75bfa108735c7db1204f7ef2a39d79
-  original: lts-15.6
+    size: 567037
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/9.yaml
+    sha256: d7d8d5106e53d1669964bd8bd2b0f88a5ad192d772f5376384b76738fd992311
+  original: lts-17.9
