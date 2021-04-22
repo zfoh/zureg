@@ -1,0 +1,6 @@
+packages: .
+
+source-repository-package
+  type: git
+  location: https://github.com/jaspervdj/urlencoded.git
+  tag: 79e31ed9279c820bb89e36824464fdfb4b7b968a

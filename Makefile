@@ -12,12 +12,12 @@ build/bin/zureg-web: build/image.txt $(SOURCES)
 	mkdir -p build/bin
 	docker run \
 		-m 4GB \
-		-p 8080:8080 \
 		--user $(shell id -u):$(shell id -g) \
-		--mount type=bind,source=$(shell pwd),target=/build \
+		--mount type=bind,source=$(shell pwd),target=/dist \
 		--rm \
 		$(shell cat build/image.txt) \
-		stack --local-bin-path build/bin -j1 --copy-bins build
+		cp -r /zureg/bin /dist/build
+
 	touch $@
 
 # Put all code and dependencies in a zip file we can run on AWS Lambda.
@@ -32,10 +32,10 @@ build/zureg-lambda.zip: build/bin/zureg-web deploy/main.py deploy/env.json
 
 # This is a text file with the name of the docker image.  We do things this way
 # to make the Makefile dependency tracking work.
-build/image.txt: docker/Dockerfile
+build/image.txt: Dockerfile
 	mkdir -p build
-	docker build -m 4GB -t haskell-amazon-linux docker
-	echo "haskell-amazon-linux" >$@
+	docker build -m 4GB -t zureg .
+	echo "zureg" >$@
 
 # This is simply a text file with the name of the bucket we will be putting our
 # lambda's code into.  If it doesn't exist, we generate a bucket with a random
