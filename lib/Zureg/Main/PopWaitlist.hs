@@ -48,7 +48,7 @@ popWaitinglistUUIDs hackathon@Hackathon{..} uuids =
 
 
 main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
-main hackathon@Hackathon {..} = do
+main hackathon = do
     progName <- getProgName
     args     <- getArgs
 
