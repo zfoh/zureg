@@ -22,7 +22,7 @@ module Zureg.Database
     ) where
 
 import           Control.Exception       (Exception, throwIO)
-import           Control.Lens            (ix, (&), (.~), (^.), (^?), (<&>))
+import           Control.Lens            (ix, (&), (.~), (^.), (^?))
 import           Control.Monad           (forM, void, when)
 import           Control.Monad.Trans     (liftIO)
 import qualified Data.Aeson              as A
@@ -32,10 +32,8 @@ import           Data.Maybe              (listToMaybe)
 import qualified Data.Text               as T
 import qualified Eventful                as E
 import qualified Eventful.Store.DynamoDB as E
-import qualified Network.AWS             as Aws
-import qualified Network.AWS.Data        as Aws
 import qualified Network.AWS.DynamoDB    as DynamoDB
-import           System.Environment      (lookupEnv)
+import qualified Network.AWS.Extended    as Aws
 import           Text.Read               (readMaybe)
 import           Zureg.Model
 
@@ -67,11 +65,7 @@ data Handle = Handle
 
 withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle hConfig@Config {..} f = do
-
-    -- AWS region is not retrieved correctly from environment variables, and neither from the AWS profile.
-    awsRegion <- regionFromEnv
-
-    hAwsEnv <- Aws.newEnv Aws.Discover <&> maybe id (Aws.envRegion .~) awsRegion
+    hAwsEnv <- Aws.smartEnv
 
     let hWriter = E.dynamoDBEventStoreWriter dynamoConfig
         hReader = E.dynamoDBEventStoreReader dynamoConfig
@@ -84,15 +78,6 @@ withHandle hConfig@Config {..} f = do
             }
 
     f Handle {..}
-  where
-    regionFromEnv = do
-        maybeRegion <- lookupEnv "AWS_REGION"
-        pure $ case maybeRegion of
-            Just region -> case Aws.fromText $ T.pack region of
-                Right r -> Just r
-                Left _ -> Nothing
-            Nothing -> Nothing
-
 
 writeEvents :: A.ToJSON a => Handle -> E.UUID -> [Event a] -> IO ()
 writeEvents Handle {..} uuid events = do
@@ -177,8 +162,8 @@ itemUuid item = do
     E.uuidFromText text
 
 data RegistrantsSummary = RegistrantsSummary
-    { rsTotal :: Int
-    , rsWaiting :: Int
+    { rsTotal     :: Int
+    , rsWaiting   :: Int
     , rsConfirmed :: Int
     , rsAttending :: Int
     , rsAvailable :: Int

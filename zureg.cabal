@@ -60,6 +60,7 @@ Library
 
   Other-modules:
     Data.Aeson.TH.Extended
+    Network.AWS.Extended
     Paths_zureg
 
   Build-depends:
