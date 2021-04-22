@@ -5,6 +5,7 @@ module Zureg.Hackathon.ZuriHac2019
 
 import qualified Data.Text                         as T
 import           System.Environment                (getEnv)
+import qualified Text.Blaze.Html5                  as H
 import qualified Zureg.Database                    as Database
 import           Zureg.Hackathon.Interface         (Hackathon)
 import qualified Zureg.Hackathon.Interface         as Hackathon
@@ -24,7 +25,6 @@ newHackathon = do
         { Hackathon.name = "ZuriHac 2019"
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2019/#contact"
-        , Hackathon.slackUrl = "https://slack.zurihac.info/"
         , Hackathon.capacity = 500
         , Hackathon.confirmation = True
 
@@ -44,4 +44,7 @@ newHackathon = do
             , ReCaptcha.cSecretKey = reCaptchaSecret
             }
         , Hackathon.scannerSecret = scannerSecret
+        , Hackathon.chatExplanation = H.p
+            "You can join the Slack instance for ZuriHac 2019 here:"
+        , Hackathon.chatUrl = pure "https://slack.zurihac.info/"
         }

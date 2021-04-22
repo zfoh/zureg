@@ -24,6 +24,7 @@ import qualified Data.Aeson             as A
 import qualified Data.Aeson.TH.Extended as A
 import qualified Data.HashMap.Strict    as HMS
 import qualified Data.Text              as T
+import qualified Data.Text.IO           as T
 import qualified Data.Text.Lazy         as TL
 import qualified Data.URLEncoded        as UrlEncoded
 import qualified Data.Vector            as V
@@ -83,10 +84,12 @@ $(A.deriveJSON A.options ''Request)
 $(A.deriveJSON A.options ''Response)
 
 main :: IO.Handle -> IO.Handle -> (Request -> IO Response) -> IO ()
-main ih oh =
+main ih oh f =
     -- We're really just wrapping 'Lambda.main' with more specific
     -- request/response types and error handling.
-    Lambda.main ih oh errorResponse
+    Lambda.main ih oh errorResponse $ \req -> do
+        T.hPutStrLn IO.stderr $ reqHttpMethod req <> " " <> reqPath req
+        f req
   where
     errorResponse exception
         | Just (ServerlessException c m) <- fromException exception =

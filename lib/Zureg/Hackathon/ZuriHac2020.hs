@@ -3,16 +3,18 @@ module Zureg.Hackathon.ZuriHac2020
     ( newHackathon
     ) where
 
-import qualified Data.Text                         as T
-import           System.Environment                (getEnv)
-import qualified Zureg.Database                    as Database
-import           Zureg.Hackathon.Interface         (Hackathon)
-import qualified Zureg.Hackathon.Interface         as Hackathon
-import           Zureg.Hackathon.ZuriHac2020.Form  as ZH20
-import           Zureg.Hackathon.ZuriHac2020.Model as ZH20
-import           Zureg.Hackathon.ZuriHac2020.Views as ZH20
-import qualified Zureg.ReCaptcha                   as ReCaptcha
-import qualified Zureg.SendEmail                   as SendEmail
+import qualified Data.Text                           as T
+import           System.Environment                  (getEnv)
+import qualified Text.Blaze.Html5                    as H
+import qualified Zureg.Database                      as Database
+import           Zureg.Hackathon.Interface           (Hackathon)
+import qualified Zureg.Hackathon.Interface           as Hackathon
+import           Zureg.Hackathon.ZuriHac2020.Discord as Discord
+import           Zureg.Hackathon.ZuriHac2020.Form    as ZH20
+import           Zureg.Hackathon.ZuriHac2020.Model   as ZH20
+import           Zureg.Hackathon.ZuriHac2020.Views   as ZH20
+import qualified Zureg.ReCaptcha                     as ReCaptcha
+import qualified Zureg.SendEmail                     as SendEmail
 
 newHackathon :: IO (Hackathon RegisterInfo)
 newHackathon = do
@@ -20,12 +22,14 @@ newHackathon = do
     reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
     email           <- T.pack <$> getEnv "ZUREG_EMAIL"
 
+    discord <- Discord.configFromEnv
+    channel <- Discord.getWelcomeChannelId discord
+
     return Hackathon.Hackathon
         { Hackathon.name = "ZuriHac 2020"
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2020/#contact"
-        , Hackathon.slackUrl = "https://slack.zurihac.info/"
-        , Hackathon.capacity = 800
+        , Hackathon.capacity = 3000
         , Hackathon.confirmation = False
 
         , Hackathon.registerForm = ZH20.additionalInfoForm
@@ -44,4 +48,9 @@ newHackathon = do
             , ReCaptcha.cSecretKey = reCaptchaSecret
             }
         , Hackathon.scannerSecret = scannerSecret
+        , Hackathon.chatUrl = Discord.generateTempInviteUrl discord channel
+        , Hackathon.chatExplanation = H.p $ do
+            "ZuriHac 2020 will take place as an online event.  To "
+            "coordinate the hackathon, we use Discord as a chat and voice "
+            "platform.  You can join the Discord server here:"
         }

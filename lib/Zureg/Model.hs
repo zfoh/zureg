@@ -1,4 +1,5 @@
 -- | Basic datatypes and operations in our event sourcing.
+{-# LANGUAGE LambdaCase      #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Zureg.Model
@@ -7,6 +8,7 @@ module Zureg.Model
     , PopWaitlistInfo (..)
     , ScanInfo (..)
     , UncancelInfo (..)
+    , JoinChatInfo (..)
     , Event (..)
 
     , RegisterState (..)
@@ -15,6 +17,7 @@ module Zureg.Model
 
     , parseRegisterState
     , registrantRegisteredAt
+    , registrantCanJoinChat
     ) where
 
 import qualified Data.Aeson.TH.Extended as A
@@ -51,6 +54,10 @@ data UncancelInfo = UncancelInfo
     { uiUncanceledAt :: !Time.UTCTime
     } deriving (Eq, Show)
 
+data JoinChatInfo = JoinChatInfo
+    { gdiiJoinChatAt :: !Time.UTCTime
+    } deriving (Eq, Show)
+
 data Event a
     = Register RegisterInfo a
     | Waitlist WaitlistInfo
@@ -59,6 +66,7 @@ data Event a
     | Confirm
     | Cancel
     | Uncancel UncancelInfo
+    | JoinChat JoinChatInfo
     deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
@@ -98,6 +106,7 @@ $(A.deriveJSON A.options ''WaitlistInfo)
 $(A.deriveJSON A.options ''PopWaitlistInfo)
 $(A.deriveJSON A.options ''ScanInfo)
 $(A.deriveJSON A.options ''UncancelInfo)
+$(A.deriveJSON A.options ''JoinChatInfo)
 $(A.deriveJSON A.options ''Event)
 $(A.deriveJSON A.options ''RegisterState)
 $(A.deriveJSON A.options ''Registrant)
@@ -113,3 +122,11 @@ parseRegisterState str = case readMaybe str of
 
 registrantRegisteredAt :: Registrant a -> Maybe Time.UTCTime
 registrantRegisteredAt registrant = riRegisteredAt <$> rInfo registrant
+
+registrantCanJoinChat :: Maybe RegisterState -> Bool
+registrantCanJoinChat = \case
+    Nothing         -> False
+    Just Cancelled  -> False
+    Just Registered -> True
+    Just Confirmed  -> True
+    Just Waitlisted -> False

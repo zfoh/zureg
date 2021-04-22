@@ -30,7 +30,7 @@ Resources:
       - AttributeName: 'version'
         KeyType: 'RANGE'
       ProvisionedThroughput:
-        ReadCapacityUnits: 6
+        ReadCapacityUnits: 20
         WriteCapacityUnits: 3
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
