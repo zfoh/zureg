@@ -5,7 +5,8 @@
 {-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE OverloadedStrings     #-}
 module Zureg.Hackathon.ZuriHac2020.Discord
-    ( configFromEnv
+    ( Config (..)
+    , configFromEnv
     , aboutMe
     , getWelcomeChannelId
     , generateTempInviteUrl
@@ -23,7 +24,7 @@ import           System.Environment      (getEnv)
 data Config = Config
     { accessToken :: !T.Text
     , guildId     :: !T.Text
-    }
+    } deriving (Show)
 
 configFromEnv :: IO Config
 configFromEnv = Config

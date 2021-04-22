@@ -14,6 +14,7 @@ import           System.Environment          (lookupEnv)
 import           Zureg.Hackathon.Interface
 import qualified Zureg.Hackathon.ZuriHac2019 as ZuriHac2019
 import qualified Zureg.Hackathon.ZuriHac2020 as ZuriHac2020
+import qualified Zureg.Hackathon.ZuriHac2021 as ZuriHac2021
 
 -- | Load the hackathon stored in the 'ZUREG_HACKATHON' environment variable.
 withHackathonFromEnv
@@ -37,4 +38,5 @@ hackathons :: [(String, IO SomeHackathon)]
 hackathons =
     [ ("zurihac2019", SomeHackathon <$> ZuriHac2019.newHackathon)
     , ("zurihac2020", SomeHackathon <$> ZuriHac2020.newHackathon)
+    , ("zurihac2021", SomeHackathon <$> ZuriHac2021.newHackathon)
     ]
