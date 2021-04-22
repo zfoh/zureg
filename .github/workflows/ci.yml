@@ -1,0 +1,17 @@
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest # or macOS-latest, or windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: haskell/actions/setup@v1
+      with:
+        enable-stack: true
+        stack-no-global: true
+    - uses: 'actions/cache@v1'
+      with:
+        path: '~/.stack'
+        key: "${{ runner.os }}-v1-stack-${{ hashFiles('zureg.cabal', 'stack.yaml', 'stack.yaml.lock') }}"
+        restore-keys: '${{ runner.os }}-v1-stack'
+    - run:
+        stack build --pedantic

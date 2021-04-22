@@ -49,13 +49,13 @@ packages:
 - completed:
     name: urlencoded
     version: 0.4.2.0
-    git: git@github.com:jaspervdj/urlencoded.git
+    git: https://github.com/jaspervdj/urlencoded.git
     pantry-tree:
       size: 329
       sha256: d99871e8aa64d8d325435139f0d7389175cd5471e6e116564865b97f65e83135
     commit: 79e31ed9279c820bb89e36824464fdfb4b7b968a
   original:
-    git: git@github.com:jaspervdj/urlencoded.git
+    git: https://github.com/jaspervdj/urlencoded.git
     commit: 79e31ed9279c820bb89e36824464fdfb4b7b968a
 snapshots:
 - completed:

@@ -8,7 +8,7 @@ extra-deps:
 - 'eventful-dynamodb-0.2.0'
 - 'qrcode-0.1.2'
 - 'unliftio-core-0.1.2.0'
-- git: 'git@github.com:jaspervdj/urlencoded.git'
+- git: 'https://github.com/jaspervdj/urlencoded.git'
   commit: '79e31ed9279c820bb89e36824464fdfb4b7b968a'
 nix:
   packages:
