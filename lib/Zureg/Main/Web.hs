@@ -47,7 +47,7 @@ main hackathon =
                     "Email address already registered"
                     (fmap isNothing . Database.lookupEmail db . riEmail . fst)
                     (liftA2 (,)
-                        registerForm
+                        (registerForm hackathon)
                         (Hackathon.registerForm hackathon))
                 registrantsSummary <- Database.lookupRegistrantsSummary db
                 let atCapacity = Database.rsAvailable registrantsSummary <= 0

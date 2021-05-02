@@ -10,6 +10,7 @@ module Zureg.Form
     , cancelView
     ) where
 
+import           Control.Monad               (when)
 import qualified Data.Text                   as T
 import qualified Data.Time                   as Time
 import qualified Eventful                    as E
@@ -24,16 +25,18 @@ import qualified Zureg.ReCaptcha             as ReCaptcha
 
 -- | The 'IO' in this type signature is because we want to get the registration
 -- time.
-registerForm :: D.Form H.Html IO RegisterInfo
-registerForm = RegisterInfo
+registerForm :: Hackathon a -> D.Form H.Html IO RegisterInfo
+registerForm h = RegisterInfo
     <$> "name" D..: (D.check "Name is required"
             (not . T.null . T.strip)
             (D.text Nothing))
-    <*> "badgeName" D..: optionalText
+    <*> "badgeName" D..:
+        (if Hackathon.registerBadgeName h then optionalText else pure Nothing)
     <*> (D.validate confirmEmailCheck $ (,)
             <$> "email" D..: simpleEmailCheck (T.strip <$> D.text Nothing)
             <*> "confirmEmail" D..: (T.strip <$> D.text Nothing))
-    <*> "affiliation" D..: optionalText
+    <*> "affiliation" D..:
+        (if Hackathon.registerAffiliation h then optionalText else pure Nothing)
     <*> D.monadic (Time.getCurrentTime >>= return . pure)
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
@@ -59,12 +62,13 @@ registerView h recaptcha view = DH.form view "?" $ do
     DH.inputText "name" view
     H.br
 
-    DH.label "badgeName" view $ H.strong "Name on badge (optional)"
-    H.p $ do
-        "Fill in this field if you would rather use a nickname on your badge. "
-        "By default we will use your full name."
-    DH.inputText "badgeName" view
-    H.br
+    when (Hackathon.registerBadgeName h) $ do
+        DH.label "badgeName" view $ H.strong "Name on badge (optional)"
+        H.p $ do
+            "Fill in this field if you would rather use a nickname on your "
+            "badge.  By default we will use your full name."
+        DH.inputText "badgeName" view
+        H.br
 
     DH.label "email" view $ H.strong "Email"
     H.p $ do
@@ -79,12 +83,13 @@ registerView h recaptcha view = DH.form view "?" $ do
     DH.inputText "confirmEmail" view
     H.br
 
-    DH.label "affiliation" view $ H.strong "Affiliation (optional)"
-    H.p $ do
-        "Affiliations that you want to display on your badge (e.g.: employer, "
-        "university, open source project...)"
-    DH.inputText "affiliation" view
-    H.br
+    when (Hackathon.registerAffiliation h) $ do
+        DH.label "affiliation" view $ H.strong "Affiliation (optional)"
+        H.p $ do
+            "Affiliations that you want to display on your badge (e.g.: "
+            "employer, university, open source project...)"
+        DH.inputText "affiliation" view
+        H.br
 
     Hackathon.registerView h view
 

@@ -4,8 +4,7 @@
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Hackathon.ZuriHac2021.Model
-    ( TrackInterest (..)
-    , ContributorLevel (..)
+    ( ContributorLevel (..)
     , Project (..)
     , RegisterInfo (..)
     , csvHeader
@@ -28,13 +27,6 @@ data Region
     | Oceania
     deriving (Bounded, Enum, Eq, Show)
 
-data TrackInterest = TrackInterest
-    { tiBeginner     :: !Bool
-    , tiIntermediate :: !Bool
-    , tiAdvanced     :: !Bool
-    , tiGhcDevOps    :: !Bool
-    } deriving (Eq, Show)
-
 data ContributorLevel = ContributorLevel
     { clBeginner     :: !Bool
     , clIntermediate :: !Bool
@@ -50,12 +42,10 @@ data Project = Project
 
 data RegisterInfo = RegisterInfo
     { riRegion        :: !(Maybe Region)
-    , riTrackInterest :: !TrackInterest
     , riProject       :: !Project
     } deriving (Eq, Show)
 
 $(A.deriveJSON A.options ''Region)
-$(A.deriveJSON A.options ''TrackInterest)
 $(A.deriveJSON A.options ''ContributorLevel)
 $(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegisterInfo)
@@ -81,12 +71,7 @@ instance Csv.ToField Region where
 
 instance Csv.ToNamedRecord RegisterInfo where
     toNamedRecord RegisterInfo {..}
-        = HM.unions [ namedRecord [ "Region"             .= riRegion
-                                  , "Beginner Track"     .= tiBeginner riTrackInterest
-                                  , "Intermediate Track" .= tiIntermediate riTrackInterest
-                                  , "Advanced Track"     .= tiAdvanced riTrackInterest
-                                  , "GhcDevOps Track"    .= tiGhcDevOps riTrackInterest
-                                  ]
+        = HM.unions [ namedRecord [ "Region" .= riRegion ]
                     , toNamedRecord riProject
                     ]
 
@@ -96,14 +81,8 @@ csvHeader = Csv.header
     , "State"
     , "Scanned"
     , "Name"
-    , "Name on Badge"
     , "Email"
-    , "Affiliation"
     , "Region"
-    , "Beginner Track"
-    , "Intermediate Track"
-    , "Advanced Track"
-    , "GhcDevOps Track"
     , "Project Name"
     , "Project Website"
     , "Project Short Description"

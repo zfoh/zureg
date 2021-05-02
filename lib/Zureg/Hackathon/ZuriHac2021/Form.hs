@@ -17,11 +17,6 @@ additionalInfoForm = RegisterInfo
             (Nothing, "I'd rather not say") :
             [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]])
             (Just Nothing)
-    <*> "trackInterest" D..: (TrackInterest
-            <$> "beginner" D..: D.bool Nothing
-            <*> "intermediate" D..: D.bool Nothing
-            <*> "advanced" D..: D.bool Nothing
-            <*> "ghcDevOps" D..: D.bool Nothing)
     <*> ("project" D..: (Project
             <$> "name" D..: optionalText
             <*> "website" D..: optionalText
@@ -41,28 +36,9 @@ additionalInfoView view = do
 
     H.p $ H.strong "Region"
     DH.label "region" view $ do
-        "From what area will you travel to ZuriHac?  This is purely for our "
+        "From what area will you attend ZuriHac?  This is purely for our "
         "statistics."
     DH.inputSelect "region" view
-    H.br
-
-    H.h2 "Track Interest"
-    H.p $ do
-        "Let us know which track(s) you would participate in.  Note that we "
-        "are still in the process of organizing these, so this serves as an "
-        "indication for us, not a commitment on your part.  We may not "
-        "organize all of these tracks depending on availability and interest."
-    DH.inputCheckbox "trackInterest.beginner" view H.! A.class_ "checkbox"
-    DH.label "trackInterest.beginner" view $ "Beginner Track"
-    H.br
-    DH.inputCheckbox "trackInterest.intermediate" view H.! A.class_ "checkbox"
-    DH.label "trackInterest.intermediate" view $ "Intermediate Track"
-    H.br
-    DH.inputCheckbox "trackInterest.advanced" view H.! A.class_ "checkbox"
-    DH.label "trackInterest.advanced" view $ "Advanced Track"
-    H.br
-    DH.inputCheckbox "trackInterest.ghcDevOps" view H.! A.class_ "checkbox"
-    DH.label "trackInterest.ghcDevOps" view $ "GHC DevOps Track"
     H.br
 
     H.h2 "Project (optional)"

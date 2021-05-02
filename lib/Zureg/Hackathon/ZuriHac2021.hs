@@ -12,7 +12,6 @@ import qualified Zureg.Hackathon.Interface           as Hackathon
 import           Zureg.Hackathon.ZuriHac2020.Discord as Discord
 import           Zureg.Hackathon.ZuriHac2021.Form    as ZH21
 import           Zureg.Hackathon.ZuriHac2021.Model   as ZH21
-import           Zureg.Hackathon.ZuriHac2021.Views   as ZH21
 import qualified Zureg.ReCaptcha                     as ReCaptcha
 import qualified Zureg.SendEmail                     as SendEmail
 
@@ -32,10 +31,13 @@ newHackathon = do
         , Hackathon.capacity = 3000
         , Hackathon.confirmation = False
 
+        , Hackathon.registerBadgeName = False
+        , Hackathon.registerAffiliation = False
+
         , Hackathon.registerForm = ZH21.additionalInfoForm
         , Hackathon.registerView = ZH21.additionalInfoView
-        , Hackathon.ticketView = ZH21.ticketView
-        , Hackathon.scanView = ZH21.scanView
+        , Hackathon.ticketView = mempty
+        , Hackathon.scanView = mempty
         , Hackathon.csvHeader = ZH21.csvHeader
 
         , Hackathon.databaseConfig = Database.defaultConfig

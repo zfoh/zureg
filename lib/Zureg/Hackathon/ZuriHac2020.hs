@@ -32,6 +32,9 @@ newHackathon = do
         , Hackathon.capacity = 3000
         , Hackathon.confirmation = False
 
+        , Hackathon.registerBadgeName = True
+        , Hackathon.registerAffiliation = True
+
         , Hackathon.registerForm = ZH20.additionalInfoForm
         , Hackathon.registerView = ZH20.additionalInfoView
         , Hackathon.ticketView = ZH20.ticketView

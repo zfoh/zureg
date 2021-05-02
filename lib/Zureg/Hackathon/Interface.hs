@@ -23,9 +23,14 @@ data Hackathon a = Hackathon
     -- | When 'True', registrants can/must confirm their registration.
     , confirmation    :: Bool
 
-    -- | Registration form
+    -- | Prompt for badge names in the registration
+    , registerBadgeName   :: Bool
+    -- | Prompt for affiliations in the registration
+    , registerAffiliation :: Bool
+
+    -- | Extra Hackathon-specific info form
     , registerForm    :: D.Form H.Html IO a
-    -- | Registration view
+    -- | Extra Hackathon-specific info form view
     , registerView    :: D.View H.Html -> H.Html
     -- | Ticket view
     , ticketView      :: a -> H.Html
