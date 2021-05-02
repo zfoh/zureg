@@ -25,6 +25,7 @@ data Region
     | CentralAmerica
     | SouthAmerica
     | Oceania
+    | Africa
     deriving (Bounded, Enum, Eq, Show)
 
 data ContributorLevel = ContributorLevel
