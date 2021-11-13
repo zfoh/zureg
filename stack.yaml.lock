@@ -47,19 +47,15 @@ packages:
   original:
     hackage: unliftio-core-0.1.2.0
 - completed:
-    name: urlencoded
-    version: 0.4.2.0
-    git: https://github.com/jaspervdj/urlencoded.git
+    hackage: urlencoded-0.5.0.0@sha256:f680404576eac728a33551c88c049cdd68ed49fc12b1651ccb580dc20e483a97,1856
     pantry-tree:
-      size: 329
-      sha256: d99871e8aa64d8d325435139f0d7389175cd5471e6e116564865b97f65e83135
-    commit: 79e31ed9279c820bb89e36824464fdfb4b7b968a
+      size: 328
+      sha256: dc94e84bac66430bca207639fc8a2f1a37a88834c8f6572a0345f70298d6d0d1
   original:
-    git: https://github.com/jaspervdj/urlencoded.git
-    commit: 79e31ed9279c820bb89e36824464fdfb4b7b968a
+    hackage: urlencoded-0.5.0.0
 snapshots:
 - completed:
-    size: 567037
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/9.yaml
-    sha256: d7d8d5106e53d1669964bd8bd2b0f88a5ad192d772f5376384b76738fd992311
-  original: lts-17.9
+    size: 586286
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/16.yaml
+    sha256: cdead65fca0323144b346c94286186f4969bf85594d649c49c7557295675d8a5
+  original: lts-18.16
