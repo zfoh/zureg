@@ -92,9 +92,11 @@ registerView h recaptcha view = DH.form view "?" $ do
         H.br
 
     Hackathon.registerView h view
+    H.br
 
     H.h2 $ "Captcha (sorry)"
     ReCaptcha.chForm recaptcha
+    H.br
 
     DH.inputSubmit "Register"
 
