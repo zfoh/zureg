@@ -57,6 +57,30 @@ additionalInfoView :: D.View H.Html -> H.Html
 additionalInfoView view = do
     H.h2 "Optional information"
 
+    H.p $ H.strong "T-Shirt"
+    {-
+    H.p $ H.strong $ do
+        "Please note that we have ordered the T-Shirts and cannot guarantee "
+        "that you will receive one if you register at this time."
+    -}
+    H.p $ "In what size would you like the free T-Shirt?"
+    {-
+    H.p $ do
+        "The sizes should be fairly standard. "
+        "You can see the "
+        H.a H.! A.href "https://zfoh.ch/images/zurihac2019/tshirts-sizing.png"
+            H.! A.target "_blank" $
+            "specifications here"
+        "."
+    -}
+
+    DH.label "tshirt.cut" view "Cut"
+    DH.inputSelect "tshirt.cut" view
+    H.br
+    DH.label "tshirt.size" view "Size"
+    DH.inputSelect "tshirt.size" view
+    H.br
+
     H.p $ H.strong "Region"
     DH.label "region" view $ do
         "From what area will you attend ZuriHac?  This is purely for our "
@@ -65,9 +89,9 @@ additionalInfoView view = do
     H.br
 
     H.p $ H.strong "Occupation"
-    DH.label "region" view $
+    DH.label "occupation" view $
         "What is your occupation?  This is purely for our statistics."
-    DH.inputSelect "region" view
+    DH.inputSelect "occupation" view
     H.br
 
     H.h2 "Project (optional)"
