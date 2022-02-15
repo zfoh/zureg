@@ -6,28 +6,30 @@ module Zureg.Main.Web
     ( main
     ) where
 
-import           Control.Applicative                 (liftA2)
-import           Control.Exception                   (throwIO)
-import           Control.Monad                       (unless, when)
-import qualified Data.Aeson                          as A
-import           Data.Maybe                          (isNothing)
-import qualified Data.Text                           as T
-import qualified Data.Time                           as Time
-import qualified Eventful                            as E
-import qualified System.IO                           as IO
-import qualified Text.Blaze.Html.Renderer.Text       as RenderHtml
-import qualified Text.Blaze.Html5                    as H
-import qualified Text.Digestive                      as D
-import qualified Zureg.Database                      as Database
+import           Control.Applicative           (liftA2)
+import           Control.Exception             (throwIO)
+import           Control.Monad                 (unless, when)
+import qualified Data.Aeson                    as A
+import           Data.Maybe                    (isNothing)
+import qualified Data.Text                     as T
+import qualified Data.Time                     as Time
+import qualified Eventful                      as E
+import qualified Network.HTTP.Client           as Http
+import qualified Network.HTTP.Client.TLS       as Http
+import qualified System.IO                     as IO
+import qualified Text.Blaze.Html.Renderer.Text as RenderHtml
+import qualified Text.Blaze.Html5              as H
+import qualified Text.Digestive                as D
+import qualified Zureg.Captcha                 as Captcha
+import qualified Zureg.Database                as Database
 import           Zureg.Form
-import           Zureg.Hackathon                     (Hackathon)
-import qualified Zureg.Hackathon                     as Hackathon
+import           Zureg.Hackathon               (Hackathon)
+import qualified Zureg.Hackathon               as Hackathon
 import           Zureg.Model
-import qualified Zureg.ReCaptcha                     as ReCaptcha
-import qualified Zureg.SendEmail                     as SendEmail
+import qualified Zureg.SendEmail               as SendEmail
 import           Zureg.SendEmail.Hardcoded
-import qualified Zureg.Serverless                    as Serverless
-import qualified Zureg.Views                         as Views
+import qualified Zureg.Serverless              as Serverless
+import qualified Zureg.Views                   as Views
 
 html :: H.Html -> IO Serverless.Response
 html = return .  Serverless.responseHtml .
@@ -35,14 +37,16 @@ html = return .  Serverless.responseHtml .
 
 main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
 main hackathon =
+    Http.newManager Http.tlsManagerSettings >>= \httpManager ->
     Database.withHandle (Hackathon.databaseConfig hackathon) $ \db ->
-    ReCaptcha.withHandle (Hackathon.reCaptchaConfig hackathon) $ \recaptcha ->
     SendEmail.withHandle (Hackathon.sendEmailConfig hackathon) $ \sendEmail ->
     Serverless.main IO.stdin IO.stdout $ \req@Serverless.Request {..} ->
         case Serverless.requestPath req of
             ["register"] -> do
-                when (reqHttpMethod == "POST") $
-                    ReCaptcha.verify recaptcha (Serverless.reqBody req)
+                when (reqHttpMethod == "POST") $ Captcha.verify
+                    (Hackathon.captcha hackathon)
+                    httpManager
+                    (Serverless.reqBody req)
                 (view, mbReg) <- Serverless.runForm req "register" $ D.checkM
                     "Email address already registered"
                     (fmap isNothing . Database.lookupEmail db . riEmail . fst)
@@ -52,8 +56,10 @@ main hackathon =
                 registrantsSummary <- Database.lookupRegistrantsSummary db
                 let atCapacity = Database.rsAvailable registrantsSummary <= 0
                 case mbReg of
-                    Nothing -> html $
-                        Views.register hackathon (ReCaptcha.clientHtml recaptcha) view
+                    Nothing -> html $ Views.register
+                        hackathon
+                        (Captcha.clientHtml $ Hackathon.captcha hackathon)
+                        view
 
                     Just (info, additionalInfo) | atCapacity -> do
                         -- You're on the waitlist

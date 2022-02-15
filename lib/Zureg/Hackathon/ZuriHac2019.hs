@@ -6,20 +6,25 @@ module Zureg.Hackathon.ZuriHac2019
 import qualified Data.Text                         as T
 import           System.Environment                (getEnv)
 import qualified Text.Blaze.Html5                  as H
+import qualified Zureg.Captcha.ReCaptcha                     as ReCaptcha
 import qualified Zureg.Database                    as Database
 import           Zureg.Hackathon.Interface         (Hackathon)
 import qualified Zureg.Hackathon.Interface         as Hackathon
 import           Zureg.Hackathon.ZuriHac2019.Form  as ZH19
 import           Zureg.Hackathon.ZuriHac2019.Model as ZH19
 import           Zureg.Hackathon.ZuriHac2019.Views as ZH19
-import qualified Zureg.ReCaptcha                   as ReCaptcha
 import qualified Zureg.SendEmail                   as SendEmail
 
 newHackathon :: IO (Hackathon RegisterInfo)
 newHackathon = do
     scannerSecret   <- T.pack <$> getEnv "ZUREG_SCANNER_SECRET"
-    reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
     email           <- T.pack <$> getEnv "ZUREG_EMAIL"
+
+    reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
+    captcha         <- ReCaptcha.new ReCaptcha.Config
+        { ReCaptcha.cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
+        , ReCaptcha.cSecretKey = reCaptchaSecret
+        }
 
     return Hackathon.Hackathon
         { Hackathon.name = "ZuriHac 2019"
@@ -41,11 +46,7 @@ newHackathon = do
         , Hackathon.sendEmailConfig = SendEmail.Config
             { SendEmail.cFrom = "ZuriHac Registration Bot <" <> email <> ">"
             }
-        , Hackathon.reCaptchaConfig = ReCaptcha.Config
-            { ReCaptcha.cEnabled   = False
-            , ReCaptcha.cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
-            , ReCaptcha.cSecretKey = reCaptchaSecret
-            }
+        , Hackathon.captcha = captcha
         , Hackathon.scannerSecret = scannerSecret
         , Hackathon.chatExplanation = H.p
             "You can join the Slack instance for ZuriHac 2019 here:"

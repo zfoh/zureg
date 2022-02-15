@@ -58,7 +58,10 @@ Library
     Zureg.Main.PopWaitlist
     Zureg.Model
     Zureg.Model.Csv
-    Zureg.ReCaptcha
+    Zureg.Captcha
+    Zureg.Captcha.HCaptcha
+    Zureg.Captcha.NoCaptcha
+    Zureg.Captcha.ReCaptcha
     Zureg.SendEmail
     Zureg.SendEmail.Hardcoded
     Zureg.Serverless

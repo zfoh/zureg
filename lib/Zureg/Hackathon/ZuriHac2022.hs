@@ -12,14 +12,14 @@ import qualified Zureg.Hackathon.Interface           as Hackathon
 import           Zureg.Hackathon.ZuriHac2020.Discord as Discord
 import           Zureg.Hackathon.ZuriHac2022.Form    as ZH22
 import           Zureg.Hackathon.ZuriHac2022.Model   as ZH22
-import qualified Zureg.ReCaptcha                     as ReCaptcha
+import qualified Zureg.Captcha.HCaptcha              as HCaptcha
 import qualified Zureg.SendEmail                     as SendEmail
 
 newHackathon :: IO (Hackathon RegisterInfo)
 newHackathon = do
     scannerSecret   <- T.pack <$> getEnv "ZUREG_SCANNER_SECRET"
-    reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
     email           <- T.pack <$> getEnv "ZUREG_EMAIL"
+    captcha         <- HCaptcha.configFromEnv >>= HCaptcha.new
 
     discord <- Discord.configFromEnv
     channel <- Discord.getWelcomeChannelId discord
@@ -44,11 +44,7 @@ newHackathon = do
         , Hackathon.sendEmailConfig = SendEmail.Config
             { SendEmail.cFrom = "ZuriHac Registration Bot <" <> email <> ">"
             }
-        , Hackathon.reCaptchaConfig = ReCaptcha.Config
-            { ReCaptcha.cEnabled   = True
-            , ReCaptcha.cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
-            , ReCaptcha.cSecretKey = reCaptchaSecret
-            }
+        , Hackathon.captcha = captcha
         , Hackathon.scannerSecret = scannerSecret
         , Hackathon.chatUrl = Discord.generateTempInviteUrl discord channel
         , Hackathon.chatExplanation = H.p $ do

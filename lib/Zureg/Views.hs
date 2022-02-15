@@ -18,26 +18,25 @@ module Zureg.Views
     , scan
     ) where
 
-import qualified Codec.Binary.QRCode                 as QRCode
-import qualified Codec.Picture                       as JP
-import           Control.Monad                       (unless, when)
-import qualified Data.Array                          as Array
-import qualified Data.ByteString                     as B
-import qualified Data.ByteString.Base64.Lazy         as Base64
-import qualified Data.FileEmbed                      as Embed
-import           Data.Maybe                          (fromMaybe)
-import qualified Data.Text                           as T
-import qualified Eventful                            as E
-import qualified Text.Blaze.Html5                    as H
-import qualified Text.Blaze.Html5.Attributes         as A
-import qualified Text.Digestive                      as D
-import qualified Zureg.Form                          as Form
-import           Zureg.Hackathon                     (Hackathon)
-import qualified Zureg.Hackathon                     as Hackathon
-import           Zureg.Main.Badges                   (previewBadge,
-                                                      registrantToBadge)
+import qualified Codec.Binary.QRCode         as QRCode
+import qualified Codec.Picture               as JP
+import           Control.Monad               (unless, when)
+import qualified Data.Array                  as Array
+import qualified Data.ByteString             as B
+import qualified Data.ByteString.Base64.Lazy as Base64
+import qualified Data.FileEmbed              as Embed
+import           Data.Maybe                  (fromMaybe)
+import qualified Data.Text                   as T
+import qualified Eventful                    as E
+import qualified Text.Blaze.Html5            as H
+import qualified Text.Blaze.Html5.Attributes as A
+import qualified Text.Digestive              as D
+import qualified Zureg.Captcha               as Captcha
+import qualified Zureg.Form                  as Form
+import           Zureg.Hackathon             (Hackathon)
+import qualified Zureg.Hackathon             as Hackathon
+import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
 import           Zureg.Model
-import qualified Zureg.ReCaptcha                     as ReCaptcha
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -95,10 +94,10 @@ template head' body = H.docTypeHtml $ do
         head'
     H.body body
 
-register :: Hackathon a -> ReCaptcha.ClientHtml -> D.View H.Html -> H.Html
-register hackathon recaptcha view =
-    template (ReCaptcha.chScript recaptcha) $
-    Form.registerView hackathon recaptcha view
+register :: Hackathon a -> Captcha.ClientHtml -> D.View H.Html -> H.Html
+register hackathon captchaHtml view =
+    template (Captcha.chScript captchaHtml) $
+    Form.registerView hackathon captchaHtml view
 
 registerSuccess :: E.UUID -> RegisterInfo -> H.Html
 registerSuccess _uuid RegisterInfo {..} = template mempty $ do

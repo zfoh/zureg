@@ -6,22 +6,22 @@ import qualified Data.Csv         as Csv
 import qualified Data.Text        as T
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Digestive   as D
+import qualified Zureg.Captcha    as Captcha
 import qualified Zureg.Database   as Database
-import qualified Zureg.ReCaptcha  as ReCaptcha
 import qualified Zureg.SendEmail  as SendEmail
 
 data Hackathon a = Hackathon
     {
     -- | Name of the Hackathon, e.g. "ZuriHac 2020"
-      name            :: T.Text
+      name                :: T.Text
     -- | Base URL, e.g. "https://zureg.zfoh.ch"
-    , baseUrl         :: T.Text
+    , baseUrl             :: T.Text
     -- | URL of the contact homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
-    , contactUrl      :: T.Text
+    , contactUrl          :: T.Text
     -- | Total capacity of the event
-    , capacity        :: Int
+    , capacity            :: Int
     -- | When 'True', registrants can/must confirm their registration.
-    , confirmation    :: Bool
+    , confirmation        :: Bool
 
     -- | Prompt for badge names in the registration
     , registerBadgeName   :: Bool
@@ -29,27 +29,27 @@ data Hackathon a = Hackathon
     , registerAffiliation :: Bool
 
     -- | Extra Hackathon-specific info form
-    , registerForm    :: D.Form H.Html IO a
+    , registerForm        :: D.Form H.Html IO a
     -- | Extra Hackathon-specific info form view
-    , registerView    :: D.View H.Html -> H.Html
+    , registerView        :: D.View H.Html -> H.Html
     -- | Ticket view
-    , ticketView      :: a -> H.Html
+    , ticketView          :: a -> H.Html
     -- | Scan view
-    , scanView        :: a -> H.Html
+    , scanView            :: a -> H.Html
     -- | CSV header
-    , csvHeader       :: Csv.Header
+    , csvHeader           :: Csv.Header
 
     -- | Database configuration
-    , databaseConfig  :: Database.Config
+    , databaseConfig      :: Database.Config
     -- | Email sending configuration
-    , sendEmailConfig :: SendEmail.Config
-    -- | ReCaptcha configuration
-    , reCaptchaConfig :: ReCaptcha.Config
+    , sendEmailConfig     :: SendEmail.Config
+    -- | Captcha configuration
+    , captcha             :: Captcha.Handle
     -- | Secret for the scanner
-    , scannerSecret   :: T.Text
+    , scannerSecret       :: T.Text
 
     -- | Explaining paragraph about the chat.
-    , chatExplanation :: H.Html
+    , chatExplanation     :: H.Html
     -- | Produce an URL to join the chat, e.g. a Slack link or a Discord invite.
-    , chatUrl         :: IO T.Text
+    , chatUrl             :: IO T.Text
     }

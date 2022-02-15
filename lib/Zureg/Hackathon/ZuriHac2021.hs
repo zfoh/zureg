@@ -6,23 +6,28 @@ module Zureg.Hackathon.ZuriHac2021
 import qualified Data.Text                           as T
 import           System.Environment                  (getEnv)
 import qualified Text.Blaze.Html5                    as H
+import qualified Zureg.Captcha.ReCaptcha             as ReCaptcha
 import qualified Zureg.Database                      as Database
 import           Zureg.Hackathon.Interface           (Hackathon)
 import qualified Zureg.Hackathon.Interface           as Hackathon
 import           Zureg.Hackathon.ZuriHac2020.Discord as Discord
 import           Zureg.Hackathon.ZuriHac2021.Form    as ZH21
 import           Zureg.Hackathon.ZuriHac2021.Model   as ZH21
-import qualified Zureg.ReCaptcha                     as ReCaptcha
 import qualified Zureg.SendEmail                     as SendEmail
 
 newHackathon :: IO (Hackathon RegisterInfo)
 newHackathon = do
     scannerSecret   <- T.pack <$> getEnv "ZUREG_SCANNER_SECRET"
-    reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
     email           <- T.pack <$> getEnv "ZUREG_EMAIL"
 
     discord <- Discord.configFromEnv
     channel <- Discord.getWelcomeChannelId discord
+
+    reCaptchaSecret <- T.pack <$> getEnv "ZUREG_RECAPTCHA_SECRET"
+    captcha         <- ReCaptcha.new ReCaptcha.Config
+        { ReCaptcha.cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
+        , ReCaptcha.cSecretKey = reCaptchaSecret
+        }
 
     return Hackathon.Hackathon
         { Hackathon.name = "ZuriHac 2021"
@@ -44,11 +49,7 @@ newHackathon = do
         , Hackathon.sendEmailConfig = SendEmail.Config
             { SendEmail.cFrom = "ZuriHac Registration Bot <" <> email <> ">"
             }
-        , Hackathon.reCaptchaConfig = ReCaptcha.Config
-            { ReCaptcha.cEnabled   = True
-            , ReCaptcha.cSiteKey   = "6LcVUm8UAAAAAL0ooPLkNT3O9oEXhGPK6kZ-hQk7"
-            , ReCaptcha.cSecretKey = reCaptchaSecret
-            }
+        , Hackathon.captcha = captcha
         , Hackathon.scannerSecret = scannerSecret
         , Hackathon.chatUrl = Discord.generateTempInviteUrl discord channel
         , Hackathon.chatExplanation = H.p $ do
