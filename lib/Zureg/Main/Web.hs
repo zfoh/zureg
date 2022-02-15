@@ -100,7 +100,6 @@ main hackathon =
                 time <- Time.getCurrentTime
                 uuid <- getUuidParam req
                 registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
-                Database.writeEvents db uuid [Scan $ ScanInfo time :: Event a]
                 unless (registrantCanJoinChat $ rState registrant) $ throwIO $
                     Serverless.ServerlessException 400
                     "Invalid registrant state"
