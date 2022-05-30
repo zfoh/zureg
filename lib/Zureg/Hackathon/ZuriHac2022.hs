@@ -12,6 +12,7 @@ import qualified Zureg.Hackathon.Interface           as Hackathon
 import           Zureg.Hackathon.ZuriHac2020.Discord as Discord
 import           Zureg.Hackathon.ZuriHac2022.Form    as ZH22
 import           Zureg.Hackathon.ZuriHac2022.Model   as ZH22
+import           Zureg.Hackathon.ZuriHac2022.Views   as ZH22
 import qualified Zureg.Captcha.HCaptcha              as HCaptcha
 import qualified Zureg.SendEmail                     as SendEmail
 
@@ -29,7 +30,7 @@ newHackathon = do
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2022/#contact"
         , Hackathon.capacity = 500
-        , Hackathon.confirmation = False
+        , Hackathon.confirmation = True
 
         , Hackathon.registerBadgeName = False
         , Hackathon.registerAffiliation = False
@@ -37,7 +38,7 @@ newHackathon = do
         , Hackathon.registerForm = ZH22.additionalInfoForm
         , Hackathon.registerView = ZH22.additionalInfoView
         , Hackathon.ticketView = mempty
-        , Hackathon.scanView = mempty
+        , Hackathon.scanView = ZH22.scanView
         , Hackathon.csvHeader = ZH22.csvHeader
 
         , Hackathon.databaseConfig = Database.defaultConfig

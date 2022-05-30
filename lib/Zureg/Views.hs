@@ -141,6 +141,14 @@ ticket hackathon Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Take me back to the registration"
 
+        when (Hackathon.confirmation hackathon && rState == Just Registered) $ do
+            H.p "Please confirm your registration so we can get an accurate count of attendees for food, etc."
+            H.form H.! A.method "GET" H.! A.action "confirm" $ do
+                H.input H.! A.type_ "hidden" H.! A.name "uuid"
+                    H.! A.value (H.toValue (E.uuidToText rUuid))
+                H.input H.! A.type_ "submit"
+                    H.! A.value "Confirm my registration and access ticket"
+
         when (registrantCanJoinChat rState) $ do
             Hackathon.chatExplanation hackathon
             H.form H.! A.method "GET" H.! A.action "chat" $ do
@@ -148,13 +156,6 @@ ticket hackathon Registrant {..} = template
                     H.! A.value (H.toValue (E.uuidToText rUuid))
                 H.input H.! A.type_ "submit"
                     H.! A.value "Generate Discord invite"
-
-        when (Hackathon.confirmation hackathon && rState == Just Registered) $
-            H.form H.! A.method "GET" H.! A.action "confirm" $ do
-                H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                    H.! A.value (H.toValue (E.uuidToText rUuid))
-                H.input H.! A.type_ "submit"
-                    H.! A.value "Confirm my registration and access ticket"
 
         unless (rState == Just Cancelled) $ do
             H.p $ do
@@ -248,8 +249,7 @@ scan hackathon registrant@Registrant {..} = H.ul $ do
         (_, Just badge)                     ->
             "Badge: " <> H.strong (H.toHtml $ previewBadge badge)
 
-    whenJust rAdditionalInfo $ \ri -> H.li (Hackathon.scanView hackathon ri)
-
+    H.li $ Hackathon.scanView hackathon registrant
   where
     red x = H.span H.! A.style "color: #aa0000" $ x
 

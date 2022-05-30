@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -82,10 +83,10 @@ instance Csv.ToField TShirtCut where
 instance Csv.ToField TShirtSize where
     toField = toField . show
 
-instance Csv.ToNamedRecord TShirtInfo where
-    toNamedRecord TShirtInfo {..} =
-        namedRecord [ "T-Shirt Cut"  .= tsiCut
-                    , "T-Shirt Size" .= tsiSize
+instance Csv.ToNamedRecord (Maybe TShirtInfo) where
+    toNamedRecord mbTi =
+        namedRecord [ "T-Shirt Cut"  .= (tsiCut <$> mbTi)
+                    , "T-Shirt Size" .= (tsiSize <$> mbTi)
                     ]
 
 instance Csv.ToNamedRecord Project where
@@ -116,6 +117,7 @@ instance Csv.ToNamedRecord RegisterInfo where
                                   , "Occupation" .= riOccupation
                                   ]
                     , toNamedRecord riProject
+                    , toNamedRecord riTShirt
                     ]
 
 csvHeader :: Csv.Header
@@ -134,4 +136,6 @@ csvHeader = Csv.header
     , "CL Intermediate"
     , "CL Advanced"
     , "Registered At"
+    , "T-Shirt Cut"
+    , "T-Shirt Size"
     ]

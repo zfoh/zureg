@@ -8,6 +8,7 @@ import qualified Text.Blaze.Html5 as H
 import qualified Text.Digestive   as D
 import qualified Zureg.Captcha    as Captcha
 import qualified Zureg.Database   as Database
+import qualified Zureg.Model      as Model
 import qualified Zureg.SendEmail  as SendEmail
 
 data Hackathon a = Hackathon
@@ -35,7 +36,7 @@ data Hackathon a = Hackathon
     -- | Ticket view
     , ticketView          :: a -> H.Html
     -- | Scan view
-    , scanView            :: a -> H.Html
+    , scanView            :: Model.Registrant a -> H.Html
     -- | CSV header
     , csvHeader           :: Csv.Header
 

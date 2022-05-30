@@ -8,10 +8,11 @@ module Zureg.Hackathon.ZuriHac2019.Views
 import           Data.List                         (intercalate)
 import qualified Text.Blaze.Html5                  as H
 
-import           Zureg.Hackathon.ZuriHac2019.Model as ZH19
+import qualified Zureg.Hackathon.ZuriHac2019.Model as ZH19
+import           Zureg.Model
 
 ticketView :: ZH19.RegisterInfo -> H.Html
-ticketView RegisterInfo {..} = do
+ticketView ZH19.RegisterInfo {..} = do
     case riTShirt of
         Just rTShirt ->
             "T-Shirt: "
@@ -23,15 +24,17 @@ ticketView RegisterInfo {..} = do
         Nothing -> mempty
     "Track interest(s): "
     H.toHtml $ intercalate ", " $
-        ["Beginner" | tiBeginner tiTrackInterest]
-        ++ ["Intermediate" | tiIntermediate tiTrackInterest]
-        ++ ["Advanced" | tiAdvanced tiTrackInterest]
-        ++ ["GHC DevOps" | tiGhcDevOps tiTrackInterest]
+        ["Beginner" | ZH19.tiBeginner tiTrackInterest]
+        ++ ["Intermediate" | ZH19.tiIntermediate tiTrackInterest]
+        ++ ["Advanced" | ZH19.tiAdvanced tiTrackInterest]
+        ++ ["GHC DevOps" | ZH19.tiGhcDevOps tiTrackInterest]
 
-scanView :: ZH19.RegisterInfo -> H.Html
-scanView RegisterInfo {..} = case riTShirt of
-    Nothing      -> "No T-Shirt"
-    Just rTShirt -> "T-Shirt: " <> H.strong (
-        (H.toHtml.show $ fst rTShirt) <> ", " <>
-        (H.toHtml.show $ snd rTShirt) <> ", " <>
-        (if riMentor then "Navy" else "Espresso"))
+scanView :: Registrant ZH19.RegisterInfo -> H.Html
+scanView Registrant {..} = case rAdditionalInfo of
+    Nothing -> mempty
+    Just ZH19.RegisterInfo {..} -> case riTShirt of
+        Nothing      -> "No T-Shirt"
+        Just rTShirt -> "T-Shirt: " <> H.strong (
+            (H.toHtml.show $ fst rTShirt) <> ", " <>
+            (H.toHtml.show $ snd rTShirt) <> ", " <>
+            (if riMentor then "Navy" else "Espresso"))
