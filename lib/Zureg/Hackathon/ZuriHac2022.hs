@@ -49,7 +49,6 @@ newHackathon = do
         , Hackathon.scannerSecret = scannerSecret
         , Hackathon.chatUrl = Discord.generateTempInviteUrl discord channel
         , Hackathon.chatExplanation = H.p $ do
-            "Even though it will hopefully take place as a physical event, "
             "ZuriHac 2022 will use Discord as a chat platform for "
             "coordination.  You can join the Discord server here:"
         }
