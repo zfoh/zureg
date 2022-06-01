@@ -1,0 +1,99 @@
+Hello {{info.name}},
+
+Hi {{info.name}},
+
+ZuriHac is happening in 10 days, and we couldn't be more excited to
+see each other in person again after 2 years of virtual events!  There
+is a lot of info in this email, but please stick with us and read
+through it to make the most out of the event :-)
+
+Here is some practical information:
+
+ -  Important: Please confirm (or cancel) here:
+
+    https://zureg.zfoh.ch/ticket?uuid={{uuid}}
+
+    This helps us know how many people are attending, which we need
+    to plan ahead for things like food and rooms. Confirming your
+    registration will give you access to your ticket, that you can
+    show at the registration desk.
+
+ -  You can find the schedule and many details at https://zurihac.com.
+    We will keep on updating this throughout the week and the website
+    remains the "single source of truth".
+
+ -  Simon Peyton Jones, Gabriele Keller, Andrew Lelechenko (bodigrim)
+    and Alejandro Serrano will be giving talks!
+
+ -  Bring an adaptor for swiss electrical sockets.  A lot of european
+    plugs might not fit:
+    https://www.worldstandards.eu/electricity/plugs-and-sockets/j/
+
+ -  You can join our Discord with this invite link:
+    https://discord.gg/3XnhFKfTFz. We will use it to communicate
+    important information and announcements during the event, but it's
+    also extremely useful to socialize with fellow participants
+
+ -  It's a long-standing tradition to have a drink next to the lake
+    the day before the hackathon with Haskellers who are already in
+    town.  We'll have two: one in Zurich and one in Rapperswil.
+    Join #friday-zurich and #friday-rapperswil on Discord for details.
+
+ -  We've posted a list of projects that people are planning on
+    working on here: https://zfoh.ch/zurihac2022/projects.html -- feel
+    free to add your own!
+
+ -  This year we are happy to have food trucks over lunch, and BBQ
+    grills on both evenings. Fridges will be available where you can
+    keep your food for the grill, because most stores will be closed
+    on Sunday.
+
+ -  The #accomodation channel on Discord is the place you can
+    coordinate with other attendees to find an accommodation
+    together.
+
+ -  In case you want to only attend virtually that's absolutely fine
+    too! Just show up online and you'll find plenty of people to chat
+    and collaborate on projects with.
+
+ -  We will have a beginners track; if you want to join please read
+    https://zfoh.ch/zurihac2022/#tracks-beginner and give a thumbs up
+    in the #beginners-track channel on discord so we know how many
+    people to expect.
+
+ -  Well-Typed will host an advanced track again!  More info can be
+    found in their announcement:
+    https://well-typed.com/blog/2022/06/well-typed-advanced-track-zurihac-2022/
+
+ -  Switzerland has almost no Corona more measures in place, so you
+    won't need to wear a mask or even present vaccination/test
+    certificates. It's great, but please only come if you feel
+    completely comfortable with that.
+
+ -  Check out https://zfoh.ch/zurihac2022/#getting-there for
+    information on how to take the train to the event
+
+ -  ZuriHac is a non-commercial event put together entirely by
+    volunteers in their free time!  We may need some extra hands this
+    year for relatively light non-technical work (moving benches and
+    tables, assisting with the bbqs, ...). Please put a thumbs-up on
+    the message in the #volunteers channel if you would be willing to
+    donate just a bit of your time to making this event possible :-)
+
+Organising ZuriHac would not be possible without the support of our
+sponsors.  Huge thanks for their help -- please check them out, some
+of them are hiring!
+
+- Digital Asset: https://www.digitalasset.com
+- Google: https://opensource.google.com
+- Hasura: https://hasura.io
+- Platonic Systems: https://platonic.systems
+- Tweag: https://www.tweag.io
+- Serokell: https://serokell.io
+- Well-Typed: https://www.well-typed.com
+- OST: https://www.ost.ch
+- MLabs: https://mlabs.city
+- Generation Lambda: https://genlambda.com
+
+Looking forward to seeing you all soon!
+The Zurich Friends of Haskell
