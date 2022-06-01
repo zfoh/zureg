@@ -1,7 +1,5 @@
 Hello {{info.name}},
 
-Hi {{info.name}},
-
 ZuriHac is happening in 10 days, and we couldn't be more excited to
 see each other in person again after 2 years of virtual events!  There
 is a lot of info in this email, but please stick with us and read
