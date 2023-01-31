@@ -79,7 +79,7 @@ Resources:
       FunctionName: 'zureg-web'
       Handler: 'main.web_handler'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
-      Runtime: 'python3.6'
+      Runtime: 'python3.9'
       Timeout: 10
       MemorySize: 512  # If not, requests to DDB time out...
       Code:
@@ -170,7 +170,7 @@ Resources:
       FunctionName: 'zureg-janitor'
       Handler: 'main.janitor_handler'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
-      Runtime: 'python3.6'
+      Runtime: 'python3.9'
       Timeout: 10
       MemorySize: 512  # If not, requests to DDB time out...
       Code:
