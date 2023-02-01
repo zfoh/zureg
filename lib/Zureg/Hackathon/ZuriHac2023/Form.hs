@@ -94,3 +94,17 @@ additionalInfoView view = do
     H.br
     DH.inputCheckbox "project.contributorLevel.advanced" view H.! A.class_ "checkbox"
     DH.label "project.contributorLevel.advanced" view $ "Advanced"
+
+    H.h2 "GHC"
+    H.p $ do
+        "The "
+        blank "https://haskell.foundation/" "Haskell Foundation"
+        " and the "
+        blank "https://www.haskell.org/ghc/" "GHC"
+        " development team are in the process of organizing a three-day workshop on "
+        "contributing to GHC, to be held at the same venue as Zurihac immediately "
+        "prior, on 7-9 June. Full details are not yet available, but if you're interested, please fill out this "
+        blank "https://www.surveylegend.com/survey/-NMhU1lOkDYNNC5tnpTZ" "survey"
+        "."
+  where
+    blank url = H.a H.! A.href url H.! A.target "_blank"
