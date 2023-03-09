@@ -116,6 +116,5 @@ csvHeader = Csv.header
     , "CL Intermediate"
     , "CL Advanced"
     , "Registered At"
-    , "T-Shirt Cut"
     , "T-Shirt Size"
     ]
