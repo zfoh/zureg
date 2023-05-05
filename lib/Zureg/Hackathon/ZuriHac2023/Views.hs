@@ -11,7 +11,7 @@ import qualified Zureg.Hackathon.ZuriHac2023.Model as ZH23
 import           Zureg.Model
 
 tShirtDeadline :: Time.UTCTime
-tShirtDeadline = Time.UTCTime (Time.fromGregorian 2023 5 4) (10 * 3600 + 19 * 60)
+tShirtDeadline = Time.UTCTime (Time.fromGregorian 2023 5 5) (12 * 3600)
 
 scanView :: Registrant ZH23.RegisterInfo -> H.Html
 scanView r@Registrant {..} = case rAdditionalInfo of
