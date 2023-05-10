@@ -30,13 +30,13 @@ progressMapM f xs = forM (zip [1 :: Int ..] xs) $ \(n, x) -> do
     len = length xs
 
 data Options = Options
-    { oState :: Maybe RegisterState
+    { oState :: [RegisterState]
     , oPath  :: FilePath
     } deriving (Show)
 
 parseOptions :: OA.Parser Options
 parseOptions = Options
-    <$> OA.optional (OA.option (OA.eitherReader parseRegisterState) $
+    <$> OA.many (OA.option (OA.eitherReader parseRegisterState) $
         OA.long "state" <>
         OA.help "filter registrants based on state")
     <*> OA.strArgument (
@@ -54,8 +54,8 @@ main Hackathon.Hackathon {..} = do
     when exists $ fail $ oPath opts ++ " already exists"
 
     let predicate = case oState opts of
-            Nothing -> const True
-            Just s  -> (== Just s) . rState
+            []        -> const True
+            allowlist -> (`elem` fmap Just allowlist) . rState
 
     encode <- case takeExtension (oPath opts) of
         ".json" -> return (A.encode :: [Registrant a] -> BL.ByteString)

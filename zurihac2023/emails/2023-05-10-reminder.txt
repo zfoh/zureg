@@ -1,0 +1,63 @@
+Hello {{info.name}},
+
+ZuriHac is happening in exactly a month, and we hope you are as excited
+as we are! This email serves as a reminder and contains some practical
+info, so please read all the way through.
+
+Please confirm (or cancel) your registration here:
+https://zureg.zfoh.ch/ticket?uuid={{uuid}}
+
+This helps us know how many people are attending, which we need
+to plan ahead for things like food and rooms. Confirming your
+registration will give you access to your ticket, that you need to
+show at the registration desk.
+
+You can find the schedule and many details at https://zurihac.info. We
+will keep on updating this and the website remains the "single source
+of truth".
+
+Simon Peyton Jones, Gabriella Gonzalez, Alexis King, Ben Lynn and
+Conal Elliott will be giving talks.
+
+There will be a track about Category Theory by Bartosz Milewski and an
+Advanced Track by Well-Typed. A track for complete beginners will also
+be available!
+
+Don't forget to bring a power adaptor for Swiss electrical
+sockets.  A lot of European plugs might not fit:
+https://www.worldstandards.eu/electricity/plugs-and-sockets/j/
+
+On your registration page, you will find a Discord invite. We will
+use this chat platform to communicate important information and
+announcements during the event, but it's also extremely useful to
+socialize with fellow participants.
+
+It's a long-standing tradition to have a drink next to the lake
+the day before the hackathon with Haskellers who are already in
+town. We'll have two: one in Zurich and one in Rapperswil. Join
+#friday-zurich and #friday-rapperswil on Discord for details.
+
+We've posted a list of projects that people are planning on working on
+here: https://zfoh.ch/zurihac2023/projects/ -- feel free to add your
+own, instructions are on that page!
+
+ZuriHac is a non-commercial event put together entirely by volunteers
+in their free time! We may need some extra hands this year for
+relatively light non-technical work (moving benches, tables and
+chairs...). Please keep an eye on the #volunteers channel if you would
+be willing to donate just a bit of your time to making this event
+possible :-)
+
+Organising ZuriHac would not be possible without the support of our
+awesome sponsors. Huge thanks for their help! We are still very
+much looking for additional sponsors this year, to ensure ZuriHac
+can continue happening in the future. Please contact us for more
+information if you're interested.
+
+- Serokell: https://serokell.io
+- Well-Typed: https://www.well-typed.com
+- OST: https://www.ost.ch
+- Valora Digital: https://valora.digital/en/
+
+Looking forward to seeing you all soon!
+The Zurich Friends of Haskell
