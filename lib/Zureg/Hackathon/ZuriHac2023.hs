@@ -30,7 +30,7 @@ newHackathon = do
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2023/#contact"
         , Hackathon.capacity = 500
-        , Hackathon.confirmation = False
+        , Hackathon.confirmation = True
 
         , Hackathon.registerBadgeName = False
         , Hackathon.registerAffiliation = False
