@@ -33,13 +33,6 @@ packages:
   original:
     hackage: eventful-dynamodb-0.2.0
 - completed:
-    hackage: qrcode-0.1.2@sha256:6fbed18e3c4ee0ea2acb2cb594c3d0d86d14c92fac7fa925a8834587f5124fb2,1224
-    pantry-tree:
-      size: 1162
-      sha256: 5e1026a7effc5e2bd71cba7a29ec2a0053bc2f55ce2904b4dd6fdbdfcadee5ca
-  original:
-    hackage: qrcode-0.1.2
-- completed:
     hackage: unliftio-core-0.1.2.0@sha256:b0a7652ffce2284a6cebe05c99eb60573a8fb6631163f34b0b30a80b4a78cb23,1081
     pantry-tree:
       size: 328

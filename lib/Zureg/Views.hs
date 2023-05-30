@@ -18,12 +18,10 @@ module Zureg.Views
     , scan
     ) where
 
-import qualified Codec.Binary.QRCode         as QRCode
-import qualified Codec.Picture               as JP
+import qualified Codec.QRCode                as QRCode
+import qualified Codec.QRCode.JuicyPixels    as QRCode.JP
 import           Control.Monad               (unless, when)
-import qualified Data.Array                  as Array
 import qualified Data.ByteString             as B
-import qualified Data.ByteString.Base64.Lazy as Base64
 import qualified Data.FileEmbed              as Embed
 import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
@@ -33,8 +31,8 @@ import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Zureg.Captcha               as Captcha
 import qualified Zureg.Form                  as Form
-import           Zureg.Hackathon             (Hackathon)
 import qualified Zureg.Hackathon             as Hackathon
+import           Zureg.Hackathon             (Hackathon)
 import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
 import           Zureg.Model
 
@@ -191,27 +189,17 @@ cancelSuccess = template mempty $ do
     H.p "We hope to see you next year!"
 
 qrimg :: String -> H.Html
-qrimg qrdata = fromMaybe "Could not generate QR code" $ do
-    version <- QRCode.version 2
-    matrix  <- QRCode.encode version QRCode.L QRCode.Alphanumeric qrdata
-    let array = QRCode.toArray matrix :: Array.Array (Int, Int) JP.Pixel8
-        moduleSize = 16 -- QR-Code version 2 has 25x25 modules, so this amounts to an image size of 400px
-        image = JP.generateImage
-            (\x y ->
-                let x' = (x `div` moduleSize) - 1
-                    y' = (y `div` moduleSize) - 1
-                    border = x' < 0 || y' < 0 ||
-                        x' > QRCode.width matrix || y' > QRCode.width matrix in
-                if border then 255 else array Array.! (x', y'))
-            (moduleSize * (QRCode.width matrix + 1 + 2))
-            (moduleSize * (QRCode.width matrix + 1 + 2))
-
-        base64 = Base64.encode $ JP.encodePng image
-        src    = "data:image/png;base64," <> H.unsafeLazyByteStringValue base64
-
-    return $ H.img
-        H.! A.class_ "qr"
-        H.! A.src src
+qrimg payload = fromMaybe "Could not generate QR code" $ do
+    img <- QRCode.encode options encoding payload
+    let image = QRCode.JP.toPngDataUrlT border scale img
+    return $ H.img H.! A.class_ "qr" H.! A.src (H.toValue image)
+  where
+    border   = 1
+    scale    = 16
+    encoding = QRCode.Iso8859_1
+    options  = (QRCode.defaultQRCodeOptions QRCode.L)
+        { QRCode.qroMinVersion = 2
+        }
 
 scanner :: H.Html
 scanner = H.docTypeHtml $ do
