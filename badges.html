@@ -8,39 +8,73 @@
             }
         </style>
         <style type="text/css">
-            body {
-                display: flex;
-                flex-wrap: wrap;
+            :root {
+                --badge-width: 70mm;
+                --badge-height: 42.4mm;
+                --badge-margin-top: 1.0cm;
+                --badge-margin-side: 0.5cm;
+            }
 
-                font-size: 0.7cm;
+            body {
+                font-size: 0.5cm;
                 font-family: sans;
                 font-stretch: condensed;
+                font-weight: bold;
+
+                margin: 0px;
+                padding: 0px;
+            }
+
+            .page {
+                page-break-after: always;
+                display: flex;
+                flex-wrap: wrap;
             }
 
             .badge {
-                width: 10cm;
-                height: 4cm;
+                break-inside: avoid;
+
+                width: calc(var(--badge-width) - 2 * var(--badge-margin-side));
+                height: calc(var(--badge-height) - var(--badge-margin-top));
+
+                padding-top: var(--badge-margin-top);
+                padding-left: var(--badge-margin-side);
+                padding-right: var(--badge-margin-side);
 
                 text-align: center;
-                padding-top: 1cm;
 
                 background-image: url("./badges.svg");
                 background-size: 3cm;
                 background-repeat: no-repeat;
-                background-position: center center;
+                background-position: center 65%;
 
                 print-color-adjust: exact !important;
             }
         </style>
     </head>
     <body>
-        <div class="badge">Jasper Van der Jeugt</div>
-        <div class="badge">Jasper Van der Jeugt</div>
-        <div class="badge">Jasper Van der Jeugt</div>
-        <div class="badge">Jasper Van der Jeugt</div>
-        <div class="badge">Jasper Van der Jeugt</div>
-        <div class="badge">Jasper Van der Jeugt</div>
-        <div class="badge">Jasper Van der Jeugt</div>
-        <div class="badge">Jasper Van der Jeugt</div>
+        <div class="page">
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        <div class="badge">Jasper</div>
+        </div>
     </body>
 </html>
