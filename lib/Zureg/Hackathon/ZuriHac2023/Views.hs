@@ -2,10 +2,12 @@
 {-# LANGUAGE RecordWildCards   #-}
 module Zureg.Hackathon.ZuriHac2023.Views
     ( scanView
+    , badgeView
     ) where
 
 import qualified Data.Time                         as Time
 import qualified Text.Blaze.Html5                  as H
+import qualified Text.Blaze.Html5.Attributes       as HA
 
 import qualified Zureg.Hackathon.ZuriHac2023.Model as ZH23
 import           Zureg.Model
@@ -24,3 +26,11 @@ scanView r@Registrant {..} = case rAdditionalInfo of
             _ -> do
                 "T-Shirt: "
                 H.strong $ H.toHtml (show size)
+
+badgeView :: Registrant ZH23.RegisterInfo -> Maybe H.Html
+badgeView Registrant {..} = do
+    info <- rInfo
+    pure $ do
+        H.toHtml $ riName info
+        H.br
+        H.img H.! HA.style "width: 45%; margin: 0.em" H.! HA.src "./badges.svg"

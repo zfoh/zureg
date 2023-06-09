@@ -41,9 +41,7 @@ instance ToNamedRecord RegisterInfo => ToNamedRecord (Maybe RegisterInfo)  where
 instance ToNamedRecord RegisterInfo where
     toNamedRecord RegisterInfo {..}  
         = namedRecord [ "Name"               .= riName 
-                      , "Name on Badge"      .= riBadgeName 
                       , "Email"              .= riEmail 
-                      , "Affiliation"        .= riAffiliation 
                       , "Registered At"      .= riRegisteredAt
                       ]
          

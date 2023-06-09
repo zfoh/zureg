@@ -30,13 +30,9 @@ registerForm h = RegisterInfo
     <$> "name" D..: (D.check "Name is required"
             (not . T.null . T.strip)
             (D.text Nothing))
-    <*> "badgeName" D..:
-        (if Hackathon.registerBadgeName h then optionalText else pure Nothing)
     <*> (D.validate confirmEmailCheck $ (,)
             <$> "email" D..: simpleEmailCheck (T.strip <$> D.text Nothing)
             <*> "confirmEmail" D..: (T.strip <$> D.text Nothing))
-    <*> "affiliation" D..:
-        (if Hackathon.registerAffiliation h then optionalText else pure Nothing)
     <*> D.monadic (Time.getCurrentTime >>= return . pure)
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
@@ -48,10 +44,6 @@ registerForm h = RegisterInfo
         | x == y    = D.Success x
         | otherwise = D.Error "Email confirmation doesn't match"
 
-    optionalText =
-        (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
-        (D.text Nothing)
-
 registerView :: Hackathon a -> Captcha.ClientHtml -> D.View H.Html -> H.Html
 registerView h captchaHtml view = DH.form view "?" $ do
     H.h1 $ H.toHtml (Hackathon.name h) <> " registration"
@@ -61,14 +53,6 @@ registerView h captchaHtml view = DH.form view "?" $ do
     DH.label "name" view $ H.strong "Full name"
     DH.inputText "name" view
     H.br
-
-    when (Hackathon.registerBadgeName h) $ do
-        DH.label "badgeName" view $ H.strong "Name on badge (optional)"
-        H.p $ do
-            "Fill in this field if you would rather use a nickname on your "
-            "badge.  By default we will use your full name."
-        DH.inputText "badgeName" view
-        H.br
 
     DH.label "email" view $ H.strong "Email"
     H.p $ do
@@ -82,14 +66,6 @@ registerView h captchaHtml view = DH.form view "?" $ do
     H.p "We want to be sure we that we can email you your ticket."
     DH.inputText "confirmEmail" view
     H.br
-
-    when (Hackathon.registerAffiliation h) $ do
-        DH.label "affiliation" view $ H.strong "Affiliation (optional)"
-        H.p $ do
-            "Affiliations that you want to display on your badge (e.g.: "
-            "employer, university, open source project...)"
-        DH.inputText "affiliation" view
-        H.br
 
     Hackathon.registerView h view
     H.br

@@ -23,6 +23,7 @@ import qualified Codec.QRCode.JuicyPixels    as QRCode.JP
 import           Control.Monad               (unless, when)
 import qualified Data.ByteString             as B
 import qualified Data.FileEmbed              as Embed
+import           Data.Foldable               (for_)
 import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
 import qualified Eventful                    as E
@@ -33,7 +34,6 @@ import qualified Zureg.Captcha               as Captcha
 import qualified Zureg.Form                  as Form
 import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
-import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
 import           Zureg.Model
 
 template :: H.Html -> H.Html -> H.Html
@@ -237,10 +237,7 @@ scan hackathon registrant@Registrant {..} = H.ul $ do
         Just Confirmed  -> "✅ Confirmed"
         Just Waitlisted -> red "⌛ on the waitlist"
 
-    H.li $ case (registrantRegisteredAt registrant, registrantToBadge registrant) of
-        (_, Nothing)                        -> red "No Badge"
-        (_, Just badge)                     ->
-            "Badge: " <> H.strong (H.toHtml $ previewBadge badge)
+    for_ rInfo $ \ri -> H.li $ H.strong $ H.toHtml $ riName ri
 
     H.li $ Hackathon.scanView hackathon registrant
   where

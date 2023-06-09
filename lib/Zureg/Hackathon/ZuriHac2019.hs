@@ -26,15 +26,12 @@ newHackathon = do
         , ReCaptcha.cSecretKey = reCaptchaSecret
         }
 
-    return Hackathon.Hackathon
+    return Hackathon.emptyHackathon
         { Hackathon.name = "ZuriHac 2019"
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2019/#contact"
         , Hackathon.capacity = 500
         , Hackathon.confirmation = True
-
-        , Hackathon.registerBadgeName = True
-        , Hackathon.registerAffiliation = True
 
         , Hackathon.registerForm = ZH19.additionalInfoForm
         , Hackathon.registerView = ZH19.additionalInfoView

@@ -25,20 +25,18 @@ newHackathon = do
     discord <- Discord.configFromEnv
     channel <- Discord.getWelcomeChannelId discord
 
-    return Hackathon.Hackathon
+    return Hackathon.emptyHackathon
         { Hackathon.name = "ZuriHac 2023"
         , Hackathon.baseUrl = "https://zureg.zfoh.ch"
         , Hackathon.contactUrl = "https://zfoh.ch/zurihac2023/#contact"
         , Hackathon.capacity = 500
         , Hackathon.confirmation = True
 
-        , Hackathon.registerBadgeName = False
-        , Hackathon.registerAffiliation = False
-
         , Hackathon.registerForm = ZH23.additionalInfoForm
         , Hackathon.registerView = ZH23.additionalInfoView
         , Hackathon.ticketView = mempty
         , Hackathon.scanView = ZH23.scanView
+        , Hackathon.badgeView = ZH23.badgeView
         , Hackathon.csvHeader = ZH23.csvHeader
 
         , Hackathon.databaseConfig = Database.defaultConfig

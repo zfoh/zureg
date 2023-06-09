@@ -5,8 +5,8 @@ module Zureg.Captcha.NoCaptcha
 
 import           Zureg.Captcha
 
-new :: IO Handle
-new = pure Handle
+new :: Handle
+new = Handle
     { clientHtml = ClientHtml mempty mempty
     , verify     = \_ _ -> pure ()
     }
