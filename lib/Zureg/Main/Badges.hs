@@ -54,8 +54,6 @@ html hackathon badgesPerPage badgeWidth badgeHeight registrants = H.docTypeHtml 
             "}"
 
             ".badge {"
-            "    break-inside: avoid;"
-
             "    width: calc(var(--badge-width) - 2 * var(--badge-margin-side));"
             "    height: var(--badge-height);"
 
@@ -63,8 +61,6 @@ html hackathon badgesPerPage badgeWidth badgeHeight registrants = H.docTypeHtml 
             "    padding-right: var(--badge-margin-side);"
 
             "    text-align: center;"
-
-            "    print-color-adjust: exact !important;"
             "}"
     H.body $ for_ (paginate badgesPerPage badges) $ \page -> do
         H.div H.! HA.class_ "page" $ do
