@@ -1,3 +1,18 @@
+import csv
+
+names = []
+with open('2023-06-07-badges.csv') as f:
+    for row in csv.reader(f):
+        names.append(row[3])
+names = names[1:]  # Avoid 'Name' header
+names = sorted(names, key=lambda s: s.lower())
+
+pages = []
+while names:
+    pages.append(names[0:21])
+    names = names[21:]
+
+print('''
 <!doctype HTML>
 <html>
     <head>
@@ -43,38 +58,23 @@
 
                 text-align: center;
 
-                background-image: url("./badges.svg");
-                background-size: 3cm;
-                background-repeat: no-repeat;
-                background-position: center 65%;
-
                 print-color-adjust: exact !important;
             }
         </style>
     </head>
     <body>
-        <div class="page">
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        <div class="badge">Jasper</div>
-        </div>
+''')
+
+for page in pages:
+    print('<div class="page">')
+    for name in page:
+        print('<div class="badge">')
+        print(name)
+        print('<br><img style="width: 3cm; margin: 0.4cm" src="./badges.svg">')
+        print('</div>')
+    print('</div>')
+
+print('''
     </body>
 </html>
+''')
