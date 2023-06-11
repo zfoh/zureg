@@ -67,15 +67,17 @@ main hackathon =
         waitingRegistrants = waitingListUUIDs registrants
         registrantsToPop = take freeSpaces waitingRegistrants
         freeSpacesLeft = freeSpaces - length registrantsToPop
+        scanned = length $ filter rScanned registrants
 
     popWaitinglistUUIDs hackathon registrantsToPop
 
     let summary = Database.RegistrantsSummary
-            { Database.rsTotal = length registrants
-            , Database.rsWaiting  = countByState isWaiting registrants
+            { Database.rsTotal     = length registrants
+            , Database.rsWaiting   = countByState isWaiting registrants
             , Database.rsConfirmed = countByState isConfirmed registrants
             , Database.rsAttending = attending
             , Database.rsAvailable = freeSpacesLeft
+            , Database.rsScanned   = scanned
             }
 
     Database.putRegistrantsSummary db summary
@@ -86,7 +88,8 @@ renderSummary rs = show (Database.rsTotal rs) ++ " total, " ++
   show (Database.rsWaiting rs) ++ " waiting, " ++
   show (Database.rsAttending rs) ++ " attending, " ++
   show (Database.rsConfirmed rs) ++ " confirmed, " ++
-  show (Database.rsAvailable rs) ++ " available"
+  show (Database.rsAvailable rs) ++ " available, " ++
+  show (Database.rsScanned rs) ++ " scanned"
 
 -- This is to put Nothings to the end of a sorted list
 newtype Fifo = Fifo (Maybe Time.UTCTime) deriving Eq
