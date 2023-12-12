@@ -6,9 +6,27 @@ Parameters:
   JanitorLambdaKey:
     Type: 'String'
     Description: 'S3 Key of the janitor lambda.'
-  EmailAddress:
+  Hackathon:
+    Type: 'String'
+    Description: 'Configuration discriminator, deprecated.'
+  Email:
     Type: 'String'
     Description: 'Email address that the registration bot sends email from.'
+  ScannerSecret:
+    Type: 'String'
+    Description: 'Secret for accessing the scanner page.'
+  HCaptchaSiteKey:
+    Type: 'String'
+    Description: 'SiteKey for HCaptcha.'
+  HCaptchaSecret:
+    Type: 'String'
+    Description: 'Secret for HCaptcha.'
+  DiscordGuildID:
+    Type: 'String'
+    Description: 'Guild ID for Discord.'
+  DiscordAccessToken:
+    Type: 'String'
+    Description: 'Access Token for Discord.'
 
 Resources:
   # This table stores participant registration using event sourcing: we only
@@ -85,6 +103,15 @@ Resources:
       Code:
         S3Bucket: {'Ref': 'LambdaBucket'}
         S3Key: {'Ref': 'JanitorLambdaKey'}
+      Environment:
+        Variables:
+          ZUREG_HACKATHON: {'Ref': 'Hackathon'}
+          ZUREG_EMAIL: {'Ref': 'Email'}
+          ZUREG_SCANNER_SECRET: {'Ref': 'ScannerSecret'}
+          ZUREG_HCAPTCHA_SITEKEY: {'Ref': 'HCaptchaSiteKey'}
+          ZUREG_HCAPTCHA_SECRET: {'Ref': 'HCaptchaSecret'}
+          ZUREG_DISCORD_GUILD_ID: {'Ref': 'DiscordGuildID'}
+          ZUREG_DISCORD_ACCESS_TOKEN: {'Ref': 'DiscordAccessToken'}
 
   # This is the role of the lambda: the permissions it needs.  We need access to
   # logs, and to the database.
@@ -119,7 +146,7 @@ Resources:
             Resource: {'Fn::GetAtt': ['SummariesDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['ses:SendEmail']
-            Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailAddress}'}
+            Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${Email}'}
 
   # Allow ApiGateway to invoke the function.
   #
@@ -176,6 +203,15 @@ Resources:
       Code:
         S3Bucket: {'Ref': 'LambdaBucket'}
         S3Key: {'Ref': 'JanitorLambdaKey'}
+      Environment:
+        Variables:
+          ZUREG_HACKATHON: {'Ref': 'Hackathon'}
+          ZUREG_EMAIL: {'Ref': 'Email'}
+          ZUREG_SCANNER_SECRET: {'Ref': 'ScannerSecret'}
+          ZUREG_HCAPTCHA_SITEKEY: {'Ref': 'HCaptchaSiteKey'}
+          ZUREG_HCAPTCHA_SECRET: {'Ref': 'HCaptchaSecret'}
+          ZUREG_DISCORD_GUILD_ID: {'Ref': 'DiscordGuildID'}
+          ZUREG_DISCORD_ACCESS_TOKEN: {'Ref': 'DiscordAccessToken'}
 
   JanitorRule:
     Type: 'AWS::Events::Rule'

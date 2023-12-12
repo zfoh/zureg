@@ -21,9 +21,7 @@ build/zureg-%-lambda/bootstrap: build/image.txt $(SOURCES)
 	touch $@
 
 # Put all code and dependencies in a zip file we can run on AWS Lambda.
-build/zureg-%-lambda/config.json: deploy/env.json
-	cp $^ $@
-build/zureg-%-lambda.zip: build/zureg-%-lambda/bootstrap build/zureg-%-lambda/config.json
+build/zureg-%-lambda.zip: build/zureg-%-lambda/bootstrap
 	zip $@ -j build/zureg-$*-lambda/*
 	ls -lh $@
 
@@ -72,7 +70,13 @@ deploy: build/zureg-janitor-lambda.txt build/bucket.txt
 		--parameter-overrides \
 			LambdaBucket=$(shell cat build/bucket.txt) \
 			JanitorLambdaKey=$(shell cat build/zureg-janitor-lambda.txt) \
-			EmailAddress=$(shell jq -r '.ZUREG_EMAIL' deploy/env.json)
+			Hackathon=$(shell jq -r '.ZUREG_HACKATHON' deploy/env.json) \
+			Email=$(shell jq -r '.ZUREG_EMAIL' deploy/env.json) \
+			ScannerSecret=$(shell jq -r '.ZUREG_SCANNER_SECRET' deploy/env.json) \
+			HCaptchaSiteKey=$(shell jq -r '.ZUREG_HCAPTCHA_SITEKEY' deploy/env.json) \
+			HCaptchaSecret=$(shell jq -r '.ZUREG_HCAPTCHA_SECRET' deploy/env.json) \
+			DiscordGuildID=$(shell jq -r '.ZUREG_DISCORD_GUILD_ID' deploy/env.json) \
+			DiscordAccessToken=$(shell jq -r '.ZUREG_DISCORD_ACCESS_TOKEN' deploy/env.json)
 
 # Undo the deployment.
 teardown:
