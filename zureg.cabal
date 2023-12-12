@@ -59,8 +59,8 @@ Library
     Zureg.Main.Email
     Zureg.Main.Export
     Zureg.Main.Janitor
-    Zureg.Main.Web
     Zureg.Main.PopWaitlist
+    Zureg.Main.Web
     Zureg.Model
     Zureg.Model.Csv
     Zureg.Captcha
@@ -94,6 +94,7 @@ Library
     eventful-dynamodb        >= 0.2  && < 0.3,
     file-embed               >= 0.0  && < 0.1,
     filepath                 >= 1.4  && < 1.5,
+    hal                      >= 1.0  && < 1.1,
     http-client              >= 0.5  && < 0.7,
     http-client-tls          >= 0.3  && < 0.4,
     lens                     >= 4.16 && < 4.20,
@@ -142,6 +143,7 @@ Executable zureg-badges
   Import:  exe
   Main-is: Badges.hs
 
-Executable zureg-janitor
-  Import:  exe
-  Main-is: Janitor.hs
+Executable zureg-janitor-lambda
+  Import:        exe
+  Main-is:       Janitor.hs
+  Build-depends: aeson, hal

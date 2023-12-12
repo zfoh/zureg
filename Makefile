@@ -4,30 +4,27 @@ AWS_REGION=us-east-1
 SOURCES=$(shell find src/ lib/ -name '*.hs') zureg.cabal
 
 .PHONY: build
-build: build/zureg-lambda.zip
+build: build/zureg-janitor-lambda.zip
 
 # We need docker to build binaries that run on amazon's linux version, which is
 # why this command is a bit more complicated than just `stack install`.
-build/bin/zureg-web: build/image.txt $(SOURCES)
-	mkdir -p build/bin
+build/zureg-%-lambda/bootstrap: build/image.txt $(SOURCES)
+	mkdir -p build/zureg-$*-lambda
 	docker run \
 		-m 4GB \
 		--user $(shell id -u):$(shell id -g) \
-		--mount type=bind,source=$(shell pwd),target=/dist \
+		--mount type=bind,source=$(shell pwd)/build/zureg-$*-lambda,target=/dist \
 		--rm \
 		$(shell cat build/image.txt) \
-		cp -r /zureg/bin /dist/build
+		cp -r /zureg/bin/zureg-$*-lambda /dist/bootstrap
 
 	touch $@
 
 # Put all code and dependencies in a zip file we can run on AWS Lambda.
-build/zureg-lambda.zip: build/bin/zureg-web deploy/main.py deploy/env.json
-	mkdir -p build/zureg-lambda
-	ln -fs $(PWD)/build/bin/zureg-janitor build/zureg-lambda/zureg-janitor
-	ln -fs $(PWD)/build/bin/zureg-web 	  build/zureg-lambda/zureg-web
-	ln -fs $(PWD)/deploy/main.py      	  build/zureg-lambda/main.py
-	ln -fs $(PWD)/deploy/env.json     	  build/zureg-lambda/env.json
-	zip $@ -j build/zureg-lambda/*
+build/zureg-%-lambda/config.json: deploy/env.json
+	cp $^ $@
+build/zureg-%-lambda.zip: build/zureg-%-lambda/bootstrap build/zureg-%-lambda/config.json
+	zip $@ -j build/zureg-$*-lambda/*
 	ls -lh $@
 
 # This is a text file with the name of the docker image.  We do things this way
@@ -52,7 +49,7 @@ build/bucket.txt:
 # A text file with the name of the zip file with the lambda's code.  Similarly
 # to `deploy/bucket.txt` above, we just put the zipfile with a random name and
 # then write that to the the file.
-build/zip.txt: build/zureg-lambda.zip build/bucket.txt
+build/zureg-%-lambda.txt: build/zureg-%-lambda.zip build/bucket.txt
 	mkdir -p build
 	$(eval ZIP := $(shell od -vAn -N4 -tx4 </dev/random | tr -d ' ').zip)
 	aws s3api put-object \
@@ -60,12 +57,12 @@ build/zip.txt: build/zureg-lambda.zip build/bucket.txt
 		--region $(AWS_REGION) \
 		--bucket $(shell cat build/bucket.txt) \
 		--key $(ZIP) \
-		--body build/zureg-lambda.zip
-	echo $(ZIP) >build/zip.txt
+		--body build/zureg-$*-lambda.zip
+	echo $(ZIP) >$@
 
 # Deploy (create or update) the cloudformation stack.
 .PHONY: deploy
-deploy: build/zip.txt build/bucket.txt
+deploy: build/zureg-janitor-lambda.txt build/bucket.txt
 	aws cloudformation deploy \
 		--profile $(AWS_PROFILE) \
 		--region $(AWS_REGION) \
@@ -73,8 +70,8 @@ deploy: build/zip.txt build/bucket.txt
 		--template-file deploy/template.yaml \
 		--capabilities CAPABILITY_IAM \
 		--parameter-overrides \
-			SourceS3Bucket=$(shell cat build/bucket.txt) \
-			SourceS3Key=$(shell cat build/zip.txt) \
+			LambdaBucket=$(shell cat build/bucket.txt) \
+			JanitorLambdaKey=$(shell cat build/zureg-janitor-lambda.txt) \
 			EmailAddress=$(shell jq -r '.ZUREG_EMAIL' deploy/env.json)
 
 # Undo the deployment.
