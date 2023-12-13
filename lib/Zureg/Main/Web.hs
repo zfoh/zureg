@@ -6,49 +6,39 @@ module Zureg.Main.Web
     ( main
     ) where
 
-import           Control.Applicative           (liftA2)
-import           Control.Exception             (throwIO)
-import           Control.Monad                 (join, unless, when)
-import qualified Data.Aeson                    as A
-import           Data.Maybe                    (isNothing)
-import qualified Data.Text                     as T
-import qualified Data.Text.Encoding            as T
-import qualified Data.Text.Lazy.Encoding       as TL
-import qualified Data.Time                     as Time
-import qualified Eventful                      as E
-import qualified Network.HTTP.Client           as Http
-import qualified Network.HTTP.Client.TLS       as Http
-import qualified Network.HTTP.Types            as Http
-import qualified Network.Wai                   as Wai
-import qualified Network.Wai.Handler.Warp      as Warp
-import qualified System.IO                     as IO
-import qualified Text.Blaze.Html.Renderer.Utf8 as RenderHtml
-import qualified Text.Blaze.Html5              as H
-import qualified Text.Digestive                as D
-import qualified Zureg.Captcha                 as Captcha
-import qualified Zureg.Database                as Database
+import           Control.Applicative       (liftA2)
+import           Control.Exception         (throwIO)
+import           Control.Monad             (join, unless, when)
+import qualified Data.Aeson                as A
+import           Data.Maybe                (isNothing)
+import qualified Data.Text                 as T
+import qualified Data.Text.Encoding        as T
+import qualified Data.Text.Lazy.Encoding   as TL
+import qualified Data.Time                 as Time
+import qualified Eventful                  as E
+import qualified Network.HTTP.Client       as Http
+import qualified Network.HTTP.Client.TLS   as Http
+import qualified Network.HTTP.Types        as Http
+import qualified Network.Wai               as Wai
+import qualified Network.Wai.Handler.Warp  as Warp
+import qualified Text.Digestive            as D
+import qualified Zureg.Captcha             as Captcha
+import qualified Zureg.Database            as Database
 import           Zureg.Form
-import qualified Zureg.Hackathon               as Hackathon
-import           Zureg.Hackathon               (Hackathon)
+import qualified Zureg.Hackathon           as Hackathon
+import           Zureg.Hackathon           (Hackathon)
+import           Zureg.Http
 import           Zureg.Model
-import qualified Zureg.SendEmail               as SendEmail
+import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
-import qualified Zureg.Serverless              as Serverless
-import qualified Zureg.Views                   as Views
-
-html :: H.Html -> Wai.Response
-html = Wai.responseBuilder Http.status200 headers . RenderHtml.renderHtmlBuilder
-  where
-    headers = [("Content-Type", "text/html; charset=utf-8")]
-
-redirect :: T.Text -> Wai.Response
-redirect l = Wai.responseLBS Http.status302 [("Location", T.encodeUtf8 l)] ""
+import qualified Zureg.Views               as Views
 
 main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
 main hackathon = app hackathon >>= Warp.run 8000
 
 app :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO Wai.Application
 app hackathon =
+    fmap httpExceptionMiddleware $
     Http.newManager Http.tlsManagerSettings >>= \httpManager ->
     Database.withHandle (Hackathon.databaseConfig hackathon) $ \db ->
     SendEmail.withHandle (Hackathon.sendEmailConfig hackathon) $ \sendEmail ->
@@ -59,7 +49,7 @@ app hackathon =
                 (Hackathon.captcha hackathon)
                 httpManager
                 (Just reqBody)
-            (view, mbReg) <- Serverless.runForm req reqBody "register" $ D.checkM
+            (view, mbReg) <- runForm req reqBody "register" $ D.checkM
                 "Email address already registered"
                 (fmap isNothing . Database.lookupEmail db . riEmail . fst)
                 (liftA2 (,)
@@ -113,7 +103,7 @@ app hackathon =
             uuid <- getUuidParam req
             registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
             unless (registrantCanJoinChat $ rState registrant) $ throwIO $
-                Serverless.ServerlessException 400
+                HttpException 400
                 "Invalid registrant state"
 
             url <- Hackathon.chatUrl hackathon
@@ -131,7 +121,7 @@ app hackathon =
 
         ["cancel"] -> do
             reqBody <- TL.decodeUtf8 <$> Wai.strictRequestBody req
-            (view, mbCancel) <- Serverless.runForm req reqBody "cancel" $
+            (view, mbCancel) <- runForm req reqBody "cancel" $
                 cancelForm (lookupUuidParam req)
             case mbCancel of
                 Just (uuid, True) -> do
@@ -145,7 +135,7 @@ app hackathon =
                 _ -> respond . html $
                     Views.cancel (lookupUuidParam req) view
 
-        pathInfo -> throwIO $ Serverless.ServerlessException 404 $
+        pathInfo -> throwIO $ HttpException 404 $
             T.unpack (T.intercalate "/" pathInfo) ++ " not found"
   where
     textParam k req = fmap T.decodeUtf8 . join . lookup k $ Wai.queryString req
@@ -155,12 +145,12 @@ app hackathon =
 
     getUuidParam :: Wai.Request -> IO E.UUID
     getUuidParam req = maybe
-        (throwIO $ Serverless.ServerlessException 400 "Missing uuid")
+        (throwIO $ HttpException 400 "Missing uuid")
         return
         (lookupUuidParam req)
 
     scannerAuthorized request m = case textParam "secret" request of
         Just s | s == Hackathon.scannerSecret hackathon -> m
         _                                               -> throwIO $
-            Serverless.ServerlessException 403
+            HttpException 403
             "Wrong or missing secret for scanner access"

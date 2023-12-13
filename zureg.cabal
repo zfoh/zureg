@@ -54,7 +54,7 @@ Library
     Zureg.Hackathon.ZuriHac2023.Form
     Zureg.Hackathon.ZuriHac2023.Model
     Zureg.Hackathon.ZuriHac2023.Views
-    Zureg.Lambda
+    Zureg.Http
     Zureg.Main.Badges
     Zureg.Main.Email
     Zureg.Main.Export
@@ -69,7 +69,6 @@ Library
     Zureg.Captcha.ReCaptcha
     Zureg.SendEmail
     Zureg.SendEmail.Hardcoded
-    Zureg.Serverless
     Zureg.Views
 
   Other-modules:
