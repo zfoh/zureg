@@ -4,6 +4,7 @@
 {-# LANGUAGE TemplateHaskell     #-}
 module Zureg.Main.Web
     ( main
+    , app
     ) where
 
 import           Control.Applicative       (liftA2)

@@ -4,3 +4,8 @@ source-repository-package
   type: git
   location: https://github.com/jaspervdj/urlencoded.git
   tag: 79e31ed9279c820bb89e36824464fdfb4b7b968a
+
+source-repository-package
+  type: git
+  location: https://github.com/jaspervdj/wai-handler-hal.git
+  tag: 999114f42a7a36e1486c3f723377b50a2e88c11d

@@ -95,9 +95,9 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: 'zureg-web'
-      Handler: 'main.web_handler'
+      Handler: 'web'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
-      Runtime: 'python3.9'
+      Runtime: 'provided'
       Timeout: 10
       MemorySize: 512  # If not, requests to DDB time out...
       Code:
@@ -195,7 +195,7 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: 'zureg-janitor'
-      Handler: 'NOT_USED'
+      Handler: 'janitor'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
       Runtime: 'provided'
       Timeout: 10

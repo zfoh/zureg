@@ -9,6 +9,7 @@ extra-deps:
 - 'hal-1.0.0.1'
 - 'unliftio-core-0.1.2.0'
 - 'urlencoded-0.5.0.0'
+- 'wai-handler-hal-0.2.0.0'
 nix:
   packages:
   - 'zlib'
