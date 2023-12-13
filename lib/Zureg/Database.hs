@@ -184,7 +184,6 @@ registrantsSummaryToAttributeValue RegistrantsSummary {..} =
         , ("scanned", avi rsScanned)
         ]
 
-
 registrantsSummaryFromAttributeValue
     :: DynamoDB.AttributeValue -> Maybe RegistrantsSummary
 registrantsSummaryFromAttributeValue av = RegistrantsSummary
