@@ -28,6 +28,8 @@ import qualified Data.Text.IO           as T
 import qualified Data.Text.Lazy         as TL
 import qualified Data.URLEncoded        as UrlEncoded
 import qualified Data.Vector            as V
+import qualified Network.HTTP.Types     as Http
+import qualified Network.Wai            as Wai
 import qualified System.IO              as IO
 import qualified Text.Digestive         as D
 import qualified Zureg.Lambda           as Lambda
@@ -100,15 +102,15 @@ main ih oh f =
         | otherwise = responseHtml $ response 500 (TL.pack (show exception))
 
 runForm
-    :: Request -> T.Text -> D.Form v IO a -> IO (D.View v, Maybe a)
-runForm Request {..} name form
-    | reqHttpMethod == "GET" = do
+    :: Wai.Request -> TL.Text -> T.Text -> D.Form v IO a
+    -> IO (D.View v, Maybe a)
+runForm req reqBody name form
+    | Wai.requestMethod req == Http.methodGet = do
         view <- D.getForm name form
         return (view, Nothing)
 
-    | reqHttpMethod == "POST" = do
-        body    <- maybe (fail "missing post body") return reqBody
-        encoded <- UrlEncoded.importString $ T.unpack body
+    | Wai.requestMethod req == Http.methodPost = do
+        encoded <- UrlEncoded.importString $ TL.unpack reqBody
 
         let env :: D.Env IO
             env = \path -> return $

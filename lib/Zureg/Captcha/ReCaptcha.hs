@@ -13,6 +13,7 @@ import qualified Data.Aeson                  as A
 import qualified Data.Aeson.TH.Extended      as A
 import qualified Data.Text                   as T
 import qualified Data.Text.Encoding          as T
+import qualified Data.Text.Lazy              as TL
 import qualified Data.URLEncoded             as UrlEncoded
 import qualified Network.HTTP.Client         as Http
 import qualified Text.Blaze.Html5            as H
@@ -33,7 +34,7 @@ new Config {..} = pure Handle
 
     , verify = \httpManager mbRequestBody -> do
         requestBody <- maybe bail return mbRequestBody
-        params <- UrlEncoded.importString (T.unpack requestBody)
+        params <- UrlEncoded.importString (TL.unpack requestBody)
         param <- maybe bail return (UrlEncoded.lookup paramName params)
         request0 <- Http.parseRequest "https://www.google.com/recaptcha/api/siteverify"
 

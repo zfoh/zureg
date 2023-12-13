@@ -7,6 +7,7 @@ module Zureg.Captcha
 
 import           Control.Exception   (Exception)
 import qualified Data.Text           as T
+import qualified Data.Text.Lazy      as TL
 import qualified Network.HTTP.Client as Http
 import qualified Text.Blaze.Html5    as H
 
@@ -28,5 +29,5 @@ data ClientHtml = ClientHtml
 
 data Handle = Handle
     { clientHtml :: ClientHtml
-    , verify     :: Http.Manager -> Maybe T.Text -> IO ()
+    , verify     :: Http.Manager -> Maybe TL.Text -> IO ()
     }
