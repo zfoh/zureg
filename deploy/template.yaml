@@ -1,14 +1,32 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
-  SourceS3Bucket:
+  LambdaBucket:
     Type: 'String'
     Description: 'S3 Bucket that the code of the lambdas are stored in.'
-  SourceS3Key:
+  LambdaKey:
     Type: 'String'
-    Description: 'S3 Key of the web lambda.'
-  EmailAddress:
+    Description: 'S3 Key of the janitor lambda.'
+  Hackathon:
+    Type: 'String'
+    Description: 'Configuration discriminator, deprecated.'
+  Email:
     Type: 'String'
     Description: 'Email address that the registration bot sends email from.'
+  ScannerSecret:
+    Type: 'String'
+    Description: 'Secret for accessing the scanner page.'
+  HCaptchaSiteKey:
+    Type: 'String'
+    Description: 'SiteKey for HCaptcha.'
+  HCaptchaSecret:
+    Type: 'String'
+    Description: 'Secret for HCaptcha.'
+  DiscordGuildID:
+    Type: 'String'
+    Description: 'Guild ID for Discord.'
+  DiscordAccessToken:
+    Type: 'String'
+    Description: 'Access Token for Discord.'
 
 Resources:
   # This table stores participant registration using event sourcing: we only
@@ -69,22 +87,28 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 2
 
-  # This is the lambda we deploy.  It says Python but it's really just a
-  # simple wrapper around a Haskell binary.
-  #
-  # TODO(jaspervdj): This should be renamed to 'WebLambda'.
-  ZuregLambda:
+  # Lambda serving web requests.
+  WebLambda:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: 'zureg-web'
-      Handler: 'main.web_handler'
+      Handler: 'web'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
-      Runtime: 'python3.9'
+      Runtime: 'provided'
       Timeout: 10
       MemorySize: 512  # If not, requests to DDB time out...
       Code:
-        S3Bucket: {'Ref': 'SourceS3Bucket'}
-        S3Key: {'Ref': 'SourceS3Key'}
+        S3Bucket: {'Ref': 'LambdaBucket'}
+        S3Key: {'Ref': 'LambdaKey'}
+      Environment:
+        Variables:
+          ZUREG_HACKATHON: {'Ref': 'Hackathon'}
+          ZUREG_EMAIL: {'Ref': 'Email'}
+          ZUREG_SCANNER_SECRET: {'Ref': 'ScannerSecret'}
+          ZUREG_HCAPTCHA_SITEKEY: {'Ref': 'HCaptchaSiteKey'}
+          ZUREG_HCAPTCHA_SECRET: {'Ref': 'HCaptchaSecret'}
+          ZUREG_DISCORD_GUILD_ID: {'Ref': 'DiscordGuildID'}
+          ZUREG_DISCORD_ACCESS_TOKEN: {'Ref': 'DiscordAccessToken'}
 
   # This is the role of the lambda: the permissions it needs.  We need access to
   # logs, and to the database.
@@ -119,17 +143,15 @@ Resources:
             Resource: {'Fn::GetAtt': ['SummariesDatabase', 'Arn']}
           - Effect: 'Allow'
             Action: ['ses:SendEmail']
-            Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${EmailAddress}'}
+            Resource: {'Fn::Sub': 'arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/${Email}'}
 
   # Allow ApiGateway to invoke the function.
-  #
-  # TODO(jaspervdj): This should be renamed to 'WebLambdaPermission'.
-  LambdaPermission:
+  WebInvokePermission:
     Type: 'AWS::Lambda::Permission'
-    DependsOn: ['ZuregLambda', 'Api']
+    DependsOn: ['WebLambda', 'Api']
     Properties:
       Action: 'lambda:InvokeFunction'
-      FunctionName: {'Fn::GetAtt': ['ZuregLambda', 'Arn']}
+      FunctionName: {'Fn::GetAtt': ['WebLambda', 'Arn']}
       Principal: 'apigateway.amazonaws.com'
       SourceArn: {'Fn::Sub': 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*'}
 
@@ -155,9 +177,9 @@ Resources:
       Integration:
         Type: 'AWS_PROXY'
         IntegrationHttpMethod: 'POST'
-        Uri: {'Fn::Sub': 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ZuregLambda.Arn}/invocations'}
+        Uri: {'Fn::Sub': 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebLambda.Arn}/invocations'}
 
-  MyDeployment:
+  Deployment:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn: ['ProxyMethod']
     Properties:
@@ -168,14 +190,23 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: 'zureg-janitor'
-      Handler: 'main.janitor_handler'
+      Handler: 'janitor'
       Role: {'Fn::GetAtt': ['LambdaExecutionRole', 'Arn']}
-      Runtime: 'python3.9'
+      Runtime: 'provided'
       Timeout: 10
       MemorySize: 512  # If not, requests to DDB time out...
       Code:
-        S3Bucket: {'Ref': 'SourceS3Bucket'}
-        S3Key: {'Ref': 'SourceS3Key'}
+        S3Bucket: {'Ref': 'LambdaBucket'}
+        S3Key: {'Ref': 'LambdaKey'}
+      Environment:
+        Variables:
+          ZUREG_HACKATHON: {'Ref': 'Hackathon'}
+          ZUREG_EMAIL: {'Ref': 'Email'}
+          ZUREG_SCANNER_SECRET: {'Ref': 'ScannerSecret'}
+          ZUREG_HCAPTCHA_SITEKEY: {'Ref': 'HCaptchaSiteKey'}
+          ZUREG_HCAPTCHA_SECRET: {'Ref': 'HCaptchaSecret'}
+          ZUREG_DISCORD_GUILD_ID: {'Ref': 'DiscordGuildID'}
+          ZUREG_DISCORD_ACCESS_TOKEN: {'Ref': 'DiscordAccessToken'}
 
   JanitorRule:
     Type: 'AWS::Events::Rule'
