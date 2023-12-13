@@ -144,10 +144,13 @@ Executable zureg-badges
   Import:  exe
   Main-is: Badges.hs
 
-Executable zureg-janitor-lambda
+Executable zureg-janitor
+  Import:  exe
+  Main-is: Janitor.hs
+
+Executable zureg-lambda
   Import:        exe
-  Main-is:       Janitor.hs
+  Main-is:       Lambda.hs
   Build-depends:
-    aeson           >= 1.3 && < 1.6,
     hal             >= 1.0 && < 1.1,
     wai-handler-hal >= 0.2 && < 0.3

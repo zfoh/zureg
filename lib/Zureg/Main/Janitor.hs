@@ -3,6 +3,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Zureg.Main.Janitor
     ( main
+    , app
     ) where
 
 import           Control.Monad          (guard)
@@ -33,10 +34,12 @@ isAttending Confirmed  = True
 isAttending Registered = True
 isAttending _          = False
 
-main
-    :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
-    => Hackathon a -> IO Database.RegistrantsSummary
-main hackathon =
+main :: (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main hackathon = app hackathon A.Null >>= print
+
+app :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
+    => Hackathon a -> A.Value -> IO Database.RegistrantsSummary
+app hackathon _event =
     Database.withHandle (Hackathon.databaseConfig hackathon) $ \db -> do
     uuids       <- Database.getRegistrantUuids db
     registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
