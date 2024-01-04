@@ -11,7 +11,7 @@ RUN ghcup install cabal 3.2.0.0
 ENV PATH="/root/.ghcup/bin:${PATH}"
 RUN cabal update
 
-COPY zureg.cabal cabal.project /work/
+COPY zureg.cabal /work/
 WORKDIR /work
 RUN cabal build --only-dependencies \
         --ghc-options='-split-sections -optl-static'

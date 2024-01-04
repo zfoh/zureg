@@ -54,12 +54,12 @@ packages:
   original:
     hackage: urlencoded-0.5.0.0
 - completed:
-    hackage: wai-handler-hal-0.2.0.0@sha256:ef98b78c3beb05eecc9239775dd010308ed7a75b76a0db8471d4466a76b450f8,2954
+    hackage: wai-handler-hal-0.3.0.0@sha256:7a0510f868b332bc14baf097c802979e0ae8ed5c999d359e42a6417afdccff55,2900
     pantry-tree:
-      size: 592
-      sha256: e500f789cb7b0dab089768a512e7703ad93407a73635a3cf1aa1081233c04ba5
+      size: 594
+      sha256: 26e9c89686d0e7f60e92e8bd6fc20138fa362a8ec9c4f28c3f58a0a6e49555ec
   original:
-    hackage: wai-handler-hal-0.2.0.0
+    hackage: wai-handler-hal-0.3.0.0
 snapshots:
 - completed:
     size: 586286
