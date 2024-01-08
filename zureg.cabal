@@ -54,6 +54,10 @@ Library
     Zureg.Hackathon.ZuriHac2023.Form
     Zureg.Hackathon.ZuriHac2023.Model
     Zureg.Hackathon.ZuriHac2023.Views
+    Zureg.Hackathon.ZuriHac2024
+    Zureg.Hackathon.ZuriHac2024.Form
+    Zureg.Hackathon.ZuriHac2024.Model
+    Zureg.Hackathon.ZuriHac2024.Views
     Zureg.Http
     Zureg.Main.Badges
     Zureg.Main.Email
