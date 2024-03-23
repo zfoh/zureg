@@ -8,7 +8,7 @@ build: build/zureg-lambda.zip
 
 # We need docker to build binaries that run on amazon's linux version, which is
 # why this command is a bit more complicated than just `stack install`.
-build/zureg-lambda/bootstrap: build/image.txt $(SOURCES)
+build/zureg-lambda/bootstrap: build/image.txt
 	mkdir -p build/zureg-lambda
 	docker run \
 		-m 4GB \
@@ -18,8 +18,6 @@ build/zureg-lambda/bootstrap: build/image.txt $(SOURCES)
 		$(shell cat build/image.txt) \
 		cp -r /zureg/bin/zureg-lambda /dist/bootstrap
 
-	touch $@
-
 # Put all code and dependencies in a zip file we can run on AWS Lambda.
 build/zureg-lambda.zip: build/zureg-lambda/bootstrap
 	zip $@ -j build/zureg-lambda/*
@@ -27,7 +25,7 @@ build/zureg-lambda.zip: build/zureg-lambda/bootstrap
 
 # This is a text file with the name of the docker image.  We do things this way
 # to make the Makefile dependency tracking work.
-build/image.txt: Dockerfile
+build/image.txt: Dockerfile $(SOURCES)
 	mkdir -p build
 	docker build -m 4GB -t zureg .
 	echo "zureg" >$@

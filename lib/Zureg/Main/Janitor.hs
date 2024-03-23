@@ -51,6 +51,7 @@ app hackathon _event =
         registrantsToPop = take freeSpaces waitingRegistrants
         freeSpacesLeft = freeSpaces - length registrantsToPop
         scanned = length $ filter rScanned registrants
+        spam = countByState (== Spam) registrants
 
     popWaitinglistUUIDs hackathon registrantsToPop
 
@@ -61,6 +62,7 @@ app hackathon _event =
             , Database.rsAttending = attending
             , Database.rsAvailable = freeSpacesLeft
             , Database.rsScanned   = scanned
+            , Database.rsSpam      = spam
             }
 
     Database.putRegistrantsSummary db summary

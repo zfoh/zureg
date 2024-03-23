@@ -120,6 +120,12 @@ app hackathon =
               _               -> return ()
             respond . redirect $ "ticket?uuid=" <> E.uuidToText uuid
 
+        ["spam"] | Wai.requestMethod req == Http.methodPost -> do
+            uuid <- getUuidParam req
+            _    <- Database.getRegistrant db uuid :: IO (Registrant a)
+            Database.writeEvents db uuid [MarkSpam :: Event a]
+            respond . redirect $ "ticket?uuid=" <> E.uuidToText uuid
+
         ["cancel"] -> do
             reqBody <- TL.decodeUtf8 <$> Wai.strictRequestBody req
             (view, mbCancel) <- runForm req reqBody "cancel" $

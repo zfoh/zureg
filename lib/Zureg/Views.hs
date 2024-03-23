@@ -130,7 +130,7 @@ ticket hackathon Registrant {..} = template
             qrimg $ T.unpack $ E.uuidToText rUuid
 
         H.div $ do
-            H.h1 $ registerState rState
+            H.h1 $ fst $ registerState rState
             whenJust rInfo $ registrantInfo
             whenJust rAdditionalInfo $ Hackathon.ticketView hackathon
 
@@ -166,13 +166,14 @@ ticket hackathon Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Cancel my registration")
 
-registerState :: Maybe RegisterState -> H.Html
+registerState :: Maybe RegisterState -> (H.Html, Bool)
 registerState rs = case rs of
-    Nothing         -> "❌ Not registered"
-    Just Cancelled  -> "❌ Cancelled"
-    Just Registered -> "✅ Registered"
-    Just Confirmed  -> "✅ Confirmed"
-    Just Waitlisted -> "⌛ on the waitlist"
+    Nothing         -> ("❌ Not registered", False)
+    Just Cancelled  -> ("❌ Cancelled", False)
+    Just Registered -> ("✅ Registered", True)
+    Just Confirmed  -> ("✅ Confirmed", True)
+    Just Waitlisted -> ("⌛ on the waitlist", False)
+    Just Spam       -> ("🥫 Spam", False)
 
 registrantInfo :: RegisterInfo -> H.Html
 registrantInfo RegisterInfo {..} = H.p $ do
@@ -230,12 +231,8 @@ fileScanner =
 
 scan :: Hackathon a -> Registrant a -> H.Html
 scan hackathon registrant@Registrant {..} = H.ul $ do
-    H.li $ H.strong $ case rState of
-        Nothing         -> red "❌ Not registered"
-        Just Cancelled  -> red "❌ Cancelled"
-        Just Registered -> "✅ Registered"
-        Just Confirmed  -> "✅ Confirmed"
-        Just Waitlisted -> red "⌛ on the waitlist"
+    H.li $ H.strong $
+        let (html, ok) = registerState rState in (if ok then id else red) html
 
     H.li $ case (registrantRegisteredAt registrant, registrantToBadge registrant) of
         (_, Nothing)                        -> red "No Badge"

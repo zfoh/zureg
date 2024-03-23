@@ -53,6 +53,7 @@ instance ToField RegisterState where
     toField Confirmed  = toField ("Confirmed" :: String)
     toField Cancelled  = toField ("Cancelled" :: String)
     toField Waitlisted = toField ("Waitlisted" :: String)
+    toField Spam       = toField ("Spam" :: String)
 
 instance ToField Bool where
     toField True  = toField ("true" :: String)

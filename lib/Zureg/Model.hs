@@ -67,12 +67,13 @@ data Event a
     | Cancel
     | Uncancel UncancelInfo
     | JoinChat JoinChatInfo
+    | MarkSpam
     deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
 -- State
 
-data RegisterState = Registered | Confirmed | Cancelled | Waitlisted
+data RegisterState = Registered | Confirmed | Cancelled | Waitlisted | Spam
     deriving (Bounded, Enum, Eq, Read, Show)
 
 data Registrant a = Registrant
@@ -87,10 +88,11 @@ registrantProjection :: E.UUID -> E.Projection (Registrant a) (Event a)
 registrantProjection uuid = E.Projection
     { E.projectionSeed         = Registrant uuid Nothing Nothing Nothing False
     , E.projectionEventHandler = \registrant event -> case event of
-        Cancel     -> registrant {rState = Just Cancelled}
-        Confirm    -> case rState registrant of
-                        Just Registered -> registrant {rState = Just Confirmed}
-                        _               -> registrant
+        Cancel | Just Spam /= rState registrant ->
+            registrant {rState = Just Cancelled}
+        Confirm -> case rState registrant of
+            Just Registered -> registrant {rState = Just Confirmed}
+            _               -> registrant
         Register i a -> registrant {rInfo = Just i, rAdditionalInfo = Just a, rState = Just Registered}
         Waitlist _ -> registrant {rState = Just Waitlisted}
         PopWaitlist _ | Just Waitlisted <- rState registrant ->
@@ -98,6 +100,7 @@ registrantProjection uuid = E.Projection
         Scan _ -> registrant {rScanned = True}
         Uncancel _ | Just Cancelled <- rState registrant ->
             registrant {rState = Just Registered}
+        MarkSpam -> registrant {rState = Just Spam}
         _ -> registrant
     }
 
@@ -130,3 +133,4 @@ registrantCanJoinChat = \case
     Just Registered -> True
     Just Confirmed  -> True
     Just Waitlisted -> False
+    Just Spam       -> False
