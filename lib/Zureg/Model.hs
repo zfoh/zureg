@@ -68,6 +68,7 @@ data Event a
     | Uncancel UncancelInfo
     | JoinChat JoinChatInfo
     | MarkSpam
+    | MarkVip
     deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
@@ -82,11 +83,19 @@ data Registrant a = Registrant
     , rAdditionalInfo :: Maybe a
     , rState          :: Maybe RegisterState
     , rScanned        :: Bool
+    , rVip            :: Bool
     } deriving (Eq, Show)
 
 registrantProjection :: E.UUID -> E.Projection (Registrant a) (Event a)
 registrantProjection uuid = E.Projection
-    { E.projectionSeed         = Registrant uuid Nothing Nothing Nothing False
+    { E.projectionSeed         = Registrant
+        { rUuid           = uuid
+        , rInfo           = Nothing
+        , rAdditionalInfo = Nothing
+        , rState          = Nothing
+        , rScanned        = False
+        , rVip            = False
+        }
     , E.projectionEventHandler = \registrant event -> case event of
         Cancel | Just Spam /= rState registrant ->
             registrant {rState = Just Cancelled}
@@ -101,6 +110,7 @@ registrantProjection uuid = E.Projection
         Uncancel _ | Just Cancelled <- rState registrant ->
             registrant {rState = Just Registered}
         MarkSpam -> registrant {rState = Just Spam}
+        MarkVip -> registrant {rVip = True}
         _ -> registrant
     }
 

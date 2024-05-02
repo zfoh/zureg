@@ -234,6 +234,8 @@ scan hackathon registrant@Registrant {..} = H.ul $ do
     H.li $ H.strong $
         let (html, ok) = registerState rState in (if ok then id else red) html
 
+    when rVip $ H.li $ "⭐ " <> H.strong "VIP"
+
     H.li $ case (registrantRegisteredAt registrant, registrantToBadge registrant) of
         (_, Nothing)                        -> red "No Badge"
         (_, Just badge)                     ->

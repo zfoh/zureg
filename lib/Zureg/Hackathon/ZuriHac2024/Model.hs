@@ -107,6 +107,7 @@ csvHeader = Csv.header
     [ "UUID"
     , "State"
     , "Scanned"
+    , "VIP"
     , "Name"
     , "Email"
     , "Region"

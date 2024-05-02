@@ -25,6 +25,7 @@ instance ToNamedRecord a => ToNamedRecord (Registrant a) where
                         Just ai -> toNamedRecord ai
                         Nothing -> HM.empty
                      , namedRecord [ "Scanned" .= rScanned ]
+                     , namedRecord [ "VIP" .= rVip ]
                      ]
 
 instance ToNamedRecord RegisterState where
