@@ -33,7 +33,7 @@ import qualified Zureg.Captcha               as Captcha
 import qualified Zureg.Form                  as Form
 import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
-import           Zureg.Main.Badges           (previewBadge, registrantToBadge)
+import           Zureg.Main.Badges           (Badge (..), registrantToBadge)
 import           Zureg.Model
 
 template :: H.Html -> H.Html -> H.Html
@@ -238,8 +238,8 @@ scan hackathon registrant@Registrant {..} = H.ul $ do
 
     H.li $ case (registrantRegisteredAt registrant, registrantToBadge registrant) of
         (_, Nothing)                        -> red "No Badge"
-        (_, Just badge)                     ->
-            "Badge: " <> H.strong (H.toHtml $ previewBadge badge)
+        (_, Just (Badge badge))             ->
+            "Badge: " <> H.strong (H.toHtml badge)
 
     H.li $ Hackathon.scanView hackathon registrant
   where
