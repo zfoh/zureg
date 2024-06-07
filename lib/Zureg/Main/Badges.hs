@@ -40,10 +40,11 @@ renderBadges badges = H.docTypeHtml $ do
             ":root {"
             "    --badge-width: 70mm;"
             "    --badge-height: 42.4mm;"
-            "    --badge-margin-side: 0.5cm;"
+            "    --badge-margin-top: 8mm;"
+            "    --badge-margin-side: 5mm;"
             "}"
             "body {"
-            "    font-size: 0.5cm;"
+            "    font-size: 5mm;"
             "    font-family: sans;"
             "    font-stretch: condensed;"
             "    font-weight: bold;"
@@ -57,15 +58,16 @@ renderBadges badges = H.docTypeHtml $ do
             "}"
             ".badge {"
             "    width: calc(var(--badge-width) - 2 * var(--badge-margin-side));"
-            "    height: var(--badge-height);"
+            "    height: calc(var(--badge-height) - var(--badge-margin-top));"
+            "    padding-top: var(--badge-margin-top);"
             "    padding-left: var(--badge-margin-side);"
             "    padding-right: var(--badge-margin-side);"
             "    text-align: center;"
             "}"
-    H.body $ do
-        for_ (pages 21 badges) $ \page -> H.div H.! HA.class_ "page" $ do
-            for_ page $ \(Badge badge) -> H.div H.! HA.class_ "badge" $ do
-                H.toHtml badge
+    H.body $
+        for_ (pages 21 badges) $ \page -> H.div H.! HA.class_ "page" $
+            for_ page $ \(Badge badge) -> H.div H.! HA.class_ "badge" $
+                H.span $ H.toHtml badge
 
 pages :: Int -> [a] -> [[a]]
 pages n ls = case splitAt n ls of
