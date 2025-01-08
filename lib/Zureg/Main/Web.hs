@@ -37,13 +37,15 @@ import           Zureg.SendEmail.Hardcoded
 import qualified Zureg.Views               as Views
 
 main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
-main hackathon = app hackathon >>= Warp.run 8000
+main hackathon = do
+    dbConfig <- Database.configFromEnv
+    app dbConfig hackathon >>= Warp.run 8000
 
-app :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO Wai.Application
-app hackathon =
+app :: forall a. (A.FromJSON a, A.ToJSON a) => Database.Config -> Hackathon a -> IO Wai.Application
+app dbConfig hackathon =
     fmap httpExceptionMiddleware $
     Http.newManager Http.tlsManagerSettings >>= \httpManager ->
-    Database.withHandle (Hackathon.databaseConfig hackathon) $ \db ->
+    Database.withHandle dbConfig $ \db ->
     SendEmail.withHandle (Hackathon.sendEmailConfig hackathon) $ \sendEmail ->
     pure $ \req respond -> case Wai.pathInfo req of
         ["register"] -> do
@@ -58,31 +60,31 @@ app hackathon =
                 (liftA2 (,)
                     (registerForm hackathon)
                     (Hackathon.registerForm hackathon))
-            registrantsSummary <- Database.lookupRegistrantsSummary db
-            let atCapacity = Database.rsAvailable registrantsSummary <= 0
             case mbReg of
                 Nothing -> respond . html $ Views.register
                     hackathon
                     (Captcha.clientHtml $ Hackathon.captcha hackathon)
                     view
-
-                Just (info, additionalInfo) | atCapacity -> do
-                    -- You're on the waitlist
-                    uuid <- UUID.nextRandom
-                    time <- Time.getCurrentTime
-                    let wlinfo = WaitlistInfo time
-                    Database.writeEvents db uuid
-                        [Register info additionalInfo, Waitlist wlinfo]
-                    Database.putEmail db (riEmail info) uuid
-                    sendWaitlistEmail sendEmail hackathon info uuid
-                    respond . html $ Views.registerWaitlist uuid info
                 Just (info, additionalInfo) -> do
-                    -- Success registration
-                    uuid <- UUID.nextRandom
-                    Database.writeEvents db uuid [Register info additionalInfo]
-                    Database.putEmail db (riEmail info) uuid
-                    sendRegisterSuccessEmail sendEmail hackathon info uuid
-                    respond . html $ Views.registerSuccess uuid info
+                    registrantsSummary <- Database.lookupRegistrantsSummary db
+                    let atCapacity = Database.rsAvailable registrantsSummary <= 0
+                    if atCapacity then do
+                        -- You're on the waitlist
+                        uuid <- UUID.nextRandom
+                        time <- Time.getCurrentTime
+                        let wlinfo = WaitlistInfo time
+                        Database.writeEvents db uuid
+                            [Register info additionalInfo, Waitlist wlinfo]
+                        Database.putEmail db (riEmail info) uuid
+                        sendWaitlistEmail sendEmail hackathon info uuid
+                        respond . html $ Views.registerWaitlist uuid info
+                    else do
+                        -- Success registration
+                        uuid <- UUID.nextRandom
+                        Database.writeEvents db uuid [Register info additionalInfo]
+                        Database.putEmail db (riEmail info) uuid
+                        sendRegisterSuccessEmail sendEmail hackathon info uuid
+                        respond . html $ Views.registerSuccess uuid info
 
         ["ticket"] | Wai.requestMethod req == Http.methodGet -> do
             uuid <- getUuidParam req

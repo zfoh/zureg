@@ -22,11 +22,12 @@ import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 
 popWaitinglistUUIDs :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
-                    => Hackathon a
+                    => Database.Config
+                    -> Hackathon a
                     -> [UUID]
                     -> IO ()
-popWaitinglistUUIDs hackathon@Hackathon{..} uuids =
-    Database.withHandle databaseConfig $ \db ->
+popWaitinglistUUIDs dbConfig hackathon@Hackathon{..} uuids =
+    Database.withHandle dbConfig $ \db ->
     SendEmail.withHandle sendEmailConfig $ \mailer ->
     forM_ uuids $ \uuid -> do
         registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
@@ -67,4 +68,6 @@ main hackathon = do
             ]
         exitFailure
 
-    popWaitinglistUUIDs hackathon uuids
+    dbConfig <- Database.configFromEnv
+
+    popWaitinglistUUIDs dbConfig hackathon uuids

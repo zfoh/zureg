@@ -64,7 +64,9 @@ main Hackathon.Hackathon {..} = do
             IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure
 
-    Database.withHandle databaseConfig $ \db -> do
+    dbConfig <- Database.configFromEnv
+
+    Database.withHandle dbConfig $ \db -> do
         uuids       <- Database.getRegistrantUuids db
         registrants <- progressMapM (Database.getRegistrant db) uuids
         BL.writeFile (oPath opts) $ encode $ filter predicate registrants

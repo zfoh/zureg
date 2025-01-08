@@ -41,7 +41,6 @@ newHackathon = do
         , Hackathon.scanView = ZH24.scanView
         , Hackathon.csvHeader = ZH24.csvHeader
 
-        , Hackathon.databaseConfig = Database.defaultConfig
         , Hackathon.sendEmailConfig = SendEmail.Config
             { SendEmail.cFrom = "ZuriHac Registration Bot <" <> email <> ">"
             }

@@ -35,12 +35,15 @@ isAttending Registered = True
 isAttending _          = False
 
 main :: (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
-main hackathon = app hackathon A.Null >>= print
+main hackathon = do
+    dbConfig <- Database.configFromEnv
+    app dbConfig hackathon A.Null >>= print
 
 app :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
-    => Hackathon a -> A.Value -> IO Database.RegistrantsSummary
-app hackathon _event =
-    Database.withHandle (Hackathon.databaseConfig hackathon) $ \db -> do
+    => Database.Config -> Hackathon a -> A.Value
+    -> IO Database.RegistrantsSummary
+app dbConfig hackathon _event =
+    Database.withHandle dbConfig $ \db -> do
     uuids       <- Database.getRegistrantUuids db
     registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
 
@@ -53,7 +56,7 @@ app hackathon _event =
         scanned = length $ filter rScanned registrants
         spam = countByState (== Spam) registrants
 
-    popWaitinglistUUIDs hackathon registrantsToPop
+    popWaitinglistUUIDs dbConfig hackathon registrantsToPop
 
     let summary = Database.RegistrantsSummary
             { Database.rsTotal     = length registrants

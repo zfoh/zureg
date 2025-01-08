@@ -40,8 +40,6 @@ data Hackathon a = Hackathon
     -- | CSV header
     , csvHeader           :: Csv.Header
 
-    -- | Database configuration
-    , databaseConfig      :: Database.Config
     -- | Email sending configuration
     , sendEmailConfig     :: SendEmail.Config
     -- | Captcha configuration

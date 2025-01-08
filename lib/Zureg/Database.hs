@@ -5,7 +5,7 @@
 {-# LANGUAGE TypeFamilies      #-}
 module Zureg.Database
     ( Config (..)
-    , defaultConfig
+    , configFromEnv
     , Handle
     , withHandle
     , writeEvents
@@ -26,6 +26,7 @@ import qualified Data.Aeson             as A
 import qualified Data.Aeson.TH.Extended as A
 import qualified Data.Text              as T
 import           Data.UUID              (UUID)
+import           System.Environment     (lookupEnv)
 import           Zureg.Model
 
 data DatabaseException
@@ -37,15 +38,13 @@ data DatabaseException
 instance Exception DatabaseException
 
 data Config = Config
-    { cRegistrantTable :: !T.Text
-    , cEmailTable      :: !T.Text
-    , cSummariesTable  :: !T.Text
+    { cConnectionString :: !T.Text
     }
 
-$(A.deriveJSON A.options ''Config)
-
-defaultConfig :: Config
-defaultConfig = Config "registrants" "emails" "summaries"
+configFromEnv :: IO Config
+configFromEnv = do
+    cstring <- lookupEnv "ZUREG_DB" >>= maybe (fail "ZUREG_DB not set") pure
+    pure Config {cConnectionString = T.pack cstring}
 
 data Handle = Handle
     { hConfig :: !Config
