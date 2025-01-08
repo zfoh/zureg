@@ -10,7 +10,7 @@
     inputs.flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = inputs.nixpkgs.legacyPackages.${system};
-        haskell = pkgs.haskell.packages.ghc96;
+        haskell = pkgs.haskell.packages.ghc94;
       in {
         packages = { default = haskell.callCabal2nix "zureg" ./. { }; };
         devShells = {

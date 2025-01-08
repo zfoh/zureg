@@ -1,20 +1,18 @@
-{-# LANGUAGE
-    TemplateHaskell,
-    FlexibleContexts,
-    FlexibleInstances,
-    RecordWildCards,
-    OverloadedStrings
-    #-}
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Zureg.Model.Csv () where
 
+import           Data.Csv            as CSV
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Time           as Time
+import qualified Data.UUID           as UUID
 import           Zureg.Model
-import qualified Data.Time              as Time
-import qualified Eventful               as E
-import           Data.Csv               as CSV
-import qualified Data.HashMap.Strict    as HM
 
 instance ToNamedRecord a => ToNamedRecord (Registrant a) where
     toNamedRecord Registrant {..}
@@ -40,15 +38,15 @@ instance ToNamedRecord RegisterInfo => ToNamedRecord (Maybe RegisterInfo)  where
         Nothing            -> namedRecord [ "Name" .= ("No Registration info present" :: String)]
 
 instance ToNamedRecord RegisterInfo where
-    toNamedRecord RegisterInfo {..}  
-        = namedRecord [ "Name"               .= riName 
-                      , "Name on Badge"      .= riBadgeName 
-                      , "Email"              .= riEmail 
-                      , "Affiliation"        .= riAffiliation 
+    toNamedRecord RegisterInfo {..}
+        = namedRecord [ "Name"               .= riName
+                      , "Name on Badge"      .= riBadgeName
+                      , "Email"              .= riEmail
+                      , "Affiliation"        .= riAffiliation
                       , "Registered At"      .= riRegisteredAt
                       ]
-         
-           
+
+
 instance ToField RegisterState where
     toField Registered = toField ("Registered" :: String)
     toField Confirmed  = toField ("Confirmed" :: String)
@@ -60,7 +58,7 @@ instance ToField Bool where
     toField True  = toField ("true" :: String)
     toField False = toField ("false" :: String)
 
-instance ToField E.UUID where
+instance ToField UUID.UUID where
     toField uuid' = toField (show uuid' :: String)
 
 instance ToField Time.UTCTime where

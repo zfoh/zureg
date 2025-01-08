@@ -13,7 +13,7 @@ module Zureg.Model
 
     , RegisterState (..)
     , Registrant (..)
-    , registrantProjection
+    -- , registrantProjection
 
     , parseRegisterState
     , registrantRegisteredAt
@@ -24,7 +24,7 @@ import qualified Data.Aeson.TH.Extended as A
 import qualified Data.List              as L
 import qualified Data.Text              as T
 import qualified Data.Time              as Time
-import qualified Eventful               as E
+import           Data.UUID              (UUID)
 import           Text.Read              (readMaybe)
 
 --------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ data RegisterState = Registered | Confirmed | Cancelled | Waitlisted | Spam
     deriving (Bounded, Enum, Eq, Read, Show)
 
 data Registrant a = Registrant
-    { rUuid           :: E.UUID
+    { rUuid           :: UUID
     , rInfo           :: Maybe RegisterInfo
     , rAdditionalInfo :: Maybe a
     , rState          :: Maybe RegisterState
@@ -86,6 +86,7 @@ data Registrant a = Registrant
     , rVip            :: Bool
     } deriving (Eq, Show)
 
+{-
 registrantProjection :: E.UUID -> E.Projection (Registrant a) (Event a)
 registrantProjection uuid = E.Projection
     { E.projectionSeed         = Registrant
@@ -113,6 +114,7 @@ registrantProjection uuid = E.Projection
         MarkVip -> registrant {rVip = True}
         _ -> registrant
     }
+-}
 
 $(A.deriveJSON A.options ''RegisterInfo)
 $(A.deriveJSON A.options ''WaitlistInfo)
