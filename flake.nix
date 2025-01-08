@@ -17,10 +17,15 @@
     };
     devShells = {
       default = pkgs.mkShell {
+        buildInputs = [
+          pkgs.zlib.dev
+        ];
         packages = [
           pkgs.cabal-install
           pkgs.entr
+          pkgs.jq
           pkgs.postgresql
+          pkgs.awscli2
           haskell.stylish-haskell
           (haskell.ghc.withPackages (p:
             inputs.self.packages.${system}.default.buildInputs ++
