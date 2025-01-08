@@ -81,28 +81,28 @@ Library
     Paths_zureg
 
   Build-depends:
-    aeson                    >= 1.3  && < 1.6,
-    amazonka                 >= 1.6  && < 1.7,
-    amazonka-ses             >= 1.6  && < 1.7,
+    aeson                    >= 2.1  && < 2.2,
+    amazonka                 >= 2.0  && < 2.1,
+    amazonka-ses             >= 2.0  && < 2.1,
     async                    >= 2.2  && < 2.3,
     base                     >= 4.7  && < 5,
     blaze-html               >= 0.9  && < 0.10,
-    bytestring               >= 0.10 && < 0.11,
+    bytestring               >= 0.10 && < 0.13,
     cassava                  >= 0.5  && < 0.6,
     digestive-functors       >= 0.8  && < 0.9,
     digestive-functors-blaze >= 0.6  && < 0.7,
     directory                >= 1.3  && < 1.4,
     file-embed               >= 0.0  && < 0.1,
     filepath                 >= 1.4  && < 1.5,
-    http-client              >= 0.5  && < 0.7,
+    http-client              >= 0.5  && < 0.8,
     http-client-tls          >= 0.3  && < 0.4,
     http-types               >= 0.12 && < 0.13,
-    lens                     >= 4.16 && < 4.20,
-    mtl                      >= 2.2  && < 2.3,
-    mustache                 >= 2.3  && < 2.4,
+    lens                     >= 4.16 && < 5.4,
+    mtl                      >= 2.2  && < 2.4,
+    mustache                 >= 2.3  && < 2.4.2,
     optparse-applicative     >= 0.14 && < 0.17,
     postgresql-simple        >= 0.7  && < 0.8,
-    text                     >= 1.2  && < 1.3,
+    text                     >= 1.2  && < 2.2,
     time                     >= 1.8  && < 1.10,
     unordered-containers     >= 0.2  && < 0.3,
     uuid                     >= 1.3  && < 1.4,
@@ -152,4 +152,4 @@ Executable zureg-lambda
   Main-is:       Lambda.hs
   Build-depends:
     hal             >= 1.0 && < 1.1,
-    wai-handler-hal >= 0.3 && < 0.4
+    wai-handler-hal >= 0.3 && < 0.5

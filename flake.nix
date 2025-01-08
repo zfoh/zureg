@@ -9,7 +9,7 @@
   outputs = inputs :
     inputs.flake-utils.lib.eachDefaultSystem (system:
      let pkgs = inputs.nixpkgs.legacyPackages.${system};
-         haskell = pkgs.haskell.packages.ghc98;
+         haskell = pkgs.haskell.packages.ghc96;
      in
   {
     packages = {
