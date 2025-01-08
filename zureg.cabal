@@ -104,6 +104,8 @@ Library
     mustache                 >= 2.3  && < 2.5,
     optparse-applicative     >= 0.14 && < 0.19,
     postgresql-simple        >= 0.7  && < 0.8,
+    qrcode-core              >= 0.9  && < 0.10,
+    qrcode-juicypixels       >= 0.8  && < 0.9,
     text                     >= 1.2  && < 2.2,
     time                     >= 1.8  && < 1.15,
     unordered-containers     >= 0.2  && < 0.3,

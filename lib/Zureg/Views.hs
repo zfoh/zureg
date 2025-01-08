@@ -25,7 +25,8 @@ import qualified Data.ByteString             as B
 import qualified Data.FileEmbed              as Embed
 import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
-import qualified Eventful                    as E
+import           Data.UUID                   (UUID)
+import qualified Data.UUID                   as UUID
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
@@ -97,14 +98,14 @@ register hackathon captchaHtml view =
     template (Captcha.chScript captchaHtml) $
     Form.registerView hackathon captchaHtml view
 
-registerSuccess :: E.UUID -> RegisterInfo -> H.Html
+registerSuccess :: UUID -> RegisterInfo -> H.Html
 registerSuccess _uuid RegisterInfo {..} = template mempty $ do
     H.h1 "Registration successful"
     H.p $ H.toHtml riName <> ", your registration was successful."
     H.p $ "You will receive a confirmation mail at " <> H.toHtml riEmail <>
         " soon."
 
-registerWaitlist :: E.UUID -> RegisterInfo -> H.Html
+registerWaitlist :: UUID -> RegisterInfo -> H.Html
 registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
     H.h1 "You are now on the waitlist"
     H.p $ H.toHtml riName <> ", your have been added to the waitlist."
@@ -127,7 +128,7 @@ ticket hackathon Registrant {..} = template
         "}")
     (do
         when (rState == Just Confirmed) $
-            qrimg $ T.unpack $ E.uuidToText rUuid
+            qrimg $ T.unpack $ UUID.toText rUuid
 
         H.div $ do
             H.h1 $ fst $ registerState rState
@@ -143,7 +144,7 @@ ticket hackathon Registrant {..} = template
             H.p "Please confirm your registration so we can get an accurate count of attendees for food, etc."
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                    H.! A.value (H.toValue (E.uuidToText rUuid))
+                    H.! A.value (H.toValue (UUID.toText rUuid))
                 H.input H.! A.type_ "submit"
                     H.! A.value "Confirm my registration and access ticket"
 
@@ -151,7 +152,7 @@ ticket hackathon Registrant {..} = template
             Hackathon.chatExplanation hackathon
             H.form H.! A.method "GET" H.! A.action "chat" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                    H.! A.value (H.toValue (E.uuidToText rUuid))
+                    H.! A.value (H.toValue (UUID.toText rUuid))
                 H.input H.! A.type_ "submit"
                     H.! A.value "Generate Discord invite"
 
@@ -162,7 +163,7 @@ ticket hackathon Registrant {..} = template
                 "cancel your registration because space is limited."
             H.form H.! A.method "GET" H.! A.action "cancel" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                    H.! A.value (H.toValue (E.uuidToText rUuid))
+                    H.! A.value (H.toValue (UUID.toText rUuid))
                 H.input H.! A.type_ "submit"
                     H.! A.value "Cancel my registration")
 
@@ -180,7 +181,7 @@ registrantInfo RegisterInfo {..} = H.p $ do
     H.strong (H.toHtml riName ) <> H.br
     H.toHtml riEmail <> H.br
 
-cancel :: Maybe E.UUID -> D.View H.Html -> H.Html
+cancel :: Maybe UUID -> D.View H.Html -> H.Html
 cancel mbUuid view = template mempty $
     H.div H.! A.class_ "danger" $ Form.cancelView mbUuid view
 

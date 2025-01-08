@@ -16,7 +16,9 @@ import qualified Data.Text                 as T
 import qualified Data.Text.Encoding        as T
 import qualified Data.Text.Lazy.Encoding   as TL
 import qualified Data.Time                 as Time
-import qualified Eventful                  as E
+import           Data.UUID                 (UUID)
+import qualified Data.UUID                 as UUID
+import qualified Data.UUID.V4              as UUID
 import qualified Network.HTTP.Client       as Http
 import qualified Network.HTTP.Client.TLS   as Http
 import qualified Network.HTTP.Types        as Http
@@ -66,7 +68,7 @@ app hackathon =
 
                 Just (info, additionalInfo) | atCapacity -> do
                     -- You're on the waitlist
-                    uuid <- E.uuidNextRandom
+                    uuid <- UUID.nextRandom
                     time <- Time.getCurrentTime
                     let wlinfo = WaitlistInfo time
                     Database.writeEvents db uuid
@@ -76,7 +78,7 @@ app hackathon =
                     respond . html $ Views.registerWaitlist uuid info
                 Just (info, additionalInfo) -> do
                     -- Success registration
-                    uuid <- E.uuidNextRandom
+                    uuid <- UUID.nextRandom
                     Database.writeEvents db uuid [Register info additionalInfo]
                     Database.putEmail db (riEmail info) uuid
                     sendRegisterSuccessEmail sendEmail hackathon info uuid
@@ -118,20 +120,20 @@ app hackathon =
             case rState registrant of
               Just Registered -> Database.writeEvents db uuid [Confirm :: Event a]
               _               -> return ()
-            respond . redirect $ "ticket?uuid=" <> E.uuidToText uuid
+            respond . redirect $ "ticket?uuid=" <> UUID.toText uuid
 
         ["spam"] | Wai.requestMethod req == Http.methodPost -> do
             uuid <- getUuidParam req
             _    <- Database.getRegistrant db uuid :: IO (Registrant a)
             Database.writeEvents db uuid [MarkSpam :: Event a]
-            respond . redirect $ "ticket?uuid=" <> E.uuidToText uuid
+            respond . redirect $ "ticket?uuid=" <> UUID.toText uuid
 
         ["vip"] | Wai.requestMethod req == Http.methodPost ->
             scannerAuthorized req $ do
             uuid <- getUuidParam req
             _    <- Database.getRegistrant db uuid :: IO (Registrant a)
             Database.writeEvents db uuid [MarkVip :: Event a]
-            respond . redirect $ "ticket?uuid=" <> E.uuidToText uuid
+            respond . redirect $ "ticket?uuid=" <> UUID.toText uuid
 
         ["cancel"] -> do
             reqBody <- TL.decodeUtf8 <$> Wai.strictRequestBody req
@@ -154,10 +156,10 @@ app hackathon =
   where
     textParam k req = fmap T.decodeUtf8 . join . lookup k $ Wai.queryString req
 
-    lookupUuidParam :: Wai.Request -> Maybe E.UUID
-    lookupUuidParam = (>>= E.uuidFromText) . textParam "uuid"
+    lookupUuidParam :: Wai.Request -> Maybe UUID
+    lookupUuidParam = (>>= UUID.fromText) . textParam "uuid"
 
-    getUuidParam :: Wai.Request -> IO E.UUID
+    getUuidParam :: Wai.Request -> IO UUID
     getUuidParam req = maybe
         (throwIO $ HttpException 400 "Missing uuid")
         return

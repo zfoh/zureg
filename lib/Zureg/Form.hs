@@ -13,14 +13,15 @@ module Zureg.Form
 import           Control.Monad               (when)
 import qualified Data.Text                   as T
 import qualified Data.Time                   as Time
-import qualified Eventful                    as E
+import           Data.UUID                   (UUID)
+import qualified Data.UUID                   as UUID
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Text.Digestive.Blaze.Html5  as DH
 import qualified Zureg.Captcha               as Captcha
-import           Zureg.Hackathon             (Hackathon)
 import qualified Zureg.Hackathon             as Hackathon
+import           Zureg.Hackathon             (Hackathon)
 import           Zureg.Model
 
 -- | The 'IO' in this type signature is because we want to get the registration
@@ -100,13 +101,13 @@ registerView h captchaHtml view = DH.form view "?" $ do
 
     DH.inputSubmit "Register"
 
-cancelForm :: Monad m => Maybe E.UUID -> D.Form H.Html m (E.UUID, Bool)
+cancelForm :: Monad m => Maybe UUID -> D.Form H.Html m (UUID, Bool)
 cancelForm uuid = (,)
     <$> "uuid" D..: D.validate
-            validateUuid (D.text (fmap E.uuidToText uuid))
+            validateUuid (D.text (fmap UUID.toText uuid))
     <*> "confirm" D..: D.bool Nothing
 
-cancelView :: Maybe E.UUID -> D.View H.Html -> H.Html
+cancelView :: Maybe UUID -> D.View H.Html -> H.Html
 cancelView mbUuid view = do
     DH.form view "cancel?" $ do
         DH.childErrorList "" view
@@ -122,11 +123,11 @@ cancelView mbUuid view = do
             H.! A.style "display: none"
             H.! A.type_ "text"
             H.! A.name "uuid"
-            H.! A.value (maybe "" (H.toValue . E.uuidToText) mbUuid)
+            H.! A.value (maybe "" (H.toValue . UUID.toText) mbUuid)
         H.input H.! A.type_ "submit"
             H.! A.value "Take me back to my ticket"
 
-validateUuid :: T.Text -> D.Result H.Html E.UUID
-validateUuid txt = case E.uuidFromText txt of
+validateUuid :: T.Text -> D.Result H.Html UUID
+validateUuid txt = case UUID.fromText txt of
     Nothing -> D.Error "Not a valid UUID"
     Just u  -> D.Success u

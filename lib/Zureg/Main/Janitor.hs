@@ -11,7 +11,7 @@ import qualified Data.Aeson             as A
 import           Data.List              (sortOn)
 import           Data.Maybe
 import qualified Data.Time              as Time
-import qualified Eventful               as E
+import           Data.UUID              (UUID)
 import qualified Zureg.Database         as Database
 import qualified Zureg.Hackathon        as Hackathon
 import           Zureg.Hackathon        (Hackathon)
@@ -77,7 +77,7 @@ instance Ord Fifo where
     compare (Fifo (Just _)) (Fifo Nothing)  = LT
     compare (Fifo (Just x)) (Fifo (Just y)) = compare x y
 
-waitingListUUIDs :: [Registrant a] -> [E.UUID]
+waitingListUUIDs :: [Registrant a] -> [UUID]
 waitingListUUIDs = map rUuid
                  . sortOn (Fifo . fmap riRegisteredAt . rInfo)
                  . mapMaybe (\r -> do

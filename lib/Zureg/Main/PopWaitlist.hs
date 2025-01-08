@@ -10,7 +10,8 @@ import           Control.Monad             (forM, forM_, when)
 import qualified Data.Aeson                as A
 import qualified Data.Text                 as T
 import qualified Data.Time                 as Time
-import qualified Eventful                  as E
+import           Data.UUID                 (UUID)
+import qualified Data.UUID                 as UUID
 import           System.Environment        (getArgs, getProgName)
 import           System.Exit               (exitFailure)
 import qualified System.IO                 as IO
@@ -22,7 +23,7 @@ import           Zureg.SendEmail.Hardcoded
 
 popWaitinglistUUIDs :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
                     => Hackathon a
-                    -> [E.UUID]
+                    -> [UUID]
                     -> IO ()
 popWaitinglistUUIDs hackathon@Hackathon{..} uuids =
     Database.withHandle databaseConfig $ \db ->
@@ -30,8 +31,11 @@ popWaitinglistUUIDs hackathon@Hackathon{..} uuids =
     forM_ uuids $ \uuid -> do
         registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
         event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
+        let registrant' = registrant
+        {-
         let registrant' = E.projectionEventHandler
                 (registrantProjection uuid) registrant event
+        -}
 
         -- Sanity checks
         rinfo <- case rInfo registrant' of
@@ -40,7 +44,7 @@ popWaitinglistUUIDs hackathon@Hackathon{..} uuids =
             Just i                        -> return i
 
         IO.hPutStrLn IO.stderr "Writing event..."
-        Database.writeEvents db uuid [event]
+        Database.writeEvents db uuid [event :: Event a]
         IO.hPutStrLn IO.stderr $
             "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
         sendPopWaitlistEmail mailer hackathon rinfo uuid
@@ -53,7 +57,7 @@ main hackathon = do
     args     <- getArgs
 
     uuids <- forM args $
-        maybe (fail "could not parse uuid") return .  E.uuidFromText . T.pack
+        maybe (fail "could not parse uuid") return . UUID.fromText . T.pack
 
     when (null args) $ do
         IO.hPutStr IO.stderr $ unlines
