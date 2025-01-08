@@ -1,8 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Zureg.Main.Migrations where
+module Zureg.Database.Migrations
+    ( migrate
+    ) where
 
 import qualified Data.ByteString.Char8      as BS8
 import           Data.Char                  (isDigit)
+import           Data.Foldable              (for_)
 import           Data.List                  (sortOn)
 import           Data.String                (fromString)
 import           Data.Traversable           (for)
@@ -24,18 +27,18 @@ listMigrations = sortOn fst <$> do
   where
     dir = "lib/Zureg/Database/Migrations"
 
-main :: IO ()
-main = do
+migrate :: IO ()
+migrate = do
     pgstring <- lookupEnv "ZUREG_DB" >>= maybe (fail "ZUREG_DB not set") pure
     conn <- Pg.connectPostgreSQL $ BS8.pack pgstring
-    Pg.execute_ conn "\
+    _ <- Pg.execute_ conn "\
         \CREATE TABLE IF NOT EXISTS migrations (\n\
         \    version INT NOT NULL PRIMARY KEY,\n\
         \    path TEXT NOT NULL\n\
         \)"
 
     migrations <- listMigrations
-    for migrations $ \(version, path) -> Pg.withTransaction conn $ do
+    for_ migrations $ \(version, path) -> Pg.withTransaction conn $ do
         rows <- Pg.query conn
             "SELECT version FROM migrations WHERE version = ?"
             (Pg.Only version) :: IO [Pg.Only Int]
@@ -45,8 +48,8 @@ main = do
             [] -> do
                 IO.hPutStrLn IO.stderr $ "Running migration: " ++ path
                 contents <- readFile path
-                Pg.execute_ conn $ fromString contents
-                Pg.execute conn
+                _ <- Pg.execute_ conn $ fromString contents
+                _ <- Pg.execute conn
                     "INSERT INTO migrations (version, path) VALUES (?, ?)"
                     (version, path)
                 pure ()

@@ -31,6 +31,7 @@ Library
 
   Exposed-modules:
     Zureg.Database
+    Zureg.Database.Migrations
     Zureg.Form
     Zureg.Hackathon
     Zureg.Hackathon.Interface
@@ -64,6 +65,7 @@ Library
     Zureg.Main.Export
     Zureg.Main.Janitor
     Zureg.Main.PopWaitlist
+    Zureg.Main.Migrate
     Zureg.Main.Web
     Zureg.Model
     Zureg.Model.Csv
