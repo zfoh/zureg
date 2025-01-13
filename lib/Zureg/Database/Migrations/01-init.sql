@@ -32,7 +32,7 @@ INSERT INTO occupations (occupation) VALUES ('Tech');
 INSERT INTO occupations (occupation) VALUES ('Academia');
 INSERT INTO occupations (occupation) VALUES ('Other');
 
-CREATE TABLE registrants (
+CREATE TABLE registrations (
     id UUID NOT NULL PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
     email TEXT NOT NULL,
     name TEXT NOT NULL,
@@ -45,12 +45,17 @@ CREATE TABLE registrants (
     region TEXT,
     CONSTRAINT region_fk FOREIGN KEY (region) REFERENCES regions (region),
     occupation TEXT,
-    CONSTRAINT registrants_occupation_fk FOREIGN KEY (occupation)
+    CONSTRAINT registrations_occupation_fk FOREIGN KEY (occupation)
         REFERENCES occupations (occupation),
-    beginner_track_interest BOOLEAN NOT NULL
+    beginner_track_interest BOOLEAN NOT NULL,
+    state TEXT NOT NULL,
+    CONSTRAINT state_fk FOREIGN KEY (state)
+      REFERENCES registration_states (state),
+    scanned_at TIMESTAMPTZ,
+    vip BOOLEAN NOT NULL DEFAULT false
 );
 
-CREATE UNIQUE INDEX registrants_email_idx ON registrants (email);
+CREATE UNIQUE INDEX registrations_email_idx ON registrations (email);
 
 CREATE TABLE projects (
     id UUID NOT NULL PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
@@ -62,5 +67,5 @@ CREATE TABLE projects (
     contributor_level_advanced BOOLEAN NOT NULL,
     registrant_id UUID NOT NULL,
     CONSTRAINT registrant_id_fk FOREIGN KEY (registrant_id)
-        REFERENCES registrants (id)
+        REFERENCES registrations (id)
 );

@@ -22,7 +22,9 @@ module Zureg.Database
     , putRegistrantsSummary
 
     -- New stuff
+    , insertRegistration
     , setRegistrationState
+    , setRegistrationScanned
     ) where
 
 import           Control.Exception      (Exception)
@@ -90,5 +92,11 @@ putRegistrantsSummary _ _ = pure ()
 lookupRegistrantsSummary :: Handle -> IO RegistrantsSummary
 lookupRegistrantsSummary _ = undefined
 
+insertRegistration :: Handle -> UUID -> InsertRegistration -> IO Registration
+insertRegistration _ _ _ = undefined
+
 setRegistrationState :: Handle -> UUID -> RegistrationState -> IO Registration
 setRegistrationState _ _ _ = undefined
+
+setRegistrationScanned :: Handle -> UUID -> IO Registration
+setRegistrationScanned _ _ = undefined

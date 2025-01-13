@@ -29,6 +29,7 @@ import qualified Zureg.Captcha             as Captcha
 import qualified Zureg.Database            as Database
 import           Zureg.Database.Models
 import           Zureg.Form
+import qualified Zureg.Hackathon.ZuriHac2020.Discord as Discord
 import qualified Zureg.Hackathon           as Hackathon
 import           Zureg.Hackathon           (Hackathon)
 import           Zureg.Http
@@ -39,10 +40,15 @@ import qualified Zureg.Views               as Views
 main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
 main hackathon = do
     dbConfig <- Database.configFromEnv
+    discord <- Discord.configFromEnv
     app dbConfig hackathon >>= Warp.run 8000
 
-app :: forall a. (A.FromJSON a, A.ToJSON a) => Database.Config -> Hackathon a -> IO Wai.Application
-app dbConfig hackathon =
+app
+    :: Database.Config
+    -> Discord.Config
+    -> Hackathon
+    -> IO Wai.Application
+app dbConfig discord hackathon =
     fmap httpExceptionMiddleware $
     Http.newManager Http.tlsManagerSettings >>= \httpManager ->
     Database.withHandle dbConfig $ \db ->
@@ -88,7 +94,7 @@ app dbConfig hackathon =
 
         ["ticket"] | Wai.requestMethod req == Http.methodGet -> do
             uuid <- getUuidParam req
-            registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+            registrant <- Database.getRegistrant db uuid
             respond . html $ Views.ticket hackathon registrant
 
         ["scanner"] | Wai.requestMethod req == Http.methodGet  ->
@@ -99,42 +105,28 @@ app dbConfig hackathon =
             scannerAuthorized req $ do
                 time <- Time.getCurrentTime
                 uuid <- getUuidParam req
-                registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
-                Database.writeEvents db uuid [Scan $ ScanInfo time :: Event a]
+                Database.setRegistrationScanned db uuid
+                registrant <- Database.getRegistrant db uuid
                 respond . html $ Views.scan hackathon registrant
 
         ["chat"] -> do
             time <- Time.getCurrentTime
             uuid <- getUuidParam req
-            registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+            registrant <- Database.getRegistrant db uuid
             unless (registrantCanJoinChat $ rState registrant) $ throwIO $
                 HttpException 400
                 "Invalid registrant state"
 
-            url <- Hackathon.chatUrl hackathon
-            Database.writeEvents db uuid
-                [JoinChat $ JoinChatInfo time :: Event a]
+            welcomeChannel <- Discord.getWelcomeChannelId discord
+            url <- Discord.generateTempInviteUrl discord welcomeChannel
             respond $ redirect url
 
         ["confirm"] | Hackathon.confirmation hackathon -> do
             uuid <- getUuidParam req
-            registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+            registrant <- Database.getRegistrant db uuid
             case rState registrant of
-              Just Registered -> Database.writeEvents db uuid [Confirm :: Event a]
+              Just Registered -> Database.setRegistrationState db uuid Confirmed
               _               -> return ()
-            respond . redirect $ "ticket?uuid=" <> UUID.toText uuid
-
-        ["spam"] | Wai.requestMethod req == Http.methodPost -> do
-            uuid <- getUuidParam req
-            _    <- Database.getRegistrant db uuid :: IO (Registrant a)
-            Database.writeEvents db uuid [MarkSpam :: Event a]
-            respond . redirect $ "ticket?uuid=" <> UUID.toText uuid
-
-        ["vip"] | Wai.requestMethod req == Http.methodPost ->
-            scannerAuthorized req $ do
-            uuid <- getUuidParam req
-            _    <- Database.getRegistrant db uuid :: IO (Registrant a)
-            Database.writeEvents db uuid [MarkVip :: Event a]
             respond . redirect $ "ticket?uuid=" <> UUID.toText uuid
 
         ["cancel"] -> do
@@ -143,12 +135,8 @@ app dbConfig hackathon =
                 cancelForm (lookupUuidParam req)
             case mbCancel of
                 Just (uuid, True) -> do
-                    registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
                     -- TODO: Check that not yet cancelled?
-                    Database.writeEvents db uuid [Cancel :: Event a]
-                    case rInfo registrant of
-                        Nothing   -> return ()
-                        Just info ->  Database.deleteEmail db $ riEmail info
+                    registrant <- Database.setRegistrationState db uuid Cancelled
                     respond . html $ Views.cancelSuccess
                 _ -> respond . html $
                     Views.cancel (lookupUuidParam req) view

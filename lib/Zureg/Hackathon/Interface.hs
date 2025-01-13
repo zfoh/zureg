@@ -23,6 +23,8 @@ data Hackathon = Hackathon
     , emailFrom      :: T.Text
     -- | When T-shirt order is sent.
     , tShirtDeadline :: Maybe Time.UTCTime
+    -- | Secret for accessing the scanner page.
+    , scannerSecret :: T.Text
     }
 
 hackathonFromEnv :: IO Hackathon
