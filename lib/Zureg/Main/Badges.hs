@@ -20,15 +20,15 @@ import qualified Text.Blaze.Html.Renderer.Pretty as H
 import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as HA
 import           Text.Read                       (readMaybe)
+import           Zureg.Database.Models
 import           Zureg.Hackathon                 (Hackathon)
-import           Zureg.Model
 
 newtype Badge = Badge {unBadge :: String}
 
-registrantToBadge :: Registrant -> Maybe Badge
+registrantToBadge :: Registration -> Maybe Badge
 registrantToBadge r
-    | rState r `elem` map Just [Confirmed, Registered] =
-        Badge . T.unpack . riName <$> rInfo r
+    | rState r `elem` [Confirmed, Registered] =
+        Just . Badge . T.unpack $ rName r
     | otherwise = Nothing
 
 -- | For 2023, we used 21 70mm 42.4mm
@@ -99,7 +99,7 @@ main _ = do
                     }
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant]
+                :: IO [Registration]
             putStrLn $ H.renderHtml $ renderBadges options $
                 sortOn (map toLower . unBadge) $
                 mapMaybe registrantToBadge registrants

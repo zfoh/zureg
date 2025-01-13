@@ -5,21 +5,21 @@ module Zureg.Main.Email
     ( main
     ) where
 
-import           Control.Monad      (forM_, unless)
-import qualified Data.Aeson         as A
-import qualified Data.HashSet       as HS
-import           Data.Maybe         (listToMaybe)
-import qualified Data.Text          as T
-import qualified Data.Text.IO       as T
-import           System.Directory   (doesFileExist)
-import           System.Environment (getArgs, getProgName)
-import           System.Exit        (exitFailure)
-import qualified System.IO          as IO
-import qualified Text.Mustache      as Mustache
-import           Zureg.Hackathon    (Hackathon)
-import qualified Zureg.Hackathon    as Hackathon
-import           Zureg.Model
-import qualified Zureg.SendEmail    as SendEmail
+import           Control.Monad         (forM_, unless, when)
+import qualified Data.Aeson            as A
+import qualified Data.HashSet          as HS
+import           Data.Maybe            (listToMaybe)
+import qualified Data.Text             as T
+import qualified Data.Text.IO          as T
+import           System.Directory      (doesFileExist)
+import           System.Environment    (getArgs, getProgName)
+import           System.Exit           (exitFailure)
+import qualified System.IO             as IO
+import qualified Text.Mustache         as Mustache
+import           Zureg.Database.Models
+import qualified Zureg.Hackathon       as Hackathon
+import           Zureg.Hackathon       (Hackathon)
+import qualified Zureg.SendEmail       as SendEmail
 
 withStateFile
     :: FilePath -> (HS.HashSet T.Text -> (T.Text -> IO ()) -> IO a) -> IO a
@@ -49,9 +49,9 @@ main Hackathon.Hackathon {..} = do
 
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant]
+                :: IO [Registration]
 
-            let prepare :: Registrant -> IO T.Text
+            let prepare :: Registration -> IO T.Text
                 prepare registrant = do
                     let (errs, t) = Mustache.checkedSubstitute
                             template (A.toJSON registrant)
@@ -66,15 +66,14 @@ main Hackathon.Hackathon {..} = do
 
             withStateFile statefile $ \done append ->
                 SendEmail.withHandle $ \sendEmail ->
-                forM_ registrants $ \registrant -> case rInfo registrant of
-                Just ri | not (riEmail ri `HS.member` done) -> do
-                    putStrLn $ "Mailing " ++ T.unpack (riEmail ri) ++ "..."
-                    t <- prepare registrant
-                    SendEmail.sendEmail sendEmail
-                        emailFrom (riEmail ri) (T.pack subject) t
-                    append (riEmail ri)
-
-                _ -> return ()
+                forM_ registrants $ \registrant -> do
+                    when (not (rEmail registrant `HS.member` done)) $ do
+                        IO.hPutStrLn IO.stderr $
+                            "Mailing " ++ T.unpack (rEmail registrant) ++ "..."
+                        t <- prepare registrant
+                        SendEmail.sendEmail sendEmail
+                            emailFrom (rEmail registrant) (T.pack subject) t
+                        append (rEmail registrant)
 
         _ -> do
             IO.hPutStr IO.stderr $ unlines

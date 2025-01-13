@@ -8,15 +8,14 @@ module Zureg.Main.PopWaitlist
 
 import           Control.Monad             (forM, forM_, when)
 import qualified Data.Text                 as T
-import qualified Data.Time                 as Time
 import           Data.UUID                 (UUID)
 import qualified Data.UUID                 as UUID
 import           System.Environment        (getArgs, getProgName)
 import           System.Exit               (exitFailure)
 import qualified System.IO                 as IO
 import qualified Zureg.Database            as Database
+import           Zureg.Database.Models
 import           Zureg.Hackathon           (Hackathon (..))
-import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 
@@ -28,27 +27,11 @@ popWaitinglistUUIDs dbConfig hackathon uuids =
     Database.withHandle dbConfig $ \db ->
     SendEmail.withHandle $ \mailer ->
     forM_ uuids $ \uuid -> do
-        registrant <- Database.getRegistrant db uuid :: IO Registrant
-        event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
-        let registrant' = registrant
-        {-
-        let registrant' = E.projectionEventHandler
-                (registrantProjection uuid) registrant event
-        -}
-
-        -- Sanity checks
-        rinfo <- case rInfo registrant' of
-            Nothing                       -> fail "missing info?"
-            _ | registrant == registrant' -> fail "not waitlisted?"
-            Just i                        -> return i
-
-        IO.hPutStrLn IO.stderr "Writing event..."
-        -- Database.writeEvents db uuid [event :: Event a]
+        registrant <- Database.setRegistrationState db uuid Registered
         IO.hPutStrLn IO.stderr $
-            "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
-        sendPopWaitlistEmail mailer hackathon rinfo uuid
+            "Mailing " ++ T.unpack (rEmail registrant) ++ "..."
+        sendPopWaitlistEmail mailer hackathon registrant uuid
         IO.hPutStrLn IO.stderr "OK"
-
 
 main :: Hackathon -> IO ()
 main hackathon = do

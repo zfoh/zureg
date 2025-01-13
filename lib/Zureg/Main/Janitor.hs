@@ -10,26 +10,25 @@ import           Control.Monad          (guard)
 import qualified Data.Aeson             as A
 import           Data.List              (sortOn)
 import           Data.Maybe
-import qualified Data.Time              as Time
 import           Data.UUID              (UUID)
 import qualified Zureg.Database         as Database
+import           Zureg.Database.Models
 import qualified Zureg.Hackathon        as Hackathon
 import           Zureg.Hackathon        (Hackathon)
 import           Zureg.Main.PopWaitlist (popWaitinglistUUIDs)
-import           Zureg.Model
 
-countByState ::(RegisterState -> Bool) -> [Registrant] -> Int
-countByState f registrants = length $ filter f $ mapMaybe rState registrants
+countByState :: (RegistrationState -> Bool) -> [Registration] -> Int
+countByState f registrants = length $ filter f $ map rState registrants
 
-isWaiting :: RegisterState -> Bool
+isWaiting :: RegistrationState -> Bool
 isWaiting Waitlisted = True
 isWaiting _          = False
 
-isConfirmed :: RegisterState -> Bool
+isConfirmed :: RegistrationState -> Bool
 isConfirmed Confirmed = True
 isConfirmed _         = False
 
-isAttending :: RegisterState -> Bool
+isAttending :: RegistrationState -> Bool
 isAttending Confirmed  = True
 isAttending Registered = True
 isAttending _          = False
@@ -44,7 +43,7 @@ app :: Database.Config -> Hackathon -> A.Value
 app dbConfig hackathon _event =
     Database.withHandle dbConfig $ \db -> do
     uuids       <- Database.getRegistrantUuids db
-    registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant]
+    registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registration]
 
     let capacity   = Hackathon.capacity hackathon
         attending  = countByState isAttending registrants
@@ -70,19 +69,10 @@ app dbConfig hackathon _event =
     Database.putRegistrantsSummary db summary
     pure summary
 
--- This is to put Nothings to the end of a sorted list
-newtype Fifo = Fifo (Maybe Time.UTCTime) deriving Eq
-
-instance Ord Fifo where
-    compare (Fifo Nothing)  (Fifo Nothing)  = EQ
-    compare (Fifo Nothing)  (Fifo (Just _)) = GT
-    compare (Fifo (Just _)) (Fifo Nothing)  = LT
-    compare (Fifo (Just x)) (Fifo (Just y)) = compare x y
-
-waitingListUUIDs :: [Registrant] -> [UUID]
+waitingListUUIDs :: [Registration] -> [UUID]
 waitingListUUIDs = map rUuid
-                 . sortOn (Fifo . fmap riRegisteredAt . rInfo)
+                 . sortOn rRegisteredAt
                  . mapMaybe (\r -> do
-                                s <- rState r
+                                let s = rState r
                                 guard $ isWaiting s
                                 return r)

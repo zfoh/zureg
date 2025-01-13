@@ -31,11 +31,11 @@ import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import qualified Text.Digestive              as D
 import qualified Zureg.Captcha               as Captcha
+import           Zureg.Database.Models
 import qualified Zureg.Form                  as Form
 import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
 import           Zureg.Main.Badges           (Badge (..), registrantToBadge)
-import           Zureg.Model
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -98,21 +98,21 @@ register hackathon captchaHtml view =
     template (Captcha.chScript captchaHtml) $
     Form.registerView hackathon captchaHtml view
 
-registerSuccess :: UUID -> RegisterInfo -> H.Html
-registerSuccess _uuid RegisterInfo {..} = template mempty $ do
+registerSuccess :: UUID -> InsertRegistration -> H.Html
+registerSuccess _uuid InsertRegistration {..} = template mempty $ do
     H.h1 "Registration successful"
-    H.p $ H.toHtml riName <> ", your registration was successful."
-    H.p $ "You will receive a confirmation mail at " <> H.toHtml riEmail <>
+    H.p $ H.toHtml irName <> ", your registration was successful."
+    H.p $ "You will receive a confirmation mail at " <> H.toHtml irEmail <>
         " soon."
 
-registerWaitlist :: UUID -> RegisterInfo -> H.Html
-registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
+registerWaitlist :: UUID -> InsertRegistration -> H.Html
+registerWaitlist _uuid InsertRegistration {..} = template mempty $ do
     H.h1 "You are now on the waitlist"
-    H.p $ H.toHtml riName <> ", your have been added to the waitlist."
-    H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
+    H.p $ H.toHtml irName <> ", your have been added to the waitlist."
+    H.p $ "You will receive an email at " <> H.toHtml irEmail <> " soon."
 
-ticket :: Hackathon -> Registrant -> H.Html
-ticket hackathon Registrant {..} = template
+ticket :: Hackathon -> Registration -> H.Html
+ticket hackathon registration@Registration {..} = template
     (H.style $ do
         "img.qr {"
         "  display: block;"
@@ -127,19 +127,19 @@ ticket hackathon Registrant {..} = template
         "  -ms-interpolation-mode: nearest-neighbor;"
         "}")
     (do
-        when (rState == Just Confirmed) $
+        when (rState == Confirmed) $
             qrimg $ T.unpack $ UUID.toText rUuid
 
         H.div $ do
-            H.h1 $ fst $ registerState rState
-            whenJust rInfo $ registrantInfo
+            H.h1 $ fst $ registrationState rState
+            registrantInfo registration  -- TODO: inline?
 
-        when (rState == Just Cancelled) $
+        when (rState == Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
                 H.input H.! A.type_ "submit"
                     H.! A.value "Take me back to the registration"
 
-        when (Hackathon.confirmation hackathon && rState == Just Registered) $ do
+        when (Hackathon.confirmation hackathon && rState == Registered) $ do
             H.p "Please confirm your registration so we can get an accurate count of attendees for food, etc."
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
@@ -148,7 +148,7 @@ ticket hackathon Registrant {..} = template
                     H.! A.value "Confirm my registration and access ticket"
 
         when (registrantCanJoinChat rState) $ do
-            Hackathon.name hackathon
+            H.toHtml $ Hackathon.name hackathon
             " uses Discord as a chat platform for coordination."
             "You can join the Discord server here:"
             H.form H.! A.method "GET" H.! A.action "chat" $ do
@@ -157,7 +157,7 @@ ticket hackathon Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Generate Discord invite"
 
-        unless (rState == Just Cancelled) $ do
+        unless (rState == Cancelled) $ do
             H.p $ do
                 "If you can no longer attend "
                 H.toHtml (Hackathon.name hackathon) <> ", we ask that you "
@@ -168,19 +168,18 @@ ticket hackathon Registrant {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Cancel my registration")
 
-registerState :: Maybe RegisterState -> (H.Html, Bool)
-registerState rs = case rs of
-    Nothing         -> ("❌ Not registered", False)
-    Just Cancelled  -> ("❌ Cancelled", False)
-    Just Registered -> ("✅ Registered", True)
-    Just Confirmed  -> ("✅ Confirmed", True)
-    Just Waitlisted -> ("⌛ on the waitlist", False)
-    Just Spam       -> ("🥫 Spam", False)
+registrationState :: RegistrationState -> (H.Html, Bool)
+registrationState rs = case rs of
+    Cancelled  -> ("❌ Cancelled", False)
+    Registered -> ("✅ Registered", True)
+    Confirmed  -> ("✅ Confirmed", True)
+    Waitlisted -> ("⌛ on the waitlist", False)
+    Spam       -> ("🥫 Spam", False)
 
-registrantInfo :: RegisterInfo -> H.Html
-registrantInfo RegisterInfo {..} = H.p $ do
-    H.strong (H.toHtml riName ) <> H.br
-    H.toHtml riEmail <> H.br
+registrantInfo :: Registration -> H.Html
+registrantInfo Registration {..} = H.p $ do
+    H.strong (H.toHtml rName ) <> H.br
+    H.toHtml rEmail <> H.br
 
 cancel :: Maybe UUID -> D.View H.Html -> H.Html
 cancel mbUuid view = template mempty $
@@ -231,28 +230,24 @@ fileScanner :: B.ByteString
 fileScanner =
     $(Embed.makeRelativeToProject "static/scanner.js" >>= Embed.embedFile)
 
-scan :: Hackathon -> Registrant -> H.Html
-scan hackathon registrant@Registrant {..} = H.ul $ do
+scan :: Hackathon -> Registration -> H.Html
+scan hackathon registrant@Registration {..} = H.ul $ do
     H.li $ H.strong $
-        let (html, ok) = registerState rState in (if ok then id else red) html
+        let (html, ok) = registrationState rState in (if ok then id else red) html
 
     when rVip $ H.li $ "⭐ " <> H.strong "VIP"
 
-    H.li $ case (registrantRegisteredAt registrant, registrantToBadge registrant) of
-        (_, Nothing)                        -> red "No Badge"
-        (_, Just (Badge badge))             ->
-            "Badge: " <> H.strong (H.toHtml badge)
+    H.li $ case registrantToBadge registrant of
+        Nothing            -> red "No Badge"
+        Just (Badge badge) -> "Badge: " <> H.strong (H.toHtml badge)
 
-    H.li $ case riTShirtSize of
+    H.li $ case rTShirtSize of
         Nothing   -> "No T-Shirt"
-        Just size -> case registrantRegisteredAt r of
-            Just at | at >= tShirtDeadline ->
+        Just size -> case rRegisteredAt of
+            at | maybe False (at >=) (Hackathon.tShirtDeadline hackathon) ->
                 H.p $ H.strong "Pick up T-Shirt later"
             _ -> do
                 "T-Shirt: "
                 H.strong $ H.toHtml (show size)
   where
     red x = H.span H.! A.style "color: #aa0000" $ x
-
-whenJust :: Applicative m => Maybe a -> (a -> m ()) -> m ()
-whenJust a f = maybe (pure ()) f a

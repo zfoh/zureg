@@ -11,7 +11,6 @@ module Zureg.Form
     ) where
 
 import qualified Data.Text                   as T
-import qualified Data.Time                   as Time
 import           Data.UUID                   (UUID)
 import qualified Data.UUID                   as UUID
 import qualified Text.Blaze.Html5            as H
@@ -21,12 +20,12 @@ import qualified Text.Digestive.Blaze.Html5  as DH
 import qualified Zureg.Captcha               as Captcha
 import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
-import           Zureg.Model
+import           Zureg.Database.Models
 
 -- | The 'IO' in this type signature is because we want to get the registration
 -- time.
-registerForm :: D.Form H.Html IO RegisterInfo
-registerForm = RegisterInfo
+registerForm :: Monad m => D.Form H.Html m InsertRegistration
+registerForm = InsertRegistration
     <$> "name" D..: (D.check "Name is required"
             (not . T.null . T.strip)
             (D.text Nothing))
@@ -35,7 +34,31 @@ registerForm = RegisterInfo
             <$> "email" D..: simpleEmailCheck (T.strip <$> D.text Nothing)
             <*> "confirmEmail" D..: (T.strip <$> D.text Nothing))
     <*> "affiliation" D..: optionalText
-    <*> D.monadic (Time.getCurrentTime >>= return . pure)
+    <*> ("tshirtSize" D..: D.choice (
+            [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]] ++
+            [(Nothing, "I don't want a T-Shirt")])
+            (Just (Just M)))
+    <*> "region" D..: D.choice (
+            (Nothing, "I'd rather not say") :
+            [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]])
+            (Just Nothing)
+    <*> "occupation" D..: D.choice
+            [ (Nothing,       "I'd rather not say")
+            , (Just Student,  "I am a student")
+            , (Just Tech,     "I work in the tech sector")
+            , (Just Academia, "I work in academia")
+            , (Just Other,    "Other")
+            ]
+            (Just Nothing)
+    <*> ("beginnerTrackInterest" D..: D.bool Nothing)
+    <*> ("project" D..: (Project
+            <$> "name" D..: optionalText
+            <*> "website" D..: optionalText
+            <*> "description" D..: optionalText
+            <*> ("contributorLevel" D..: (ContributorLevel
+                    <$> "beginner" D..: D.bool Nothing
+                    <*> "intermediate" D..: D.bool Nothing
+                    <*> "advanced" D..: D.bool Nothing))))
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
         case T.split (== '@') email of

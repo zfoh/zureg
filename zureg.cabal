@@ -46,7 +46,6 @@ Library
     Zureg.Main.PopWaitlist
     Zureg.Main.Migrate
     Zureg.Main.Web
-    Zureg.Model.Csv
     Zureg.Captcha
     Zureg.Captcha.HCaptcha
     Zureg.Captcha.NoCaptcha

@@ -8,7 +8,8 @@ module Zureg.Database
     , configFromEnv
     , Handle
     , withHandle
-    , writeEvents
+
+    -- Old stuff
     , getRegistrant
     , getRegistrantUuids
 
@@ -19,15 +20,17 @@ module Zureg.Database
     , RegistrantsSummary (..)
     , lookupRegistrantsSummary
     , putRegistrantsSummary
+
+    -- New stuff
+    , setRegistrationState
     ) where
 
 import           Control.Exception      (Exception)
-import qualified Data.Aeson             as A
 import qualified Data.Aeson.TH.Extended as A
 import qualified Data.Text              as T
 import           Data.UUID              (UUID)
 import           System.Environment     (lookupEnv)
-import           Zureg.Model
+import           Zureg.Database.Models
 
 data DatabaseException
     = WriterException
@@ -54,10 +57,7 @@ withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle hConfig f = do
     f Handle {..}
 
-writeEvents :: Handle -> UUID -> [Event] -> IO ()
-writeEvents _ _ _ = pure ()
-
-getRegistrant :: Handle -> UUID -> IO Registrant
+getRegistrant :: Handle -> UUID -> IO Registration
 getRegistrant _ _ = undefined
 
 getRegistrantUuids :: Handle -> IO [UUID]
@@ -89,3 +89,6 @@ putRegistrantsSummary _ _ = pure ()
 
 lookupRegistrantsSummary :: Handle -> IO RegistrantsSummary
 lookupRegistrantsSummary _ = undefined
+
+setRegistrationState :: Handle -> UUID -> RegistrationState -> IO Registration
+setRegistrationState _ _ _ = undefined

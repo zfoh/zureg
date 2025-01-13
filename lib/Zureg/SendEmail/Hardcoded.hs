@@ -7,21 +7,21 @@ module Zureg.SendEmail.Hardcoded
     , sendPopWaitlistEmail
     ) where
 
-import qualified Data.Text       as T
-import           Data.UUID       (UUID)
-import qualified Data.UUID       as UUID
+import qualified Data.Text             as T
+import           Data.UUID             (UUID)
+import qualified Data.UUID             as UUID
+import           Zureg.Database.Models
 import           Zureg.Hackathon
-import           Zureg.Model
-import qualified Zureg.SendEmail as SendEmail
+import qualified Zureg.SendEmail       as SendEmail
 
 sendRegisterSuccessEmail
-    :: SendEmail.Handle -> Hackathon -> RegisterInfo -> UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon -> Registration -> UUID -> IO ()
 sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     emailFrom
-    (riEmail info)
+    (rEmail info)
     (name <> " Registration Confirmation") $ T.unlines
-    [ "Hello " <> riName info <> ","
+    [ "Hello " <> rName info <> ","
     , ""
     , "Your registration for " <> name <> " was successful."
     , ""
@@ -41,13 +41,13 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmai
     ]
 
 sendWaitlistEmail
-    :: SendEmail.Handle -> Hackathon -> RegisterInfo -> UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon -> Registration -> UUID -> IO ()
 sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     emailFrom
-    (riEmail info)
+    (rEmail info)
     (name <> ": You're on the waitlist") $ T.unlines
-    [ "Hello " <> riName info <> ","
+    [ "Hello " <> rName info <> ","
     , ""
     , "You have been added to the waitlist for " <> name <> "."
     , ""
@@ -66,13 +66,13 @@ sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     ]
 
 sendPopWaitlistEmail
-    :: SendEmail.Handle -> Hackathon -> RegisterInfo -> UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon -> Registration -> UUID -> IO ()
 sendPopWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
     emailFrom
-    (riEmail info)
+    (rEmail info)
     (name <> ": You are now registered!") $ T.unlines
-    [ "Hello " <> riName info <> ","
+    [ "Hello " <> rName info <> ","
     , ""
     , "Great news!  Some places for " <> name <> " became available."
     , "You have been removed from the waiting list and are now"

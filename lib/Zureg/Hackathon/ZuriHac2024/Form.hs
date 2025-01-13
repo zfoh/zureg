@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Zureg.Hackathon.ZuriHac2024.Form
-    ( additionalInfoForm
-    , additionalInfoView
+    ( additionalInfoView
     ) where
 
 import qualified Data.Text                         as T
@@ -9,39 +8,6 @@ import qualified Text.Blaze.Html5                  as H
 import qualified Text.Blaze.Html5.Attributes       as A
 import qualified Text.Digestive                    as D
 import qualified Text.Digestive.Blaze.Html5        as DH
-import           Zureg.Hackathon.ZuriHac2024.Model as ZH24
-
-additionalInfoForm :: Monad m => D.Form H.Html m ZH24.RegisterInfo
-additionalInfoForm = RegisterInfo
-    <$> ("tshirtSize" D..: D.choice (
-            [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]] ++
-            [(Nothing, "I don't want a T-Shirt")])
-            (Just (Just M)))
-    <*> "region" D..: D.choice (
-            (Nothing, "I'd rather not say") :
-            [(Just s, H.toHtml $ show s) | s <- [minBound .. maxBound]])
-            (Just Nothing)
-    <*> "occupation" D..: D.choice
-            [ (Nothing,       "I'd rather not say")
-            , (Just Student,  "I am a student")
-            , (Just Tech,     "I work in the tech sector")
-            , (Just Academia, "I work in academia")
-            , (Just Other,    "Other")
-            ]
-            (Just Nothing)
-    <*> ("beginnerTrackInterest" D..: D.bool Nothing)
-    <*> ("project" D..: (Project
-            <$> "name" D..: optionalText
-            <*> "website" D..: optionalText
-            <*> "description" D..: optionalText
-            <*> ("contributorLevel" D..: (ContributorLevel
-                    <$> "beginner" D..: D.bool Nothing
-                    <*> "intermediate" D..: D.bool Nothing
-                    <*> "advanced" D..: D.bool Nothing))))
-  where
-    optionalText =
-        (\t -> let t' = T.strip t in if T.null t' then Nothing else Just t') <$>
-        (D.text Nothing)
 
 additionalInfoView :: D.View H.Html -> H.Html
 additionalInfoView view = do

@@ -27,11 +27,11 @@ import qualified Network.Wai.Handler.Warp  as Warp
 import qualified Text.Digestive            as D
 import qualified Zureg.Captcha             as Captcha
 import qualified Zureg.Database            as Database
+import           Zureg.Database.Models
 import           Zureg.Form
 import qualified Zureg.Hackathon           as Hackathon
 import           Zureg.Hackathon           (Hackathon)
 import           Zureg.Http
-import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 import qualified Zureg.Views               as Views

@@ -8,17 +8,14 @@ module Zureg.Main.Export
 import           Control.Monad              (forM, when)
 import qualified Data.Aeson                 as A
 import qualified Data.ByteString.Lazy.Char8 as BL
-import qualified Data.Csv                   as CSV
 import qualified Options.Applicative        as OA
 import           System.Directory           (doesFileExist)
 import           System.Exit                (exitFailure)
 import           System.FilePath            (takeExtension)
 import qualified System.IO                  as IO
 import qualified Zureg.Database             as Database
+import           Zureg.Database.Models
 import           Zureg.Hackathon            (Hackathon)
-import qualified Zureg.Hackathon            as Hackathon
-import           Zureg.Model
-import           Zureg.Model.Csv            ()
 
 progressMapM :: (a -> IO b) -> [a] -> IO [b]
 progressMapM f xs = forM (zip [1 :: Int ..] xs) $ \(n, x) -> do
@@ -30,22 +27,21 @@ progressMapM f xs = forM (zip [1 :: Int ..] xs) $ \(n, x) -> do
     len = length xs
 
 data Options = Options
-    { oState :: [RegisterState]
+    { oState :: [RegistrationState]
     , oPath  :: FilePath
     } deriving (Show)
 
 parseOptions :: OA.Parser Options
 parseOptions = Options
-    <$> OA.many (OA.option (OA.eitherReader parseRegisterState) $
+    <$> OA.many (OA.option (OA.eitherReader parseRegistrationState) $
         OA.long "state" <>
         OA.help "filter registrants based on state")
     <*> OA.strArgument (
-        OA.help    ".csv or .json export path" <>
+        OA.help    ".json export path" <>
         OA.metavar "PATH")
 
-main
-    :: Hackathon -> IO ()
-main Hackathon.Hackathon {..} = do
+main :: Hackathon -> IO ()
+main _ = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
 
@@ -54,10 +50,10 @@ main Hackathon.Hackathon {..} = do
 
     let predicate = case oState opts of
             []        -> const True
-            allowlist -> (`elem` fmap Just allowlist) . rState
+            allowlist -> (`elem` allowlist) . rState
 
     encode <- case takeExtension (oPath opts) of
-        ".json" -> return (A.encode :: [Registrant] -> BL.ByteString)
+        ".json" -> return (A.encode :: [Registration] -> BL.ByteString)
         ext     -> do
             IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure
