@@ -25,7 +25,7 @@ import           Zureg.Model
 
 newtype Badge = Badge {unBadge :: String}
 
-registrantToBadge :: Registrant a -> Maybe Badge
+registrantToBadge :: Registrant -> Maybe Badge
 registrantToBadge r
     | rState r `elem` map Just [Confirmed, Registered] =
         Badge . T.unpack . riName <$> rInfo r
@@ -85,7 +85,7 @@ pages n ls = case splitAt n ls of
     (page, []) -> [page]
     (page, t)  -> page : pages n t
 
-main :: forall a. A.FromJSON a => Hackathon a -> IO ()
+main :: Hackathon -> IO ()
 main _ = do
     progName <- getProgName
     args     <- getArgs
@@ -99,7 +99,7 @@ main _ = do
                     }
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant a]
+                :: IO [Registrant]
             putStrLn $ H.renderHtml $ renderBadges options $
                 sortOn (map toLower . unBadge) $
                 mapMaybe registrantToBadge registrants

@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
-module Zureg.Hackathon.ZuriHac2024.Model
+module Zureg.Database.Models
     ( TShirtSize (..)
     , Region (..)
     , Occupation (..)
@@ -17,6 +17,12 @@ import           Data.Csv               as Csv
 import qualified Data.HashMap.Strict    as HM
 import qualified Data.Text              as T
 import           Zureg.Model.Csv        ()
+
+module Zureg.Database.Models
+    ( TShirtSize (..)
+    , Region (..)
+    , Occupation (..)
+    ) where
 
 data TShirtSize = XS | S | M | L | XL | XXL deriving (Bounded, Enum, Eq, Show)
 
@@ -52,12 +58,41 @@ data Project = Project
     , pContributorLevel :: !ContributorLevel
     } deriving (Eq, Show)
 
-data RegisterInfo = RegisterInfo
-    { riTShirtSize            :: !(Maybe TShirtSize)
-    , riRegion                :: !(Maybe Region)
-    , riOccupation            :: !(Maybe Occupation)
-    , riBeginnerTrackInterest :: !Bool
-    , riProject               :: !Project
+data RegistrationState = Registered | Confirmed | Cancelled | Waitlisted | Spam
+    deriving (Bounded, Enum, Eq, Read, Show)
+
+-- TODO: move?
+parseRegisterState :: String -> Either String RegisterState
+parseRegisterState str = case readMaybe str of
+    Just rs -> return rs
+    Nothing -> Left $
+        "Can't parse register state, try one of: " ++
+        L.intercalate ", " (map show [minBound :: RegisterState .. maxBound])
+
+-- TODO: move?
+registrantCanJoinChat :: Maybe RegisterState -> Bool
+registrantCanJoinChat = \case
+    Nothing         -> False
+    Just Cancelled  -> False
+    Just Registered -> True
+    Just Confirmed  -> True
+    Just Waitlisted -> False
+    Just Spam       -> False
+
+data Registration = Registration
+    { rUuid                  :: !UUID
+    , rScanned               :: !Bool
+    , rVip                   :: !Bool
+    , rName                  :: !T.Text
+    , rBadgeName             :: !(Maybe T.Text)
+    , rEmail                 :: !T.Text
+    , rAffiliation           :: !(Maybe T.Text)
+    , rRegisteredAt          :: !Time.UTCTime
+    , rTShirtSize            :: !(Maybe TShirtSize)
+    , rRegion                :: !(Maybe Region)
+    , rOccupation            :: !(Maybe Occupation)
+    , rBeginnerTrackInterest :: !Bool
+    , rProject               :: !Project
     } deriving (Eq, Show)
 
 $(A.deriveJSON A.options ''TShirtSize)

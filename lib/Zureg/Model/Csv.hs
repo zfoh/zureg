@@ -14,14 +14,11 @@ import qualified Data.Time           as Time
 import qualified Data.UUID           as UUID
 import           Zureg.Model
 
-instance ToNamedRecord a => ToNamedRecord (Registrant a) where
+instance ToNamedRecord Registrant where
     toNamedRecord Registrant {..}
         =  HM.unions [ namedRecord [ "UUID" .= rUuid ]
                      , toNamedRecord rState
                      , toNamedRecord rInfo
-                     , case rAdditionalInfo of
-                        Just ai -> toNamedRecord ai
-                        Nothing -> HM.empty
                      , namedRecord [ "Scanned" .= rScanned ]
                      , namedRecord [ "VIP" .= rVip ]
                      ]

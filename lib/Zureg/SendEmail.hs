@@ -3,8 +3,7 @@
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
 module Zureg.SendEmail
-    ( Config (..)
-    , Handle
+    ( Handle
     , withHandle
     , sendEmail
     ) where
@@ -18,32 +17,26 @@ import           Control.Monad                  (void)
 import qualified Data.Aeson.TH.Extended         as A
 import qualified Data.Text                      as T
 
-data Config = Config
-    { cFrom :: !T.Text
-    }
-
 data Handle = Handle
-    { hConfig :: !Config
-    , hAwsEnv :: !Amazonka.Env
+    { hAwsEnv :: !Amazonka.Env
     }
 
-withHandle :: Config -> (Handle -> IO a) -> IO a
-withHandle hConfig f = do
+withHandle :: (Handle -> IO a) -> IO a
+withHandle f = do
     hAwsEnv <- Amazonka.smartEnv
     f Handle {..}
 
 sendEmail
     :: Handle
+    -> T.Text  -- ^ From
     -> T.Text  -- ^ To
     -> T.Text  -- ^ Subject
     -> T.Text  -- ^ Body
     -> IO ()
-sendEmail Handle {..} to subject body =
+sendEmail Handle {..} from to subject body =
     Amazonka.runResourceT $ void $ Amazonka.send hAwsEnv $ SES.newSendEmail
-        (cFrom hConfig)
+        from
         (SES.newDestination & SES.destination_toAddresses .~ Just [to])
         (SES.newMessage
             (SES.newContent subject)
             (SES.newBody & SES.body_text .~ Just (SES.newContent body)))
-
-$(A.deriveJSON A.options ''Config)

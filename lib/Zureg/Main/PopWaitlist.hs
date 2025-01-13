@@ -7,7 +7,6 @@ module Zureg.Main.PopWaitlist
     ) where
 
 import           Control.Monad             (forM, forM_, when)
-import qualified Data.Aeson                as A
 import qualified Data.Text                 as T
 import qualified Data.Time                 as Time
 import           Data.UUID                 (UUID)
@@ -21,16 +20,15 @@ import           Zureg.Model
 import qualified Zureg.SendEmail           as SendEmail
 import           Zureg.SendEmail.Hardcoded
 
-popWaitinglistUUIDs :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
-                    => Database.Config
-                    -> Hackathon a
+popWaitinglistUUIDs :: Database.Config
+                    -> Hackathon
                     -> [UUID]
                     -> IO ()
-popWaitinglistUUIDs dbConfig hackathon@Hackathon{..} uuids =
+popWaitinglistUUIDs dbConfig hackathon uuids =
     Database.withHandle dbConfig $ \db ->
-    SendEmail.withHandle sendEmailConfig $ \mailer ->
+    SendEmail.withHandle $ \mailer ->
     forM_ uuids $ \uuid -> do
-        registrant <- Database.getRegistrant db uuid :: IO (Registrant a)
+        registrant <- Database.getRegistrant db uuid :: IO Registrant
         event <- PopWaitlist . PopWaitlistInfo <$> Time.getCurrentTime
         let registrant' = registrant
         {-
@@ -45,14 +43,14 @@ popWaitinglistUUIDs dbConfig hackathon@Hackathon{..} uuids =
             Just i                        -> return i
 
         IO.hPutStrLn IO.stderr "Writing event..."
-        Database.writeEvents db uuid [event :: Event a]
+        -- Database.writeEvents db uuid [event :: Event a]
         IO.hPutStrLn IO.stderr $
             "Mailing " ++ T.unpack (riEmail rinfo) ++ "..."
         sendPopWaitlistEmail mailer hackathon rinfo uuid
         IO.hPutStrLn IO.stderr "OK"
 
 
-main :: forall a. (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main :: Hackathon -> IO ()
 main hackathon = do
     progName <- getProgName
     args     <- getArgs

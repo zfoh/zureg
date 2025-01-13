@@ -93,7 +93,7 @@ template head' body = H.docTypeHtml $ do
         head'
     H.body body
 
-register :: Hackathon a -> Captcha.ClientHtml -> D.View H.Html -> H.Html
+register :: Hackathon -> Captcha.ClientHtml -> D.View H.Html -> H.Html
 register hackathon captchaHtml view =
     template (Captcha.chScript captchaHtml) $
     Form.registerView hackathon captchaHtml view
@@ -111,7 +111,7 @@ registerWaitlist _uuid RegisterInfo {..} = template mempty $ do
     H.p $ H.toHtml riName <> ", your have been added to the waitlist."
     H.p $ "You will receive an email at " <> H.toHtml riEmail <> " soon."
 
-ticket :: Hackathon a -> Registrant a -> H.Html
+ticket :: Hackathon -> Registrant -> H.Html
 ticket hackathon Registrant {..} = template
     (H.style $ do
         "img.qr {"
@@ -133,7 +133,6 @@ ticket hackathon Registrant {..} = template
         H.div $ do
             H.h1 $ fst $ registerState rState
             whenJust rInfo $ registrantInfo
-            whenJust rAdditionalInfo $ Hackathon.ticketView hackathon
 
         when (rState == Just Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
@@ -149,7 +148,9 @@ ticket hackathon Registrant {..} = template
                     H.! A.value "Confirm my registration and access ticket"
 
         when (registrantCanJoinChat rState) $ do
-            Hackathon.chatExplanation hackathon
+            Hackathon.name hackathon
+            " uses Discord as a chat platform for coordination."
+            "You can join the Discord server here:"
             H.form H.! A.method "GET" H.! A.action "chat" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
                     H.! A.value (H.toValue (UUID.toText rUuid))
@@ -230,7 +231,7 @@ fileScanner :: B.ByteString
 fileScanner =
     $(Embed.makeRelativeToProject "static/scanner.js" >>= Embed.embedFile)
 
-scan :: Hackathon a -> Registrant a -> H.Html
+scan :: Hackathon -> Registrant -> H.Html
 scan hackathon registrant@Registrant {..} = H.ul $ do
     H.li $ H.strong $
         let (html, ok) = registerState rState in (if ok then id else red) html
@@ -242,7 +243,14 @@ scan hackathon registrant@Registrant {..} = H.ul $ do
         (_, Just (Badge badge))             ->
             "Badge: " <> H.strong (H.toHtml badge)
 
-    H.li $ Hackathon.scanView hackathon registrant
+    H.li $ case riTShirtSize of
+        Nothing   -> "No T-Shirt"
+        Just size -> case registrantRegisteredAt r of
+            Just at | at >= tShirtDeadline ->
+                H.p $ H.strong "Pick up T-Shirt later"
+            _ -> do
+                "T-Shirt: "
+                H.strong $ H.toHtml (show size)
   where
     red x = H.span H.! A.style "color: #aa0000" $ x
 

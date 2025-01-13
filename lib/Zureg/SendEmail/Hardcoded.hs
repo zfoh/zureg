@@ -15,9 +15,10 @@ import           Zureg.Model
 import qualified Zureg.SendEmail as SendEmail
 
 sendRegisterSuccessEmail
-    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon -> RegisterInfo -> UUID -> IO ()
 sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
+    emailFrom
     (riEmail info)
     (name <> " Registration Confirmation") $ T.unlines
     [ "Hello " <> riName info <> ","
@@ -40,9 +41,10 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmai
     ]
 
 sendWaitlistEmail
-    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon -> RegisterInfo -> UUID -> IO ()
 sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
+    emailFrom
     (riEmail info)
     (name <> ": You're on the waitlist") $ T.unlines
     [ "Hello " <> riName info <> ","
@@ -64,9 +66,10 @@ sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     ]
 
 sendPopWaitlistEmail
-    :: SendEmail.Handle -> Hackathon a -> RegisterInfo -> UUID -> IO ()
+    :: SendEmail.Handle -> Hackathon -> RegisterInfo -> UUID -> IO ()
 sendPopWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     sendEmail
+    emailFrom
     (riEmail info)
     (name <> ": You are now registered!") $ T.unlines
     [ "Hello " <> riName info <> ","

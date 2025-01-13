@@ -54,10 +54,10 @@ withHandle :: Config -> (Handle -> IO a) -> IO a
 withHandle hConfig f = do
     f Handle {..}
 
-writeEvents :: A.ToJSON a => Handle -> UUID -> [Event a] -> IO ()
+writeEvents :: Handle -> UUID -> [Event] -> IO ()
 writeEvents _ _ _ = pure ()
 
-getRegistrant :: A.FromJSON a => Handle -> UUID -> IO (Registrant a)
+getRegistrant :: Handle -> UUID -> IO Registrant
 getRegistrant _ _ = undefined
 
 getRegistrantUuids :: Handle -> IO [UUID]

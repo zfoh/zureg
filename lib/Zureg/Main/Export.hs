@@ -44,8 +44,7 @@ parseOptions = Options
         OA.metavar "PATH")
 
 main
-    :: forall a. (CSV.ToNamedRecord a, A.FromJSON a, A.ToJSON a)
-     => Hackathon a -> IO ()
+    :: Hackathon -> IO ()
 main Hackathon.Hackathon {..} = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
@@ -58,8 +57,7 @@ main Hackathon.Hackathon {..} = do
             allowlist -> (`elem` fmap Just allowlist) . rState
 
     encode <- case takeExtension (oPath opts) of
-        ".json" -> return (A.encode :: [Registrant a] -> BL.ByteString)
-        ".csv"  -> return $ CSV.encodeByName csvHeader
+        ".json" -> return (A.encode :: [Registrant] -> BL.ByteString)
         ext     -> do
             IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure

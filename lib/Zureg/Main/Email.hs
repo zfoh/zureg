@@ -37,7 +37,7 @@ confirm = do
     line <- getLine
     unless (line == "yes") $ fail "aborted"
 
-main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main :: Hackathon -> IO ()
 main Hackathon.Hackathon {..} = do
     progName <- getProgName
     args     <- getArgs
@@ -49,9 +49,9 @@ main Hackathon.Hackathon {..} = do
 
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registrant a]
+                :: IO [Registrant]
 
-            let prepare :: Registrant a -> IO T.Text
+            let prepare :: Registrant -> IO T.Text
                 prepare registrant = do
                     let (errs, t) = Mustache.checkedSubstitute
                             template (A.toJSON registrant)
@@ -65,12 +65,13 @@ main Hackathon.Hackathon {..} = do
             confirm
 
             withStateFile statefile $ \done append ->
-                SendEmail.withHandle sendEmailConfig $ \sendEmail ->
+                SendEmail.withHandle $ \sendEmail ->
                 forM_ registrants $ \registrant -> case rInfo registrant of
                 Just ri | not (riEmail ri `HS.member` done) -> do
                     putStrLn $ "Mailing " ++ T.unpack (riEmail ri) ++ "..."
                     t <- prepare registrant
-                    SendEmail.sendEmail sendEmail (riEmail ri) (T.pack subject) t
+                    SendEmail.sendEmail sendEmail
+                        emailFrom (riEmail ri) (T.pack subject) t
                     append (riEmail ri)
 
                 _ -> return ()

@@ -47,6 +47,12 @@
 
             ZUREG_DB =
               "postgresql://postgres:${postgres.password}@localhost:${postgres.port}/${postgres.db}";
+
+            ZUREG_HACKATHON_NAME = "ZuriHac 2025";
+            ZUREG_HACKATHON_URL = "https://zureg.zfoh.ch";
+            ZUREG_HACKATHON_CONTACT_URL = "https://zfoh.ch/zurihac2025/#contact";
+            ZUREG_HACKATHON_CAPACITY = "500";
+            ZUREG_HACKATHON_CONFIRMATION = "true";
           };
         };
         formatter = pkgs.nixfmt;

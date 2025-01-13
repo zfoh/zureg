@@ -32,14 +32,12 @@ Library
   Exposed-modules:
     Zureg.Database
     Zureg.Database.Migrations
+    Zureg.Database.Models
     Zureg.Form
     Zureg.Hackathon
     Zureg.Hackathon.Interface
     Zureg.Hackathon.ZuriHac2020.Discord
-    Zureg.Hackathon.ZuriHac2024
     Zureg.Hackathon.ZuriHac2024.Form
-    Zureg.Hackathon.ZuriHac2024.Model
-    Zureg.Hackathon.ZuriHac2024.Views
     Zureg.Http
     Zureg.Main.Badges
     Zureg.Main.Email
@@ -48,7 +46,6 @@ Library
     Zureg.Main.PopWaitlist
     Zureg.Main.Migrate
     Zureg.Main.Web
-    Zureg.Model
     Zureg.Model.Csv
     Zureg.Captcha
     Zureg.Captcha.HCaptcha

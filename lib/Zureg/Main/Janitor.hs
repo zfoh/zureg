@@ -18,7 +18,7 @@ import           Zureg.Hackathon        (Hackathon)
 import           Zureg.Main.PopWaitlist (popWaitinglistUUIDs)
 import           Zureg.Model
 
-countByState ::(RegisterState -> Bool) -> [Registrant a] -> Int
+countByState ::(RegisterState -> Bool) -> [Registrant] -> Int
 countByState f registrants = length $ filter f $ mapMaybe rState registrants
 
 isWaiting :: RegisterState -> Bool
@@ -34,18 +34,17 @@ isAttending Confirmed  = True
 isAttending Registered = True
 isAttending _          = False
 
-main :: (Eq a, A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
+main :: Hackathon -> IO ()
 main hackathon = do
     dbConfig <- Database.configFromEnv
     app dbConfig hackathon A.Null >>= print
 
-app :: forall a. (Eq a, A.FromJSON a, A.ToJSON a)
-    => Database.Config -> Hackathon a -> A.Value
+app :: Database.Config -> Hackathon -> A.Value
     -> IO Database.RegistrantsSummary
 app dbConfig hackathon _event =
     Database.withHandle dbConfig $ \db -> do
     uuids       <- Database.getRegistrantUuids db
-    registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant a]
+    registrants <- mapM (Database.getRegistrant db) uuids :: IO [Registrant]
 
     let capacity   = Hackathon.capacity hackathon
         attending  = countByState isAttending registrants
@@ -80,7 +79,7 @@ instance Ord Fifo where
     compare (Fifo (Just _)) (Fifo Nothing)  = LT
     compare (Fifo (Just x)) (Fifo (Just y)) = compare x y
 
-waitingListUUIDs :: [Registrant a] -> [UUID]
+waitingListUUIDs :: [Registrant] -> [UUID]
 waitingListUUIDs = map rUuid
                  . sortOn (Fifo . fmap riRegisteredAt . rInfo)
                  . mapMaybe (\r -> do
