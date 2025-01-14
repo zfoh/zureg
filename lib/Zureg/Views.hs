@@ -98,18 +98,18 @@ register hackathon captchaHtml view =
     template (Captcha.chScript captchaHtml) $
     Form.registerView hackathon captchaHtml view
 
-registerSuccess :: UUID -> InsertRegistration -> H.Html
-registerSuccess _uuid InsertRegistration {..} = template mempty $ do
+registerSuccess :: Registration -> H.Html
+registerSuccess Registration {..} = template mempty $ do
     H.h1 "Registration successful"
-    H.p $ H.toHtml irName <> ", your registration was successful."
-    H.p $ "You will receive a confirmation mail at " <> H.toHtml irEmail <>
+    H.p $ H.toHtml rName <> ", your registration was successful."
+    H.p $ "You will receive a confirmation mail at " <> H.toHtml rEmail <>
         " soon."
 
-registerWaitlist :: UUID -> InsertRegistration -> H.Html
-registerWaitlist _uuid InsertRegistration {..} = template mempty $ do
+registerWaitlist :: Registration -> H.Html
+registerWaitlist Registration {..} = template mempty $ do
     H.h1 "You are now on the waitlist"
-    H.p $ H.toHtml irName <> ", your have been added to the waitlist."
-    H.p $ "You will receive an email at " <> H.toHtml irEmail <> " soon."
+    H.p $ H.toHtml rName <> ", your have been added to the waitlist."
+    H.p $ "You will receive an email at " <> H.toHtml rEmail <> " soon."
 
 ticket :: Hackathon -> Registration -> H.Html
 ticket hackathon registration@Registration {..} = template

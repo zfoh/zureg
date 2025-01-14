@@ -1,28 +1,29 @@
-{-# LANGUAGE ExistentialQuantification #-}
-{-# LANGUAGE Rank2Types                #-}
-{-# LANGUAGE TemplateHaskell           #-}
+{-# LANGUAGE TemplateHaskell #-}
 module Zureg.Hackathon
     ( Hackathon (..)
-    , withHackathonFromEnv
     ) where
 
-import qualified Data.Aeson                  as Aeson
-import qualified Data.Csv                    as Csv
-import           Data.List                   (intercalate)
-import           Data.Maybe                  (fromMaybe)
-import           System.Environment          (lookupEnv)
-import           Zureg.Hackathon.Interface
+import qualified Data.Aeson.TH.Extended as A
+import qualified Data.Text              as T
+import qualified Data.Time              as Time
 
--- | Load the hackathon stored in the 'ZUREG_HACKATHON' environment variable.
-withHackathonFromEnv
-    :: (Hackathon -> IO a) -> IO a
-withHackathonFromEnv f = do
-    mbHackathonName <- lookupEnv "ZUREG_HACKATHON"
-    maybe (fail message) f (mbHackathonName >>= flip lookup hackathons)
-  where
-    message =
-        "Environment variable ZUREG_HACKATHON should be set to one of: " ++
-        intercalate ", " (map fst hackathons)
+data Hackathon = Hackathon
+    {
+    -- | Name of the Hackathon, e.g. "ZuriHac 2020"
+      name           :: T.Text
+    -- | Base URL, e.g. "https://zureg.zfoh.ch"
+    , baseURL        :: T.Text
+    -- | URL of the contact homepage, e.g. "https://zfoh.ch/zurihac2019/#contact"
+    , contactURL     :: T.Text
+    -- | Total capacity of the event
+    , capacity       :: Int
+    -- | When 'True', registrants can/must confirm their registration
+    -- TODO: change this to `Maybe Date`?
+    , confirmation   :: Bool
+    -- | Email to send from
+    , emailFrom      :: T.Text
+    -- | When T-shirt order is sent.
+    , tShirtDeadline :: Maybe Time.UTCTime
+    } deriving (Show)
 
-hackathons :: [(String, Hackathon)]
-hackathons = []
+$(A.deriveJSON A.defaultOptions ''Hackathon)

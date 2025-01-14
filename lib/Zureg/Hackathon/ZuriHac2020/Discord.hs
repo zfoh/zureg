@@ -4,32 +4,28 @@
 {-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE RecordWildCards       #-}
+{-# LANGUAGE TemplateHaskell       #-}
 module Zureg.Hackathon.ZuriHac2020.Discord
     ( Config (..)
-    , configFromEnv
     , aboutMe
     , getWelcomeChannelId
     , generateTempInviteUrl
     ) where
 
 import qualified Data.Aeson              as Aeson
+import qualified Data.Aeson.TH.Extended  as Aeson
 import qualified Data.Text               as T
 import qualified Data.Text.Encoding      as T
 import           Data.Void               (Void)
 import           GHC.Generics            (Generic)
 import qualified Network.HTTP.Client     as Http
 import qualified Network.HTTP.Client.TLS as Http
-import           System.Environment      (getEnv)
 
 data Config = Config
-    { accessToken :: !T.Text
-    , guildId     :: !T.Text
+    { configAccessToken :: !T.Text
+    , configGuildID     :: !T.Text
     } deriving (Show)
-
-configFromEnv :: IO Config
-configFromEnv = Config
-    <$> (T.pack <$> getEnv "ZUREG_DISCORD_ACCESS_TOKEN")
-    <*> (T.pack <$> getEnv "ZUREG_DISCORD_GUILD_ID")
 
 apiEndpoint :: T.Text
 apiEndpoint = "https://discordapp.com/api/v6"
@@ -41,14 +37,14 @@ data Request a where
 request
     :: (Aeson.ToJSON a, Aeson.FromJSON b)
     => Config -> T.Text -> Request a -> IO b
-request conf path req = do
+request Config {..} path req = do
     manager <- Http.newTlsManager
     req0 <- Http.parseRequest $ T.unpack $ apiEndpoint <> path
     let req1 = req0
             { Http.method = case req of Get -> "GET"; Post _ -> "POST"
             , Http.requestHeaders =
                 ("Accept", "application/json") :
-                ("Authorization", T.encodeUtf8 $ "Bot " <> accessToken conf) :
+                ("Authorization", T.encodeUtf8 $ "Bot " <> configAccessToken) :
                 [("Content-Type", "application/json") | Post _ <- [req]] ++
                 Http.requestHeaders req0
             , Http.requestBody = case req of
@@ -71,7 +67,7 @@ instance Aeson.FromJSON Guild
 getWelcomeChannelId :: Config -> IO T.Text
 getWelcomeChannelId conf =
     fmap system_channel_id $
-    request conf ("/guilds/" <> guildId conf) Get
+    request conf ("/guilds/" <> configGuildID conf) Get
 
 data Invite = Invite
     { code :: !T.Text
@@ -89,3 +85,5 @@ generateTempInviteUrl conf channelId =
     [ "max_uses" Aeson..= (1 :: Int)
     , "max_age"  Aeson..= (10 * 60 :: Int)
     ]
+
+$(Aeson.deriveFromJSON Aeson.options ''Config)

@@ -11,8 +11,21 @@
       let
         pkgs = inputs.nixpkgs.legacyPackages.${system};
         haskell = pkgs.haskell.packages.ghc96;
+        package = haskell.callCabal2nix "zureg" ./. {
+          urlencoded = (pkgs.haskell.lib.doJailbreak haskell.urlencoded);
+        };
+        packageExes = pkgs.haskell.lib.justStaticExecutables package;
       in {
-        packages = { default = haskell.callCabal2nix "zureg" ./. { }; };
+        packages = {
+          default = package;
+
+          docker = pkgs.dockerTools.buildLayeredImage {
+            name = "zureg";
+            tag = "latest";
+            contents = [ pkgs.cacert ];
+            config.Cmd = "${packageExes}/bin/zureg-web";
+          };
+        };
         devShells = {
           default = let
             postgres = {
@@ -31,8 +44,7 @@
               pkgs.awscli2
               haskell.stylish-haskell
               (haskell.ghc.withPackages (p:
-                inputs.self.packages.${system}.default.buildInputs
-                ++ [ p.postgresql-simple ]))
+                package.buildInputs ++ [ p.postgresql-simple ]))
             ];
 
             shellHook = ''
@@ -44,15 +56,6 @@
                 -p ${postgres.port}:5432 \
                 -d postgres
             '';
-
-            ZUREG_DB =
-              "postgresql://postgres:${postgres.password}@localhost:${postgres.port}/${postgres.db}";
-
-            ZUREG_HACKATHON_NAME = "ZuriHac 2025";
-            ZUREG_HACKATHON_URL = "https://zureg.zfoh.ch";
-            ZUREG_HACKATHON_CONTACT_URL = "https://zfoh.ch/zurihac2025/#contact";
-            ZUREG_HACKATHON_CAPACITY = "500";
-            ZUREG_HACKATHON_CONFIRMATION = "true";
           };
         };
         formatter = pkgs.nixfmt;

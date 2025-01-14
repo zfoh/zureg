@@ -3,7 +3,6 @@ module Zureg.Database.Migrations
     ( migrate
     ) where
 
-import qualified Data.ByteString.Char8      as BS8
 import           Data.Char                  (isDigit)
 import           Data.Foldable              (for_)
 import           Data.List                  (sortOn)
@@ -11,10 +10,10 @@ import           Data.String                (fromString)
 import           Data.Traversable           (for)
 import qualified Database.PostgreSQL.Simple as Pg
 import qualified System.Directory           as Directory
-import           System.Environment         (lookupEnv)
 import           System.FilePath            ((</>))
 import qualified System.IO                  as IO
 import           Text.Read                  (readMaybe)
+import           Zureg.Database.Internal
 
 listMigrations :: IO [(Int, FilePath)]
 listMigrations = sortOn fst <$> do
@@ -27,18 +26,17 @@ listMigrations = sortOn fst <$> do
   where
     dir = "lib/Zureg/Database/Migrations"
 
-migrate :: IO ()
-migrate = do
-    pgstring <- lookupEnv "ZUREG_DB" >>= maybe (fail "ZUREG_DB not set") pure
-    conn <- Pg.connectPostgreSQL $ BS8.pack pgstring
-    _ <- Pg.execute_ conn "\
+migrate :: Handle -> IO ()
+migrate h = do
+    _ <- withTransaction h $ \(Transaction conn) -> Pg.execute_ conn "\
         \CREATE TABLE IF NOT EXISTS migrations (\n\
         \    version INT NOT NULL PRIMARY KEY,\n\
         \    path TEXT NOT NULL\n\
         \)"
 
     migrations <- listMigrations
-    for_ migrations $ \(version, path) -> Pg.withTransaction conn $ do
+    for_ migrations $ \(version, path) -> withTransaction h $
+        \(Transaction conn) -> do
         rows <- Pg.query conn
             "SELECT version FROM migrations WHERE version = ?"
             (Pg.Only version) :: IO [Pg.Only Int]
@@ -53,5 +51,3 @@ migrate = do
                     "INSERT INTO migrations (version, path) VALUES (?, ?)"
                     (version, path)
                 pure ()
-
-    Pg.close conn

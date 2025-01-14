@@ -1,7 +1,9 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Zureg.Main.Migrate (main) where
 
-import           Zureg.Database.Migrations (migrate)
+import qualified Zureg.Config   as Config
+import qualified Zureg.Database as Database
 
 main :: IO ()
-main = migrate
+main = do
+    conf <- Config.load
+    Database.withHandle (Config.configDatabase conf) Database.migrate

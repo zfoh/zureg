@@ -5,7 +5,7 @@ module Zureg.Main.Export
     ( main
     ) where
 
-import           Control.Monad              (forM, when)
+import           Control.Monad              (when)
 import qualified Data.Aeson                 as A
 import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Options.Applicative        as OA
@@ -13,18 +13,9 @@ import           System.Directory           (doesFileExist)
 import           System.Exit                (exitFailure)
 import           System.FilePath            (takeExtension)
 import qualified System.IO                  as IO
+import qualified Zureg.Config               as Config
 import qualified Zureg.Database             as Database
 import           Zureg.Database.Models
-import           Zureg.Hackathon            (Hackathon)
-
-progressMapM :: (a -> IO b) -> [a] -> IO [b]
-progressMapM f xs = forM (zip [1 :: Int ..] xs) $ \(n, x) -> do
-    y <- f x
-    when (n `mod` 10 == 0) $ IO.hPutStrLn IO.stderr $
-        "Progress: " ++ show n ++ "/" ++ show len ++ "..."
-    return y
-  where
-    len = length xs
 
 data Options = Options
     { oState :: [RegistrationState]
@@ -40,10 +31,12 @@ parseOptions = Options
         OA.help    ".json export path" <>
         OA.metavar "PATH")
 
-main :: Hackathon -> IO ()
-main _ = do
+main :: IO ()
+main = do
     opts     <- OA.execParser $
         OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
+
+    Config.Config {..} <- Config.load
 
     exists <- doesFileExist (oPath opts)
     when exists $ fail $ oPath opts ++ " already exists"
@@ -58,9 +51,7 @@ main _ = do
             IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure
 
-    dbConfig <- Database.configFromEnv
-
-    Database.withHandle dbConfig $ \db -> do
-        uuids       <- Database.getRegistrantUuids db
-        registrants <- progressMapM (Database.getRegistrant db) uuids
-        BL.writeFile (oPath opts) $ encode $ filter predicate registrants
+    Database.withHandle configDatabase $ \db -> do
+        registrations <- Database.withTransaction db $ \tx ->
+            Database.selectRegistrations tx
+        BL.writeFile (oPath opts) $ encode $ filter predicate registrations

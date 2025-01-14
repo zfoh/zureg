@@ -7,95 +7,99 @@ module Zureg.Main.Web
     , app
     ) where
 
-import           Control.Applicative       (liftA2)
-import           Control.Exception         (throwIO)
-import           Control.Monad             (join, unless, when)
-import qualified Data.Aeson                as A
-import           Data.Maybe                (isNothing)
-import qualified Data.Text                 as T
-import qualified Data.Text.Encoding        as T
-import qualified Data.Text.Lazy.Encoding   as TL
-import qualified Data.Time                 as Time
-import           Data.UUID                 (UUID)
-import qualified Data.UUID                 as UUID
-import qualified Data.UUID.V4              as UUID
-import qualified Network.HTTP.Client       as Http
-import qualified Network.HTTP.Client.TLS   as Http
-import qualified Network.HTTP.Types        as Http
-import qualified Network.Wai               as Wai
-import qualified Network.Wai.Handler.Warp  as Warp
-import qualified Text.Digestive            as D
-import qualified Zureg.Captcha             as Captcha
-import qualified Zureg.Database            as Database
+import           Control.Concurrent                  (forkIO)
+import           Control.Exception                   (throwIO)
+import           Control.Monad                       (join, unless, void, when)
+import           Data.Foldable                       (for_)
+import           Data.Maybe                          (isJust)
+import qualified Data.Text                           as T
+import qualified Data.Text.Encoding                  as T
+import qualified Data.Text.Lazy.Encoding             as TL
+import           Data.UUID                           (UUID)
+import qualified Data.UUID                           as UUID
+import qualified Network.HTTP.Client                 as Http
+import qualified Network.HTTP.Client.TLS             as Http
+import qualified Network.HTTP.Types                  as Http
+import qualified Network.Wai                         as Wai
+import qualified Network.Wai.Handler.Warp            as Warp
+import qualified Zureg.Captcha                       as Captcha
+import qualified Zureg.Captcha.HCaptcha              as HCaptcha
+import qualified Zureg.Captcha.NoCaptcha             as NoCaptcha
+import qualified Zureg.Config                        as Config
+import qualified Zureg.Database                      as Database
 import           Zureg.Database.Models
 import           Zureg.Form
+import qualified Zureg.Hackathon                     as Hackathon
 import qualified Zureg.Hackathon.ZuriHac2020.Discord as Discord
-import qualified Zureg.Hackathon           as Hackathon
-import           Zureg.Hackathon           (Hackathon)
 import           Zureg.Http
-import qualified Zureg.SendEmail           as SendEmail
+import           Zureg.Main.Janitor                  (popWaitlist)
+import qualified Zureg.SendEmail                     as SendEmail
 import           Zureg.SendEmail.Hardcoded
-import qualified Zureg.Views               as Views
+import qualified Zureg.Views                         as Views
 
-main :: forall a. (A.FromJSON a, A.ToJSON a) => Hackathon a -> IO ()
-main hackathon = do
-    dbConfig <- Database.configFromEnv
-    discord <- Discord.configFromEnv
-    app dbConfig hackathon >>= Warp.run 8000
+main :: IO ()
+main = do
+    config <- Config.load
+    app config >>= Warp.run 8000
 
-app
-    :: Database.Config
-    -> Discord.Config
-    -> Hackathon
-    -> IO Wai.Application
-app dbConfig discord hackathon =
+app :: Config.Config -> IO Wai.Application
+app Config.Config {..} =
     fmap httpExceptionMiddleware $
     Http.newManager Http.tlsManagerSettings >>= \httpManager ->
-    Database.withHandle dbConfig $ \db ->
-    SendEmail.withHandle (Hackathon.sendEmailConfig hackathon) $ \sendEmail ->
+    Database.withHandle configDatabase $ \db ->
+    SendEmail.withHandle configAws $ \sendEmail ->
+    (\f -> do
+        captcha <- case configCaptcha of
+            Nothing  -> NoCaptcha.new
+            Just cfg -> HCaptcha.new cfg
+        f captcha) $ \captcha ->
     pure $ \req respond -> case Wai.pathInfo req of
         ["register"] -> do
             reqBody <- TL.decodeUtf8 <$> Wai.strictRequestBody req
             when (Wai.requestMethod req == Http.methodPost) $ Captcha.verify
-                (Hackathon.captcha hackathon)
+                captcha
                 httpManager
                 (Just reqBody)
-            (view, mbReg) <- runForm req reqBody "register" $ D.checkM
-                "Email address already registered"
-                (fmap isNothing . Database.lookupEmail db . riEmail . fst)
-                (liftA2 (,)
-                    (registerForm hackathon)
-                    (Hackathon.registerForm hackathon))
+            (view, mbReg) <- runForm req reqBody "register" registerForm
             case mbReg of
                 Nothing -> respond . html $ Views.register
-                    hackathon
-                    (Captcha.clientHtml $ Hackathon.captcha hackathon)
+                    configHackathon
+                    (Captcha.clientHtml captcha)
                     view
-                Just (info, additionalInfo) -> do
-                    registrantsSummary <- Database.lookupRegistrantsSummary db
-                    let atCapacity = Database.rsAvailable registrantsSummary <= 0
+                Just (insert, mbProject) -> do
+                    (registration, atCapacity) <- Database.withTransaction db $ \tx -> do
+                        alreadyRegistered <- Database.selectRegistrationByEmail tx (irEmail insert)
+                        when (isJust alreadyRegistered) $ throwIO $
+                            HttpException 400
+                            "email address already registered"
+                        attending <- Database.selectAttending tx
+                        let atCapacity = attending >= Hackathon.capacity configHackathon
+                        registration <- Database.insertRegistration tx insert
+                        registration' <- Database.setRegistrationState tx
+                            (rUuid registration)
+                            (if atCapacity then Waitlisted else Registered)
+                        for_ mbProject $ \project -> Database.insertProject
+                            tx (rUuid registration) project
+                        pure (registration', atCapacity)
+
                     if atCapacity then do
                         -- You're on the waitlist
-                        uuid <- UUID.nextRandom
-                        time <- Time.getCurrentTime
-                        let wlinfo = WaitlistInfo time
-                        Database.writeEvents db uuid
-                            [Register info additionalInfo, Waitlist wlinfo]
-                        Database.putEmail db (riEmail info) uuid
-                        sendWaitlistEmail sendEmail hackathon info uuid
-                        respond . html $ Views.registerWaitlist uuid info
+                        sendWaitlistEmail sendEmail configHackathon registration
+                        respond . html $ Views.registerWaitlist registration
                     else do
                         -- Success registration
-                        uuid <- UUID.nextRandom
-                        Database.writeEvents db uuid [Register info additionalInfo]
-                        Database.putEmail db (riEmail info) uuid
-                        sendRegisterSuccessEmail sendEmail hackathon info uuid
-                        respond . html $ Views.registerSuccess uuid info
+                        sendRegisterSuccessEmail
+                            sendEmail configHackathon registration
+                        respond . html $ Views.registerSuccess registration
 
         ["ticket"] | Wai.requestMethod req == Http.methodGet -> do
             uuid <- getUuidParam req
-            registrant <- Database.getRegistrant db uuid
-            respond . html $ Views.ticket hackathon registrant
+            mbRegistration <- Database.withTransaction db $ \tx ->
+                Database.selectRegistration tx uuid
+            case mbRegistration of
+                Nothing -> throwIO $ HttpException 404 "registration not found"
+                Just registration -> respond . html $
+                    Views.ticket configHackathon registration
 
         ["scanner"] | Wai.requestMethod req == Http.methodGet  ->
             scannerAuthorized req $
@@ -103,30 +107,32 @@ app dbConfig discord hackathon =
 
         ["scan"] | Wai.requestMethod req == Http.methodGet ->
             scannerAuthorized req $ do
-                time <- Time.getCurrentTime
                 uuid <- getUuidParam req
-                Database.setRegistrationScanned db uuid
-                registrant <- Database.getRegistrant db uuid
-                respond . html $ Views.scan hackathon registrant
+                registrant <- Database.withTransaction db $ \tx ->
+                    Database.setRegistrationScanned tx uuid
+                respond . html $ Views.scan configHackathon registrant
 
         ["chat"] -> do
-            time <- Time.getCurrentTime
             uuid <- getUuidParam req
-            registrant <- Database.getRegistrant db uuid
-            unless (registrantCanJoinChat $ rState registrant) $ throwIO $
+            registration <- Database.withTransaction db $ \tx ->
+                Database.selectRegistration tx uuid >>=
+                maybe (throwIO $ HttpException 404 "registration not found") pure
+            unless (registrantCanJoinChat $ rState registration) $ throwIO $
                 HttpException 400
                 "Invalid registrant state"
 
-            welcomeChannel <- Discord.getWelcomeChannelId discord
-            url <- Discord.generateTempInviteUrl discord welcomeChannel
+            welcomeChannel <- Discord.getWelcomeChannelId configDiscord
+            url <- Discord.generateTempInviteUrl configDiscord welcomeChannel
             respond $ redirect url
 
-        ["confirm"] | Hackathon.confirmation hackathon -> do
+        ["confirm"] | Hackathon.confirmation configHackathon -> do
             uuid <- getUuidParam req
-            registrant <- Database.getRegistrant db uuid
-            case rState registrant of
-              Just Registered -> Database.setRegistrationState db uuid Confirmed
-              _               -> return ()
+            Database.withTransaction db $ \tx -> do
+                registrant <- Database.selectRegistration tx uuid
+                case rState <$> registrant of
+                    Just Registered -> void $
+                      Database.setRegistrationState tx uuid Confirmed
+                    _ -> pure ()
             respond . redirect $ "ticket?uuid=" <> UUID.toText uuid
 
         ["cancel"] -> do
@@ -136,7 +142,10 @@ app dbConfig discord hackathon =
             case mbCancel of
                 Just (uuid, True) -> do
                     -- TODO: Check that not yet cancelled?
-                    registrant <- Database.setRegistrationState db uuid Cancelled
+                    _ <- Database.withTransaction db $ \tx ->
+                        Database.setRegistrationState tx uuid Cancelled
+                    -- Pop waitlist in background
+                    _ <- forkIO $ popWaitlist db sendEmail configHackathon
                     respond . html $ Views.cancelSuccess
                 _ -> respond . html $
                     Views.cancel (lookupUuidParam req) view
@@ -156,7 +165,7 @@ app dbConfig discord hackathon =
         (lookupUuidParam req)
 
     scannerAuthorized request m = case textParam "secret" request of
-        Just s | s == Hackathon.scannerSecret hackathon -> m
-        _                                               -> throwIO $
+        Just s | s == configScannerSecret -> m
+        _                                 -> throwIO $
             HttpException 403
             "Wrong or missing secret for scanner access"

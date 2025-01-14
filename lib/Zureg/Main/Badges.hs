@@ -21,7 +21,6 @@ import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as HA
 import           Text.Read                       (readMaybe)
 import           Zureg.Database.Models
-import           Zureg.Hackathon                 (Hackathon)
 
 newtype Badge = Badge {unBadge :: String}
 
@@ -85,8 +84,8 @@ pages n ls = case splitAt n ls of
     (page, []) -> [page]
     (page, t)  -> page : pages n t
 
-main :: Hackathon -> IO ()
-main _ = do
+main :: IO ()
+main = do
     progName <- getProgName
     args     <- getArgs
 

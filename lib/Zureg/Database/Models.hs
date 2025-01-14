@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -7,22 +8,30 @@ module Zureg.Database.Models
     , Region (..)
     , Occupation (..)
     , ContributorLevel (..)
-    , Project (..)
     , InsertRegistration (..)
     , RegistrationState (..)
     , parseRegistrationState
     , registrantCanJoinChat
     , Registration (..)
+    , Project (..)
     ) where
 
-import qualified Data.Aeson.TH.Extended as A
-import qualified Data.List              as L
-import qualified Data.Text              as T
-import qualified Data.Time              as Time
-import           Data.UUID              (UUID)
-import           Text.Read              (readMaybe)
+import           Control.Exception                    (Exception)
+import qualified Data.Aeson.TH.Extended               as A
+import qualified Data.ByteString                      as B
+import qualified Data.List                            as L
+import qualified Data.Text                            as T
+import qualified Data.Time                            as Time
+import           Data.UUID                            (UUID)
+import qualified Database.PostgreSQL.Simple.FromField as Pg
+import qualified Database.PostgreSQL.Simple.FromRow   as Pg
+import qualified Database.PostgreSQL.Simple.ToField   as Pg
+import qualified Database.PostgreSQL.Simple.ToRow     as Pg
+import           GHC.Generics                         (Generic)
+import           Text.Read                            (readMaybe)
 
-data TShirtSize = XS | S | M | L | XL | XXL deriving (Bounded, Enum, Eq, Show)
+data TShirtSize = XS | S | M | L | XL | XXL
+    deriving (Bounded, Enum, Eq, Read, Show)
 
 data Region
     = Switzerland
@@ -34,26 +43,19 @@ data Region
     | Asia
     | MiddleEast
     | Oceania
-    deriving (Bounded, Enum, Eq, Show)
+    deriving (Bounded, Enum, Eq, Read, Show)
 
 data Occupation
     = Student
     | Tech
     | Academia
     | Other
-    deriving (Bounded, Enum, Eq, Show)
+    deriving (Bounded, Enum, Eq, Read, Show)
 
 data ContributorLevel = ContributorLevel
     { clBeginner     :: !Bool
     , clIntermediate :: !Bool
     , clAdvanced     :: !Bool
-    } deriving (Eq, Show)
-
-data Project = Project
-    { pName             :: !(Maybe T.Text)
-    , pWebsite          :: !(Maybe T.Text)
-    , pShortDescription :: !(Maybe T.Text)
-    , pContributorLevel :: !ContributorLevel
     } deriving (Eq, Show)
 
 data RegistrationState = Registered | Confirmed | Cancelled | Waitlisted | Spam
@@ -85,8 +87,7 @@ data InsertRegistration = InsertRegistration
     , irRegion                :: !(Maybe Region)
     , irOccupation            :: !(Maybe Occupation)
     , irBeginnerTrackInterest :: !Bool
-    , irProject               :: !Project
-    }
+    } deriving (Generic, Show)
 
 data Registration = Registration
     { rUuid                  :: !UUID
@@ -99,16 +100,50 @@ data Registration = Registration
     , rRegion                :: !(Maybe Region)
     , rOccupation            :: !(Maybe Occupation)
     , rBeginnerTrackInterest :: !Bool
-    , rProject               :: !Project
     , rState                 :: !RegistrationState
-    , rScanned               :: !Bool
+    , rScannedAt             :: !(Maybe Time.UTCTime)
     , rVip                   :: !Bool
+    } deriving (Eq, Show)
+
+instance Pg.ToField Region            where toField = Pg.toField . show
+instance Pg.ToField TShirtSize        where toField = Pg.toField . show
+instance Pg.ToField Occupation        where toField = Pg.toField . show
+instance Pg.ToField RegistrationState where toField = Pg.toField . show
+
+data ReadFieldError = ReadFieldError deriving (Show)
+
+instance Exception ReadFieldError
+
+readField :: Read a => Pg.Field -> Maybe B.ByteString -> Pg.Conversion a
+readField field mbBS = do
+    str <- Pg.fromField field mbBS
+    case readMaybe str of
+        Just x  -> pure x
+        Nothing -> Pg.conversionError ReadFieldError
+
+instance Pg.FromField Region            where fromField = readField
+instance Pg.FromField TShirtSize        where fromField = readField
+instance Pg.FromField Occupation        where fromField = readField
+instance Pg.FromField RegistrationState where fromField = readField
+
+instance Pg.ToRow InsertRegistration
+
+instance Pg.FromRow Registration where
+    fromRow = Registration
+        <$> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field
+        <*> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field
+        <*> Pg.field <*> Pg.field <*> Pg.field
+
+data Project = Project
+    { pName             :: !(Maybe T.Text)
+    , pLink             :: !(Maybe T.Text)
+    , pShortDescription :: !(Maybe T.Text)
+    , pContributorLevel :: !ContributorLevel
     } deriving (Eq, Show)
 
 $(A.deriveJSON A.options ''TShirtSize)
 $(A.deriveJSON A.options ''Region)
 $(A.deriveJSON A.options ''Occupation)
 $(A.deriveJSON A.options ''ContributorLevel)
-$(A.deriveJSON A.options ''Project)
 $(A.deriveJSON A.options ''RegistrationState)
 $(A.deriveJSON A.options ''Registration)

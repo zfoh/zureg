@@ -8,15 +8,14 @@ module Zureg.SendEmail.Hardcoded
     ) where
 
 import qualified Data.Text             as T
-import           Data.UUID             (UUID)
 import qualified Data.UUID             as UUID
 import           Zureg.Database.Models
 import           Zureg.Hackathon
 import qualified Zureg.SendEmail       as SendEmail
 
 sendRegisterSuccessEmail
-    :: SendEmail.Handle -> Hackathon -> Registration -> UUID -> IO ()
-sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
+    :: SendEmail.Handle -> Hackathon -> Registration -> IO ()
+sendRegisterSuccessEmail sendEmail Hackathon {..} info = SendEmail.sendEmail
     sendEmail
     emailFrom
     (rEmail info)
@@ -29,11 +28,11 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmai
     , ""
     , "You can view your registration and join our chat here:"
     , ""
-    , "    " <> baseUrl <> "/ticket?uuid=" <> UUID.toText uuid
+    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rUuid info)
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    " <> contactUrl
+    , "    " <> contactURL
     , ""
     , ""
     , "Warm regards"
@@ -41,8 +40,8 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmai
     ]
 
 sendWaitlistEmail
-    :: SendEmail.Handle -> Hackathon -> Registration -> UUID -> IO ()
-sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
+    :: SendEmail.Handle -> Hackathon -> Registration -> IO ()
+sendWaitlistEmail sendEmail Hackathon {..} info = SendEmail.sendEmail
     sendEmail
     emailFrom
     (rEmail info)
@@ -55,19 +54,19 @@ sendWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     , ""
     , "You can view your status here:"
     , ""
-    , "    " <> baseUrl <> "/ticket?uuid=" <> UUID.toText uuid
+    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rUuid info)
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    " <> contactUrl
+    , "    " <> contactURL
     , ""
     , "Warm regards"
     , "The " <> name <> " Registration Bot"
     ]
 
 sendPopWaitlistEmail
-    :: SendEmail.Handle -> Hackathon -> Registration -> UUID -> IO ()
-sendPopWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
+    :: SendEmail.Handle -> Hackathon -> Registration -> IO ()
+sendPopWaitlistEmail sendEmail Hackathon {..} info = SendEmail.sendEmail
     sendEmail
     emailFrom
     (rEmail info)
@@ -80,11 +79,11 @@ sendPopWaitlistEmail sendEmail Hackathon {..} info uuid = SendEmail.sendEmail
     , ""
     , "You can view your registration and join our chat here:"
     , ""
-    , "    " <> baseUrl <> "/ticket?uuid=" <> UUID.toText uuid
+    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rUuid info)
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
-    , "    " <> contactUrl
+    , "    " <> contactURL
     , ""
     , "Warm regards"
     , "The " <> name <> " Registration Bot"

@@ -1,37 +1,36 @@
 -- | Storing the registrants in a DynamoDB table.  Uses the `Eventful` library.
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE RecordWildCards            #-}
+{-# LANGUAGE TemplateHaskell            #-}
+{-# LANGUAGE TypeFamilies               #-}
 module Zureg.Database
     ( Config (..)
-    , configFromEnv
     , Handle
     , withHandle
-
-    -- Old stuff
-    , getRegistrant
-    , getRegistrantUuids
-
-    , putEmail
-    , deleteEmail
-    , lookupEmail
-
-    , RegistrantsSummary (..)
-    , lookupRegistrantsSummary
-    , putRegistrantsSummary
+    , Transaction
+    , withTransaction
 
     -- New stuff
+    , migrate
     , insertRegistration
+    , selectRegistrations
+    , selectRegistration
+    , selectRegistrationByEmail
+    , selectAttending
+    , selectWaitlist
     , setRegistrationState
     , setRegistrationScanned
+    , insertProject
     ) where
 
-import           Control.Exception      (Exception)
-import qualified Data.Aeson.TH.Extended as A
-import qualified Data.Text              as T
-import           Data.UUID              (UUID)
-import           System.Environment     (lookupEnv)
+import           Control.Exception          (Exception)
+import           Control.Monad              (void)
+import qualified Data.Text                  as T
+import           Data.UUID                  (UUID)
+import qualified Database.PostgreSQL.Simple as Pg
+import           Zureg.Database.Internal
+import           Zureg.Database.Migrations
 import           Zureg.Database.Models
 
 data DatabaseException
@@ -42,61 +41,101 @@ data DatabaseException
 
 instance Exception DatabaseException
 
-data Config = Config
-    { cConnectionString :: !T.Text
-    }
+insertRegistration :: Transaction -> InsertRegistration -> IO Registration
+insertRegistration (Transaction conn) ir = do
+    rows <- Pg.query conn
+        "INSERT INTO registrations (\n\
+        \    name,\n\
+        \    badge_name,\n\
+        \    email,\n\
+        \    affiliation,\n\
+        \    tshirt_size,\n\
+        \    region,\n\
+        \    occupation,\n\
+        \    beginner_track_interest\n\
+        \) VALUES (?, ?, ?, ?, ?, ?, ?, ?)\n\
+        \RETURNING *"
+        ir
+    case rows of
+        [registration] -> pure registration
+        _              -> fail "insertRegistration: expected one row"
 
-configFromEnv :: IO Config
-configFromEnv = do
-    cstring <- lookupEnv "ZUREG_DB" >>= maybe (fail "ZUREG_DB not set") pure
-    pure Config {cConnectionString = T.pack cstring}
+selectRegistrations :: Transaction -> IO [Registration]
+selectRegistrations (Transaction conn) =
+    Pg.query_ conn "SELECT * FROM registrations"
 
-data Handle = Handle
-    { hConfig :: !Config
-    }
+selectRegistration :: Transaction -> UUID -> IO (Maybe Registration)
+selectRegistration (Transaction conn) uuid = do
+    rows <- Pg.query conn
+        "SELECT * FROM registrations WHERE id = ?"
+        (Pg.Only uuid)
+    case rows of
+        [registration] -> pure $ Just registration
+        []             -> pure Nothing
+        _              -> fail
+            "selectRegistration: expected one or zero rows"
 
-withHandle :: Config -> (Handle -> IO a) -> IO a
-withHandle hConfig f = do
-    f Handle {..}
+selectRegistrationByEmail :: Transaction -> T.Text -> IO (Maybe Registration)
+selectRegistrationByEmail (Transaction conn) email = do
+    rows <- Pg.query conn
+        "SELECT * FROM registrations WHERE email = ?"
+        (Pg.Only email)
+    case rows of
+        [registration] -> pure $ Just registration
+        []             -> pure Nothing
+        _              -> fail
+            "selectRegistrationByEmail: expected one or zero rows"
 
-getRegistrant :: Handle -> UUID -> IO Registration
-getRegistrant _ _ = undefined
+selectAttending :: Transaction -> IO Int
+selectAttending (Transaction conn) = do
+    rows <- Pg.query conn
+        "SELECT COUNT(*) FROM registrations WHERE state = ? OR state = ?"
+        (Registered, Confirmed) :: IO [Pg.Only Int]
+    case rows of
+        [Pg.Only c] -> pure c
+        _           -> fail "selectAttending: expected one row"
 
-getRegistrantUuids :: Handle -> IO [UUID]
-getRegistrantUuids _ = pure []
+-- | Select all the attendees on the waiting list in the order they joined.
+selectWaitlist :: Transaction -> IO [Registration]
+selectWaitlist (Transaction conn) = Pg.query conn
+    "SELECT * FROM registrations WHERE state = ?\n\
+    \ORDER BY registered_at ASC"
+    (Pg.Only Waitlisted)
 
-putEmail :: Handle -> T.Text -> UUID -> IO ()
-putEmail _ _ _ = pure ()
+setRegistrationState :: Transaction -> UUID -> RegistrationState -> IO Registration
+setRegistrationState (Transaction conn) uuid state = do
+    rows <- Pg.query conn
+        "UPDATE registrations SET state = ? WHERE id = ? RETURNING *"
+        (state, uuid)
+    case rows of
+        [registration] -> pure registration
+        _              -> fail "setRegistrationState: expected one row"
 
-deleteEmail :: Handle -> T.Text -> IO ()
-deleteEmail _ _ = pure ()
+setRegistrationScanned :: Transaction -> UUID -> IO Registration
+setRegistrationScanned (Transaction conn) uuid = do
+    rows <- Pg.query conn
+        "UPDATE registrations SET scanned_at = NOW() WHERE id = ? RETURNING *"
+        (Pg.Only uuid)
+    case rows of
+        [registration] -> pure registration
+        _              -> fail "setRegistrationScanned: expected one row"
 
-lookupEmail :: Handle -> T.Text -> IO (Maybe UUID)
-lookupEmail _ _ = pure Nothing
-
-data RegistrantsSummary = RegistrantsSummary
-    { rsTotal     :: Int
-    , rsWaiting   :: Int
-    , rsConfirmed :: Int
-    , rsAttending :: Int
-    , rsAvailable :: Int
-    , rsScanned   :: Int
-    , rsSpam      :: Int
-    } deriving (Show)
-
-$(A.deriveJSON A.options ''RegistrantsSummary)
-
-putRegistrantsSummary :: Handle -> RegistrantsSummary -> IO ()
-putRegistrantsSummary _ _ = pure ()
-
-lookupRegistrantsSummary :: Handle -> IO RegistrantsSummary
-lookupRegistrantsSummary _ = undefined
-
-insertRegistration :: Handle -> UUID -> InsertRegistration -> IO Registration
-insertRegistration _ _ _ = undefined
-
-setRegistrationState :: Handle -> UUID -> RegistrationState -> IO Registration
-setRegistrationState _ _ _ = undefined
-
-setRegistrationScanned :: Handle -> UUID -> IO Registration
-setRegistrationScanned _ _ = undefined
+insertProject :: Transaction -> UUID -> Project -> IO ()
+insertProject (Transaction conn) registrationID project = void $ Pg.execute conn
+    "INSERT INTO projects (\n\
+    \    registration_id,\n\
+    \    name,\n\
+    \    link,\n\
+    \    short_description,\n\
+    \    contributor_level_beginner,\n\
+    \    contributor_level_intermediate,\n\
+    \    contributor_level_advanced\n\
+    \) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    ( registrationID
+    , pName project
+    , pLink project
+    , pShortDescription project
+    , clBeginner $ pContributorLevel project
+    , clIntermediate $ pContributorLevel project
+    , clAdvanced $ pContributorLevel project
+    )

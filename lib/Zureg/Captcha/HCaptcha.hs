@@ -5,7 +5,6 @@
 module Zureg.Captcha.HCaptcha
     ( module Zureg.Captcha
     , Config (..)
-    , configFromEnv
     , new
     ) where
 
@@ -17,7 +16,6 @@ import qualified Data.Text.Encoding          as T
 import qualified Data.Text.Lazy              as TL
 import qualified Data.URLEncoded             as UrlEncoded
 import qualified Network.HTTP.Client         as Http
-import           System.Environment          (getEnv)
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 import           Zureg.Captcha
@@ -26,11 +24,6 @@ data Config = Config
     { cSiteKey   :: !T.Text
     , cSecretKey :: !T.Text
     } deriving (Show)
-
-configFromEnv :: IO Config
-configFromEnv = Config
-    <$> (T.pack <$> getEnv "ZUREG_HCAPTCHA_SITEKEY")
-    <*> (T.pack <$> getEnv "ZUREG_HCAPTCHA_SECRET")
 
 new :: Config -> IO Handle
 new Config {..} = pure Handle

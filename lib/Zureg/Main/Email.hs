@@ -16,9 +16,9 @@ import           System.Environment    (getArgs, getProgName)
 import           System.Exit           (exitFailure)
 import qualified System.IO             as IO
 import qualified Text.Mustache         as Mustache
+import qualified Zureg.Config          as Config
 import           Zureg.Database.Models
 import qualified Zureg.Hackathon       as Hackathon
-import           Zureg.Hackathon       (Hackathon)
 import qualified Zureg.SendEmail       as SendEmail
 
 withStateFile
@@ -37,10 +37,13 @@ confirm = do
     line <- getLine
     unless (line == "yes") $ fail "aborted"
 
-main :: Hackathon -> IO ()
-main Hackathon.Hackathon {..} = do
+main :: IO ()
+main = do
     progName <- getProgName
     args     <- getArgs
+
+    Config.Config {..} <- Config.load
+    let Hackathon.Hackathon {..} = configHackathon
 
     case args of
         [exportPath, templatePath, statefile, subject] -> do
@@ -65,7 +68,7 @@ main Hackathon.Hackathon {..} = do
             confirm
 
             withStateFile statefile $ \done append ->
-                SendEmail.withHandle $ \sendEmail ->
+                SendEmail.withHandle configAws $ \sendEmail ->
                 forM_ registrants $ \registrant -> do
                     when (not (rEmail registrant `HS.member` done)) $ do
                         IO.hPutStrLn IO.stderr $

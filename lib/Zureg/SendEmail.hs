@@ -8,22 +8,22 @@ module Zureg.SendEmail
     , sendEmail
     ) where
 
-import qualified Amazonka.Extended              as Amazonka
+import qualified Amazonka                       as Amazonka
 import qualified Amazonka.SES                   as SES
 import qualified Amazonka.SES.Types.Body        as SES
 import qualified Amazonka.SES.Types.Destination as SES
 import           Control.Lens                   ((&), (.~))
 import           Control.Monad                  (void)
-import qualified Data.Aeson.TH.Extended         as A
 import qualified Data.Text                      as T
+import qualified Zureg.AWS                      as AWS
 
 data Handle = Handle
     { hAwsEnv :: !Amazonka.Env
     }
 
-withHandle :: (Handle -> IO a) -> IO a
-withHandle f = do
-    hAwsEnv <- Amazonka.smartEnv
+withHandle :: AWS.Config -> (Handle -> IO a) -> IO a
+withHandle conf f = do
+    hAwsEnv <- AWS.smartEnv conf
     f Handle {..}
 
 sendEmail
