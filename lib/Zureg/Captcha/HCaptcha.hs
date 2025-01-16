@@ -3,8 +3,7 @@
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Captcha.HCaptcha
-    ( module Zureg.Captcha
-    , Config (..)
+    ( Config (..)
     , new
     ) where
 
@@ -18,7 +17,7 @@ import qualified Data.URLEncoded             as UrlEncoded
 import qualified Network.HTTP.Client         as Http
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
-import           Zureg.Captcha
+import           Zureg.Captcha.Internal
 
 data Config = Config
     { cSiteKey   :: !T.Text

@@ -1,33 +1,48 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Zureg.Captcha
-    ( CaptchaException (..)
+    ( Config (..)
+    , new
+    , withHandle
+
+    , CaptchaException (..)
     , Handle (..)
     , ClientHtml (..)
     ) where
 
-import           Control.Exception   (Exception)
-import qualified Data.Text           as T
-import qualified Data.Text.Lazy      as TL
-import qualified Network.HTTP.Client as Http
-import qualified Text.Blaze.Html5    as H
+import qualified Data.Aeson              as A
+import qualified Data.Aeson.TH.Extended  as A
+import qualified Data.Text               as T
+import qualified Zureg.Captcha.HCaptcha  as HCaptcha
+import           Zureg.Captcha.Internal
+import qualified Zureg.Captcha.NoCaptcha as NoCaptcha
+import qualified Zureg.Captcha.ReCaptcha as ReCaptcha
 
-data CaptchaException
-    = VerificationFailed [T.Text]
+data Config
+    = HCaptchaConfig HCaptcha.Config
+    | ReCaptchaConfig ReCaptcha.Config
+    | NoCaptchaConfig
+    deriving (Show)
 
-instance Show CaptchaException where
-    show (VerificationFailed []) = "Captcha verification failed"
-    show (VerificationFailed es) =
-        "Captcha verification failed, error code: " ++
-        T.unpack (T.intercalate ", " es)
-
-instance Exception CaptchaException
-
-data ClientHtml = ClientHtml
-    { chScript :: !H.Html
-    , chForm   :: !H.Html
+data ProbeType = ProbeType
+    { ptType :: !T.Text
     }
 
-data Handle = Handle
-    { clientHtml :: ClientHtml
-    , verify     :: Http.Manager -> Maybe TL.Text -> IO ()
-    }
+new :: Config -> IO Handle
+new (HCaptchaConfig c)  = HCaptcha.new c
+new (ReCaptchaConfig c) = ReCaptcha.new c
+new NoCaptchaConfig     = NoCaptcha.new
+
+withHandle :: Config -> (Handle -> IO a) -> IO a
+withHandle = (>>=) . new
+
+$(A.deriveJSON A.options ''ProbeType)
+
+instance A.FromJSON Config where
+    parseJSON v = do
+        probe <- A.parseJSON v
+        case ptType probe of
+            "off"       -> pure NoCaptchaConfig
+            "hcaptcha"  -> HCaptchaConfig <$> A.parseJSON v
+            "recaptcha" -> ReCaptchaConfig <$> A.parseJSON v
+            ty          -> fail $ "unknown Captcha type: " ++ T.unpack ty

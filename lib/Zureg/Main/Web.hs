@@ -23,8 +23,6 @@ import qualified Network.HTTP.Types                  as Http
 import qualified Network.Wai                         as Wai
 import qualified Network.Wai.Handler.Warp            as Warp
 import qualified Zureg.Captcha                       as Captcha
-import qualified Zureg.Captcha.HCaptcha              as HCaptcha
-import qualified Zureg.Captcha.NoCaptcha             as NoCaptcha
 import qualified Zureg.Config                        as Config
 import qualified Zureg.Database                      as Database
 import           Zureg.Database.Models
@@ -36,23 +34,21 @@ import           Zureg.Main.Janitor                  (popWaitlist)
 import qualified Zureg.SendEmail                     as SendEmail
 import           Zureg.SendEmail.Hardcoded
 import qualified Zureg.Views                         as Views
+import qualified Zureg.Web                           as Web
 
 main :: IO ()
 main = do
-    config <- Config.load
-    app config >>= Warp.run 8000
+    config@Config.Config {..} <- Config.load
+    Database.withHandle configDatabase $ \db -> do
+        Database.migrate db
+        app config db >>= Warp.run (Web.configPort configWeb)
 
-app :: Config.Config -> IO Wai.Application
-app Config.Config {..} =
+app :: Config.Config -> Database.Handle -> IO Wai.Application
+app Config.Config {..} db =
     fmap httpExceptionMiddleware $
     Http.newManager Http.tlsManagerSettings >>= \httpManager ->
-    Database.withHandle configDatabase $ \db ->
     SendEmail.withHandle configAws $ \sendEmail ->
-    (\f -> do
-        captcha <- case configCaptcha of
-            Nothing  -> NoCaptcha.new
-            Just cfg -> HCaptcha.new cfg
-        f captcha) $ \captcha ->
+    Captcha.withHandle configCaptcha $ \captcha ->
     pure $ \req respond -> case Wai.pathInfo req of
         ["register"] -> do
             reqBody <- TL.decodeUtf8 <$> Wai.strictRequestBody req

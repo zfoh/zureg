@@ -15,6 +15,14 @@
           urlencoded = (pkgs.haskell.lib.doJailbreak haskell.urlencoded);
         };
         packageExes = pkgs.haskell.lib.justStaticExecutables package;
+        migrations = pkgs.stdenv.mkDerivation {
+          name = "migrations";
+          src = ./lib/Zureg/Database/Migrations;
+          installPhase = ''
+            mkdir -p $out/var/lib/zureg/migrations
+            cp *.sql $out/var/lib/zureg/migrations
+          '';
+        };
       in {
         packages = {
           default = package;
@@ -22,7 +30,10 @@
           docker = pkgs.dockerTools.buildLayeredImage {
             name = "zureg";
             tag = "latest";
-            contents = [ pkgs.cacert ];
+            contents = [
+              pkgs.cacert
+              migrations
+            ];
             config.Cmd = "${packageExes}/bin/zureg-web";
           };
         };

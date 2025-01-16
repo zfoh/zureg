@@ -47,11 +47,13 @@ Library
     Zureg.Main.Web
     Zureg.Captcha
     Zureg.Captcha.HCaptcha
+    Zureg.Captcha.Internal
     Zureg.Captcha.NoCaptcha
     Zureg.Captcha.ReCaptcha
     Zureg.SendEmail
     Zureg.SendEmail.Hardcoded
     Zureg.Views
+    Zureg.Web
 
   Other-modules:
     Data.Aeson.TH.Extended

@@ -1,0 +1,19 @@
+version: "3.0"
+services:
+  db:
+    image: postgres
+    volumes:
+    - ./data/db:/var/lib/postgresql/data
+    environment:
+    - POSTGRES_DB=zureg
+    - POSTGRES_USER=zureg
+    - POSTGRES_PASSWORD=hunter2
+  web:
+    image: zureg
+    volumes:
+    - ./zureg.docker.json:/etc/zureg.json
+    ports:
+    - '127.0.0.1:8003:8000'
+    depends_on:
+    - db
+    restart: on-failure

@@ -26,10 +26,13 @@ popWaitlist db mailer hackathon@Hackathon.Hackathon {..} = do
     popped <- Database.withTransaction db $ \tx -> do
         attending <- Database.selectAttending tx
         let open = max 0 $ capacity - attending
-        pop <- take open <$> Database.selectWaitlist tx
-        for_ pop $ \registrant ->
-            Database.setRegistrationState tx (rUuid registrant) Registered
-        pure pop
+        if (open > 0) then do
+            pop <- take open <$> Database.selectWaitlist tx
+            for_ pop $ \registrant ->
+                Database.setRegistrationState tx (rUuid registrant) Registered
+            pure pop
+        else
+            pure []
     -- Send emails outside of transaction to make it faster
     for_ popped $ \registrant -> do
         IO.hPutStrLn IO.stderr $

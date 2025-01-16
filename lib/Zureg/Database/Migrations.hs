@@ -15,16 +15,14 @@ import qualified System.IO                  as IO
 import           Text.Read                  (readMaybe)
 import           Zureg.Database.Internal
 
-listMigrations :: IO [(Int, FilePath)]
-listMigrations = sortOn fst <$> do
-    entries <- Directory.listDirectory dir
+listMigrations :: Config -> IO [(Int, FilePath)]
+listMigrations config = sortOn fst <$> do
+    entries <- Directory.listDirectory $ configMigrations config
     for entries $ \entry -> do
-        let path = dir </> entry
+        let path = configMigrations config </> entry
         case readMaybe (takeWhile isDigit entry) of
             Just v -> pure (v, path)
             _      -> fail $ "Could not parse version: " ++ path
-  where
-    dir = "lib/Zureg/Database/Migrations"
 
 migrate :: Handle -> IO ()
 migrate h = do
@@ -34,7 +32,7 @@ migrate h = do
         \    path TEXT NOT NULL\n\
         \)"
 
-    migrations <- listMigrations
+    migrations <- listMigrations $ hConfig h
     for_ migrations $ \(version, path) -> withTransaction h $
         \(Transaction conn) -> do
         rows <- Pg.query conn

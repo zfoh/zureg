@@ -1,9 +1,8 @@
 module Zureg.Captcha.NoCaptcha
-    ( module Zureg.Captcha
-    , new
+    ( new
     ) where
 
-import           Zureg.Captcha
+import           Zureg.Captcha.Internal
 
 new :: IO Handle
 new = pure Handle
