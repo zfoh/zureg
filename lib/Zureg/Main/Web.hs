@@ -12,6 +12,7 @@ import           Control.Exception                   (throwIO)
 import           Control.Monad                       (join, unless, void, when)
 import           Data.Foldable                       (for_)
 import           Data.Maybe                          (isJust)
+import           Data.String                         (IsString (fromString))
 import qualified Data.Text                           as T
 import qualified Data.Text.Encoding                  as T
 import qualified Data.Text.Lazy.Encoding             as TL
@@ -22,6 +23,7 @@ import qualified Network.HTTP.Client.TLS             as Http
 import qualified Network.HTTP.Types                  as Http
 import qualified Network.Wai                         as Wai
 import qualified Network.Wai.Handler.Warp            as Warp
+import qualified System.IO                           as IO
 import qualified Zureg.Captcha                       as Captcha
 import qualified Zureg.Config                        as Config
 import qualified Zureg.Database                      as Database
@@ -39,9 +41,16 @@ import qualified Zureg.Web                           as Web
 main :: IO ()
 main = do
     config@Config.Config {..} <- Config.load
+    IO.hPutStrLn IO.stderr $
+        "Listening on " ++ T.unpack (Web.configHost configWeb) ++ ":" ++
+        show (Web.configPort configWeb)
     Database.withHandle configDatabase $ \db -> do
         Database.migrate db
-        app config db >>= Warp.run (Web.configPort configWeb)
+        let settings = Warp.setPort (Web.configPort configWeb) $
+                Warp.setHost (fromString $ T.unpack $ Web.configHost configWeb) $
+                Warp.setGracefulShutdownTimeout (Just 5) $
+                Warp.defaultSettings
+        app config db >>= Warp.runSettings settings
 
 app :: Config.Config -> Database.Handle -> IO Wai.Application
 app Config.Config {..} db =

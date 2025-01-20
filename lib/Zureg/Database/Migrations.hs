@@ -26,6 +26,7 @@ listMigrations config = sortOn fst <$> do
 
 migrate :: Handle -> IO ()
 migrate h = do
+    IO.hPutStrLn IO.stderr "Starting migrate..."
     _ <- withTransaction h $ \(Transaction conn) -> Pg.execute_ conn "\
         \CREATE TABLE IF NOT EXISTS migrations (\n\
         \    version INT NOT NULL PRIMARY KEY,\n\
@@ -49,3 +50,4 @@ migrate h = do
                     "INSERT INTO migrations (version, path) VALUES (?, ?)"
                     (version, path)
                 pure ()
+    IO.hPutStrLn IO.stderr "Migrate finished."

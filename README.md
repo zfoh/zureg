@@ -2,81 +2,29 @@
 
 ## Dependencies
 
--   `docker`, for building a binary that will run on AWS lambda.
--   `jq`, used in the Makefile to read JSON files.
+-   `cabal` for building the Haskell codebase, or
+-   `nix` for managing cabal and building the docker image.
 
 ## Building
 
-This application needs to be compiled on two different platforms:
+`cabal build`
 
-1.  Your machine, to be able to run the export and mail tools.
+## Configuring & running
 
-    You can a regular `stack build` to perform this build.
+`zureg` attempts to read a configuration file from `zureg.json` and
+`/etc/zureg.json`.
 
-2.  Amazon Linux, so we can run a binary on AWS Lambda.
+`zureg.example.json` contains a skeleton.  Most importantantly, you'll want
+to configure `database.connectionString` to point to a postgres database
+with write access.
 
-    We use docker for this purpose so the binary gets linked to the right
-    versions of the different C libraries.
+### AWS
 
-    In order to build this binary, use `make build`.  This can take a while if
-    it's the first time you run it, since it will bootstrap an Amazon Linux
-    container image, install stack on it, and compile our project.
-
-## Deploying
-
-1.  Make sure you have access to an AWS account, and that you have the
-    credentials saved in `~/.aws/credentials`.  You can use:
-
-        aws sts get-caller-identity
-
-    to make sure this is working.
-
-2.  Update `deploy/env.json` to set the email you will be contacting attendees
-	_from_.  In the AWS Console, navigate to
-	"Simple Email Service > Email addresses" and verify this email address.
-
-3.  Run `make deploy` to deploy the Zureg stack.
-
-    To select a non-default AWS account, use
-    `make deploy AWS_PROFILE=<profile>`, where `<profile>` is the profile's
-    name in the AWS credentials file.
-
-4.  In the AWS Console, navigate to "API Gateway > Stages > beta" and browse
-    to the "invoke URL" followed by `/register`.  You should now see the
-    registration page.
-
-    If you see `NotFoundException registrants summary` instead. make sure to run
-    the `zureg-janitor` lambda once to bootstrap the summary.
-
-5.  As a test, register using an email address you verified (by default, AWS
-    will not let you send email to random people).
-
-### Resources
-
-The deployment is designed to fit into the free tier of AWS as much as possible.
-There are some DynamoDB tables, the Lambda function, and an API Gateway
-connecting the Lambda to the outside workd.
-
-### ReCaptcha
-
-We use ReCaptcha to protect against bot registrations.  Your secret key goes
-into `deploy/recaptcha`, and this gets embedded into the Haskell binary (a bit
-ugly, I know).
-
-### AWS account requirements
-
-It is recommended you don't use your main AWS account for deploying but create a
-user with "Programmatic access". In AWS Console, navigate to "My Security
-credentials > Users > Add user", and you need to give it a set of permissions
-"Attach existing policies directly" :
-`AWSLambdaFullAccess`, `IAMFullAccess`, `AmazonS3FullAccess`,
-`AmazonDynamoDBFullAccess`, `AmazonSESFullAccess`,
-`AmazonAPIGatewayAdministrator`, `AWSCloudFormationFullAccess`
+`zureg` uses AWS SES to send emails.
 
 To be able to send email to the registrants you will need to move your account
 out of the sandbox. For instructions how to do it, follow:
 https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html
-
 
 ## Tools
 

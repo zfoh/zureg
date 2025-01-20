@@ -28,7 +28,7 @@
           default = package;
 
           docker = pkgs.dockerTools.buildLayeredImage {
-            name = "zureg";
+            name = "jaspervdj/zureg";
             tag = "latest";
             contents = [
               pkgs.cacert

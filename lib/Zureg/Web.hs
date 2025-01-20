@@ -4,9 +4,11 @@ module Zureg.Web
     ) where
 
 import qualified Data.Aeson.TH.Extended as A
+import qualified Data.Text              as T
 
 data Config = Config
-    { configPort :: !Int
+    { configHost :: !T.Text
+    , configPort :: !Int
     } deriving (Show)
 
 $(A.deriveJSON A.options ''Config)

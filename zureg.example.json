@@ -1,0 +1,32 @@
+{
+  "hackathon": {
+    "name": "ZuriHac 2025",
+    "baseURL": "https://zureg.zfoh.ch",
+    "contactURL": "https://zfoh.ch/zurihac2025/#contact",
+    "capacity": 500,
+    "confirmation": true,
+    "emailFrom": "ZuriHac Registrations <zureg@zfoh.ch>"
+  },
+  "database": {
+    "connectionString": "postgresql://postgres:hunter2@localhost:5432/zureg",
+    "migrations": "lib/Zureg/Database/Migrations"
+  },
+  "scannerSecret": "monad",
+  "discord": {
+    "accessToken": "***",
+    "guildID": "***"
+  },
+  "captcha": {
+    "type": "hcaptcha",
+    "siteKey": "***",
+    "secretKey": "***"
+  },
+  "aws": {
+    "region": "us-east-1",
+    "accessKey": "***",
+    "secretKey": "**"
+  },
+  "web": {
+    "port": 8000
+  }
+}
