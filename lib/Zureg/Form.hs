@@ -119,9 +119,11 @@ registerView h captchaHtml view = DH.form view "?" $ do
     H.h2 "Optional information"
 
     H.p $ H.strong "T-Shirt"
+    {-
     H.p $ H.strong $ do
         "Please note that we have ordered the T-Shirts and cannot guarantee "
         "that you will receive one if you register at this time."
+    -}
     H.p $ "In what size would you like the free T-Shirt?"
 
     DH.label "registration.tshirtSize" view "Size"
