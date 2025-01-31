@@ -178,6 +178,13 @@ registerView h captchaHtml view = DH.form view "?" $ do
     Captcha.chForm captchaHtml
     H.br
 
+    H.p $ do
+        "ZuriHac is a free for all participants, but it does require "
+        "resources to organize. Please consider "
+        H.a H.! A.target "_blank" H.! A.href "https://zfoh.ch/#donations" $ "making a donation"
+        " if you can afford it.  All donations go entirely towards event "
+        "costs."
+
     DH.inputSubmit "Register"
 
 cancelForm :: Monad m => Maybe UUID -> D.Form H.Html m (UUID, Bool)
