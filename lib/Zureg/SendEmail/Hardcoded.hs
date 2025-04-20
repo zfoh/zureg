@@ -28,7 +28,7 @@ sendRegisterSuccessEmail sendEmail Hackathon {..} info = SendEmail.sendEmail
     , ""
     , "You can view your registration and join our chat here:"
     , ""
-    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rUuid info)
+    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rID info)
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
@@ -54,7 +54,7 @@ sendWaitlistEmail sendEmail Hackathon {..} info = SendEmail.sendEmail
     , ""
     , "You can view your status here:"
     , ""
-    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rUuid info)
+    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rID info)
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""
@@ -79,7 +79,7 @@ sendPopWaitlistEmail sendEmail Hackathon {..} info = SendEmail.sendEmail
     , ""
     , "You can view your registration and join our chat here:"
     , ""
-    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rUuid info)
+    , "    " <> baseURL <> "/ticket?uuid=" <> UUID.toText (rID info)
     , ""
     , "If you have any concerns, you can find our contact info here:"
     , ""

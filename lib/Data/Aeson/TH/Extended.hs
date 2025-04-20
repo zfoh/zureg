@@ -4,7 +4,7 @@ module Data.Aeson.TH.Extended
     ) where
 
 import           Data.Aeson.TH
-import           Data.Char     (isUpper, toLower)
+import           Data.Char     (isUpper, toLower, isLower)
 
 options :: Options
 options = defaultOptions
@@ -13,5 +13,9 @@ options = defaultOptions
 
 dropPrefix :: String -> String
 dropPrefix str = case break isUpper str of
-    (_, (y : ys)) -> toLower y : ys
-    _             -> str
+    (_, [])    -> str
+    (_, field) -> case break isLower field of
+        (_,          []) -> map toLower field
+        ([],         _)  -> map toLower field
+        (xs@[_],     ys) -> map toLower xs ++ ys
+        (xs@(_ : _), ys) -> map toLower (init xs) ++ [last xs] ++ ys

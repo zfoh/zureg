@@ -1,13 +1,23 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE RecordWildCards     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell     #-}
 module Zureg.Main.Export
-    ( main
+    ( ExportRegistration (..)
+    , ExportRegistrant (..)
+    , ExportProject (..)
+    , ExportContributorLevel (..)
+    , fromModel
+
+    , main
     ) where
 
 import           Control.Monad              (when)
 import qualified Data.Aeson                 as A
+import qualified Data.Aeson.TH.Extended     as A
 import qualified Data.ByteString.Lazy.Char8 as BL
+import qualified Data.Text                  as T
+import           Data.UUID                  (UUID)
 import qualified Options.Applicative        as OA
 import           System.Directory           (doesFileExist)
 import           System.Exit                (exitFailure)
@@ -16,6 +26,60 @@ import qualified System.IO                  as IO
 import qualified Zureg.Config               as Config
 import qualified Zureg.Database             as Database
 import           Zureg.Database.Models
+
+data ExportRegistration = ExportRegistration
+    { erID         :: !UUID
+    , erState      :: !RegistrationState
+    , erRegistrant :: !ExportRegistrant
+    , erProject    :: !(Maybe ExportProject)
+    }
+
+data ExportRegistrant = ExportRegistrant
+    { erName      :: !T.Text
+    , erBadgeName :: !(Maybe T.Text)
+    , erEmail     :: !T.Text
+    }
+
+data ExportProject = ExportProject
+    { epName             :: !T.Text
+    , epLink             :: !(Maybe T.Text)
+    , epShortDescription :: !(Maybe T.Text)
+    , epContributorLevel :: !ExportContributorLevel
+    }
+
+data ExportContributorLevel = ExportContributorLevel
+    { clBeginner     :: !Bool
+    , clIntermediate :: !Bool
+    , clAdvanced     :: !Bool
+    } deriving (Eq, Show)
+
+$(A.deriveJSON A.options ''ExportContributorLevel)
+$(A.deriveJSON A.options ''ExportRegistrant)
+$(A.deriveJSON A.options ''ExportProject)
+$(A.deriveJSON A.options ''ExportRegistration)
+
+fromModel :: Registration -> Maybe Project -> ExportRegistration
+fromModel registration mbProject = ExportRegistration
+    { erID  = rID registration
+    , erState = rState registration
+    , erRegistrant = ExportRegistrant
+        { erName = rName registration
+        , erBadgeName = rBadgeName registration
+        , erEmail = rEmail registration
+        }
+    , erProject = case mbProject of
+        Nothing -> Nothing
+        Just project -> Just ExportProject
+            { epName = pName project
+            , epLink = pLink project
+            , epShortDescription = pShortDescription project
+            , epContributorLevel = ExportContributorLevel
+                { clBeginner = pContributorLevelBeginner project
+                , clIntermediate = pContributorLevelIntermediate project
+                , clAdvanced = pContributorLevelAdvanced project
+                }
+            }
+    }
 
 data Options = Options
     { oState :: [RegistrationState]
@@ -43,15 +107,17 @@ main = do
 
     let predicate = case oState opts of
             []        -> const True
-            allowlist -> (`elem` allowlist) . rState
+            allowlist -> (`elem` allowlist) . erState
 
     encode <- case takeExtension (oPath opts) of
-        ".json" -> return (A.encode :: [Registration] -> BL.ByteString)
+        ".json" -> return (A.encode :: [ExportRegistration] -> BL.ByteString)
         ext     -> do
             IO.hPutStrLn IO.stderr $ "Unknown extension: " ++ ext
             exitFailure
 
     Database.withHandle configDatabase $ \db -> do
-        registrations <- Database.withTransaction db $ \tx ->
-            Database.selectRegistrations tx
+        registrations <-
+            fmap (map (uncurry fromModel)) $
+            Database.withTransaction db $
+            Database.selectRegistrationsWithProjects
         BL.writeFile (oPath opts) $ encode $ filter predicate registrations

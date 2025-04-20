@@ -11,7 +11,7 @@ import qualified Data.Aeson                      as A
 import           Data.Char                       (toLower)
 import           Data.Foldable                   (for_)
 import           Data.List                       (sortOn)
-import           Data.Maybe                      (mapMaybe)
+import           Data.Maybe                      (fromMaybe, mapMaybe)
 import qualified Data.Text                       as T
 import           System.Environment              (getArgs, getProgName)
 import           System.Exit                     (exitFailure)
@@ -21,14 +21,17 @@ import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as HA
 import           Text.Read                       (readMaybe)
 import           Zureg.Database.Models
+import           Zureg.Main.Export               hiding (main)
 
 newtype Badge = Badge {unBadge :: String}
 
-registrantToBadge :: Registration -> Maybe Badge
+registrantToBadge :: ExportRegistration -> Maybe Badge
 registrantToBadge r
-    | rState r `elem` [Confirmed, Registered] =
-        Just . Badge . T.unpack $ rName r
+    | erState r `elem` [Confirmed, Registered] = Just $ Badge $
+        T.unpack $ fromMaybe (erName registrant) (erBadgeName registrant)
     | otherwise = Nothing
+  where
+    registrant = erRegistrant r
 
 -- | For 2023, we used 21 70mm 42.4mm
 data Options = Options
@@ -98,7 +101,7 @@ main = do
                     }
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registration]
+                :: IO [ExportRegistration]
             putStrLn $ H.renderHtml $ renderBadges options $
                 sortOn (map toLower . unBadge) $
                 mapMaybe registrantToBadge registrants

@@ -36,6 +36,7 @@ import qualified Zureg.Form                  as Form
 import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
 import           Zureg.Main.Badges           (Badge (..), registrantToBadge)
+import qualified Zureg.Main.Export as Export
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -128,7 +129,7 @@ ticket hackathon registration@Registration {..} = template
         "}")
     (do
         when (rState == Confirmed) $
-            qrimg $ T.unpack $ UUID.toText rUuid
+            qrimg $ T.unpack $ UUID.toText rID
 
         H.div $ do
             H.h1 $ fst $ registrationState rState
@@ -143,7 +144,7 @@ ticket hackathon registration@Registration {..} = template
             H.p "Please confirm your registration so we can get an accurate count of attendees for food, etc."
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                    H.! A.value (H.toValue (UUID.toText rUuid))
+                    H.! A.value (H.toValue (UUID.toText rID))
                 H.input H.! A.type_ "submit"
                     H.! A.value "Confirm my registration and access ticket"
 
@@ -153,7 +154,7 @@ ticket hackathon registration@Registration {..} = template
             "You can join the Discord server here:"
             H.form H.! A.method "GET" H.! A.action "chat" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                    H.! A.value (H.toValue (UUID.toText rUuid))
+                    H.! A.value (H.toValue (UUID.toText rID))
                 H.input H.! A.type_ "submit"
                     H.! A.value "Generate Discord invite"
 
@@ -164,7 +165,7 @@ ticket hackathon registration@Registration {..} = template
                 "cancel your registration because space is limited."
             H.form H.! A.method "GET" H.! A.action "cancel" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
-                    H.! A.value (H.toValue (UUID.toText rUuid))
+                    H.! A.value (H.toValue (UUID.toText rID))
                 H.input H.! A.type_ "submit"
                     H.! A.value "Cancel my registration")
 
@@ -237,7 +238,7 @@ scan hackathon registrant@Registration {..} = H.ul $ do
 
     when rVip $ H.li $ "⭐ " <> H.strong "VIP"
 
-    H.li $ case registrantToBadge registrant of
+    H.li $ case registrantToBadge (Export.fromModel registrant Nothing) of
         Nothing            -> red "No Badge"
         Just (Badge badge) -> "Badge: " <> H.strong (H.toHtml badge)
 

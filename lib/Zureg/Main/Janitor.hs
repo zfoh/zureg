@@ -29,7 +29,7 @@ popWaitlist db mailer hackathon@Hackathon.Hackathon {..} = do
         if (open > 0) then do
             pop <- take open <$> Database.selectWaitlist tx
             for_ pop $ \registrant ->
-                Database.setRegistrationState tx (rUuid registrant) Registered
+                Database.setRegistrationState tx (rID registrant) Registered
             pure pop
         else
             pure []

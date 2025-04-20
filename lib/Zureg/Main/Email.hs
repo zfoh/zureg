@@ -17,8 +17,8 @@ import           System.Exit           (exitFailure)
 import qualified System.IO             as IO
 import qualified Text.Mustache         as Mustache
 import qualified Zureg.Config          as Config
-import           Zureg.Database.Models
 import qualified Zureg.Hackathon       as Hackathon
+import           Zureg.Main.Export     hiding (main)
 import qualified Zureg.SendEmail       as SendEmail
 
 withStateFile
@@ -52,9 +52,9 @@ main = do
 
             registrantsOrError <- A.eitherDecodeFileStrict exportPath
             registrants <- either (fail . show) return registrantsOrError
-                :: IO [Registration]
+                :: IO [ExportRegistration]
 
-            let prepare :: Registration -> IO T.Text
+            let prepare :: ExportRegistration -> IO T.Text
                 prepare registrant = do
                     let (errs, t) = Mustache.checkedSubstitute
                             template (A.toJSON registrant)
@@ -70,13 +70,14 @@ main = do
             withStateFile statefile $ \done append ->
                 SendEmail.withHandle configAws $ \sendEmail ->
                 forM_ registrants $ \registrant -> do
-                    when (not (rEmail registrant `HS.member` done)) $ do
+                    let to = erEmail $ erRegistrant registrant
+                    when (not (to `HS.member` done)) $ do
                         IO.hPutStrLn IO.stderr $
-                            "Mailing " ++ T.unpack (rEmail registrant) ++ "..."
+                            "Mailing " ++ T.unpack to ++ "..."
                         t <- prepare registrant
                         SendEmail.sendEmail sendEmail
-                            emailFrom (rEmail registrant) (T.pack subject) t
-                        append (rEmail registrant)
+                            emailFrom to (T.pack subject) t
+                        append to
 
         _ -> do
             IO.hPutStr IO.stderr $ unlines

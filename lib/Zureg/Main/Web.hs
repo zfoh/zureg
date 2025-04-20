@@ -11,7 +11,7 @@ import           Control.Concurrent                  (forkIO)
 import           Control.Exception                   (throwIO)
 import           Control.Monad                       (join, unless, void, when)
 import           Data.Foldable                       (for_)
-import           Data.Maybe                          (isJust)
+import           Data.Maybe                          (fromMaybe, isJust)
 import           Data.String                         (IsString (fromString))
 import qualified Data.Text                           as T
 import qualified Data.Text.Encoding                  as T
@@ -81,10 +81,18 @@ app Config.Config {..} db =
                         let atCapacity = attending >= Hackathon.capacity configHackathon
                         registration <- Database.insertRegistration tx insert
                         registration' <- Database.setRegistrationState tx
-                            (rUuid registration)
+                            (rID registration)
                             (if atCapacity then Waitlisted else Registered)
-                        for_ mbProject $ \project -> Database.insertProject
-                            tx (rUuid registration) project
+                        for_ mbProject $ \project -> Database.insertProject tx
+                            Project
+                                { pRegistrationID               = rID registration
+                                , pName                         = fromMaybe "" $ pfName project
+                                , pLink                         = pfLink project
+                                , pShortDescription             = pfShortDescription project
+                                , pContributorLevelBeginner     = pfContributorLevelBeginner  project
+                                , pContributorLevelIntermediate = pfContributorLevelIntermediate  project
+                                , pContributorLevelAdvanced     = pfContributorLevelAdvanced  project
+                                }
                         pure (registration', atCapacity)
 
                     if atCapacity then do

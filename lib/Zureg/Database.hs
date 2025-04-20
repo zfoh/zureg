@@ -4,6 +4,7 @@
 {-# LANGUAGE RecordWildCards            #-}
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE TypeOperators               #-}
 module Zureg.Database
     ( Config (..)
     , Handle
@@ -14,7 +15,6 @@ module Zureg.Database
     -- New stuff
     , migrate
     , insertRegistration
-    , selectRegistrations
     , selectRegistration
     , selectRegistrationByEmail
     , selectAttending
@@ -22,6 +22,7 @@ module Zureg.Database
     , setRegistrationState
     , setRegistrationScanned
     , insertProject
+    , selectRegistrationsWithProjects
     ) where
 
 import           Control.Exception          (Exception)
@@ -59,10 +60,6 @@ insertRegistration (Transaction conn) ir = do
     case rows of
         [registration] -> pure registration
         _              -> fail "insertRegistration: expected one row"
-
-selectRegistrations :: Transaction -> IO [Registration]
-selectRegistrations (Transaction conn) =
-    Pg.query_ conn "SELECT * FROM registrations"
 
 selectRegistration :: Transaction -> UUID -> IO (Maybe Registration)
 selectRegistration (Transaction conn) uuid = do
@@ -120,22 +117,15 @@ setRegistrationScanned (Transaction conn) uuid = do
         [registration] -> pure registration
         _              -> fail "setRegistrationScanned: expected one row"
 
-insertProject :: Transaction -> UUID -> Project -> IO ()
-insertProject (Transaction conn) registrationID project = void $ Pg.execute conn
-    "INSERT INTO projects (\n\
-    \    registration_id,\n\
-    \    name,\n\
-    \    link,\n\
-    \    short_description,\n\
-    \    contributor_level_beginner,\n\
-    \    contributor_level_intermediate,\n\
-    \    contributor_level_advanced\n\
-    \) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    ( registrationID
-    , pName project
-    , pLink project
-    , pShortDescription project
-    , clBeginner $ pContributorLevel project
-    , clIntermediate $ pContributorLevel project
-    , clAdvanced $ pContributorLevel project
-    )
+insertProject :: Transaction -> Project -> IO ()
+insertProject (Transaction conn) project = void $ Pg.execute conn
+    "INSERT INTO projects VALUES (?, ?, ?, ?, ?, ?, ?)" project
+
+selectRegistrationsWithProjects
+    :: Transaction -> IO [(Registration, Maybe Project)]
+selectRegistrationsWithProjects (Transaction conn) = fmap (fmap toTuple) $
+    Pg.query_ conn
+    "SELECT registrations.*, projects.* FROM registrations \n\
+    \LEFT JOIN projects ON registrations.id = projects.registration_id"
+  where
+    toTuple (x Pg.:. y) = (x, y)

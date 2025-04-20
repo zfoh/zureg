@@ -3,7 +3,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 module Zureg.Form
-    ( registerForm
+    ( ProjectForm (..)
+    , registerForm
     , registerView
 
     , cancelForm
@@ -23,9 +24,18 @@ import           Zureg.Database.Models
 import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
 
+data ProjectForm = ProjectForm
+    { pfName                         :: Maybe T.Text
+    , pfLink                         :: Maybe T.Text
+    , pfShortDescription             :: Maybe T.Text
+    , pfContributorLevelBeginner     :: !Bool
+    , pfContributorLevelIntermediate :: !Bool
+    , pfContributorLevelAdvanced     :: !Bool
+    } deriving (Eq, Show)
+
 -- | The 'IO' in this type signature is because we want to get the registration
 -- time.
-registerForm :: Monad m => D.Form H.Html m (InsertRegistration, Maybe Project)
+registerForm :: Monad m => D.Form H.Html m (InsertRegistration, Maybe ProjectForm)
 registerForm = (,)
     <$> ("registration" D..: (InsertRegistration
         <$> "name" D..: (D.check "Name is required"
@@ -53,14 +63,13 @@ registerForm = (,)
                 ]
                 (Just Nothing)
         <*> ("beginnerTrackInterest" D..: D.bool Nothing)))
-    <*> ("project" D..: (fmap guardProject $ Project
+    <*> ("project" D..: (fmap guardProject $ ProjectForm
             <$> "name" D..: optionalText
             <*> "website" D..: optionalText
             <*> "description" D..: optionalText
-            <*> ("contributorLevel" D..: (ContributorLevel
-                    <$> "beginner" D..: D.bool Nothing
-                    <*> "intermediate" D..: D.bool Nothing
-                    <*> "advanced" D..: D.bool Nothing))))
+            <*> "contributorLevelBeginner" D..: D.bool Nothing
+            <*> "contributorLevelIntermediate" D..: D.bool Nothing
+            <*> "contributorLevelAdvanced" D..: D.bool Nothing))
   where
     simpleEmailCheck = D.check "Invalid email address" $ \email ->
         case T.split (== '@') email of
@@ -76,8 +85,8 @@ registerForm = (,)
         (D.text Nothing)
 
     guardProject p
-        | isNothing (pName p) && isNothing (pShortDescription p) = Nothing
-        | otherwise                                              = Just p
+        | isNothing (pfName p) && isNothing (pfShortDescription p) = Nothing
+        | otherwise                                                = Just p
 
 registerView :: Hackathon -> Captcha.ClientHtml -> D.View H.Html -> H.Html
 registerView h captchaHtml view = DH.form view "?" $ do
@@ -167,14 +176,14 @@ registerView h captchaHtml view = DH.form view "?" $ do
     DH.label "project.description" view "Project description"
     DH.inputText "project.description" view
     H.p "Recommended contributor level(s)"
-    DH.inputCheckbox "project.contributorLevel.beginner" view H.! A.class_ "checkbox"
-    DH.label "project.contributorLevel.beginner" view $ "Beginner"
+    DH.inputCheckbox "project.contributorLevelBeginner" view H.! A.class_ "checkbox"
+    DH.label "project.contributorLevelBeginner" view $ "Beginner"
     H.br
-    DH.inputCheckbox "project.contributorLevel.intermediate" view H.! A.class_ "checkbox"
-    DH.label "project.contributorLevel.intermediate" view $ "Intermediate"
+    DH.inputCheckbox "project.contributorLevelIntermediate" view H.! A.class_ "checkbox"
+    DH.label "project.contributorLevelIntermediate" view $ "Intermediate"
     H.br
-    DH.inputCheckbox "project.contributorLevel.advanced" view H.! A.class_ "checkbox"
-    DH.label "project.contributorLevel.advanced" view $ "Advanced"
+    DH.inputCheckbox "project.contributorLevelAdvanced" view H.! A.class_ "checkbox"
+    DH.label "project.contributorLevelAdvanced" view $ "Advanced"
 
     H.h2 $ "Captcha (sorry)"
     Captcha.chForm captchaHtml

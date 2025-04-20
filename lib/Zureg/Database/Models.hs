@@ -1,5 +1,6 @@
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE LambdaCase        #-}
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -7,7 +8,6 @@ module Zureg.Database.Models
     ( TShirtSize (..)
     , Region (..)
     , Occupation (..)
-    , ContributorLevel (..)
     , InsertRegistration (..)
     , RegistrationState (..)
     , parseRegistrationState
@@ -52,16 +52,9 @@ data Occupation
     | Other
     deriving (Bounded, Enum, Eq, Read, Show)
 
-data ContributorLevel = ContributorLevel
-    { clBeginner     :: !Bool
-    , clIntermediate :: !Bool
-    , clAdvanced     :: !Bool
-    } deriving (Eq, Show)
-
 data RegistrationState = Registered | Confirmed | Cancelled | Waitlisted | Spam
     deriving (Bounded, Enum, Eq, Read, Show)
 
--- TODO: move?
 parseRegistrationState :: String -> Either String RegistrationState
 parseRegistrationState str = case readMaybe str of
     Just rs -> return rs
@@ -90,7 +83,7 @@ data InsertRegistration = InsertRegistration
     } deriving (Generic, Show)
 
 data Registration = Registration
-    { rUuid                  :: !UUID
+    { rID                    :: !UUID
     , rName                  :: !T.Text
     , rBadgeName             :: !(Maybe T.Text)
     , rEmail                 :: !T.Text
@@ -103,7 +96,7 @@ data Registration = Registration
     , rState                 :: !RegistrationState
     , rScannedAt             :: !(Maybe Time.UTCTime)
     , rVip                   :: !Bool
-    } deriving (Eq, Show)
+    } deriving (Eq, Generic, Show)
 
 instance Pg.ToField Region            where toField = Pg.toField . show
 instance Pg.ToField TShirtSize        where toField = Pg.toField . show
@@ -127,23 +120,41 @@ instance Pg.FromField Occupation        where fromField = readField
 instance Pg.FromField RegistrationState where fromField = readField
 
 instance Pg.ToRow InsertRegistration
-
 instance Pg.FromRow Registration where
-    fromRow = Registration
-        <$> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field
-        <*> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field <*> Pg.field
-        <*> Pg.field <*> Pg.field <*> Pg.field
 
 data Project = Project
-    { pName             :: !(Maybe T.Text)
-    , pLink             :: !(Maybe T.Text)
-    , pShortDescription :: !(Maybe T.Text)
-    , pContributorLevel :: !ContributorLevel
-    } deriving (Eq, Show)
+    { pRegistrationID               :: !UUID
+    , pName                         :: !T.Text
+    , pLink                         :: !(Maybe T.Text)
+    , pShortDescription             :: !(Maybe T.Text)
+    , pContributorLevelBeginner     :: !Bool
+    , pContributorLevelIntermediate :: !Bool
+    , pContributorLevelAdvanced     :: !Bool
+    } deriving (Eq, Generic, Show)
+
+instance Pg.ToRow Project
+instance Pg.FromRow Project
+
+-- | This is a variation on MaybeT that will never short-circuit.  The reason
+-- for this is that short-circuiting affects the number of columns expected
+-- in a type by postgresql-simple.
+newtype EagerMaybeT m a = EagerMaybeT {runEagerMaybe :: m (Maybe a)}
+
+instance Functor m => Functor (EagerMaybeT m) where
+    fmap f = EagerMaybeT . fmap (fmap f) . runEagerMaybe
+
+instance Applicative m => Applicative (EagerMaybeT m) where
+    pure      = EagerMaybeT . pure . Just
+    fx <*> mx = EagerMaybeT $ (<*>) <$> runEagerMaybe fx <*> runEagerMaybe mx
+
+instance Pg.FromRow (Maybe Project) where
+    fromRow = runEagerMaybe $ Project
+        <$> EagerMaybeT Pg.field <*> EagerMaybeT Pg.field
+        <*> EagerMaybeT Pg.field <*> EagerMaybeT Pg.field
+        <*> EagerMaybeT Pg.field <*> EagerMaybeT Pg.field
+        <*> EagerMaybeT Pg.field
 
 $(A.deriveJSON A.options ''TShirtSize)
 $(A.deriveJSON A.options ''Region)
 $(A.deriveJSON A.options ''Occupation)
-$(A.deriveJSON A.options ''ContributorLevel)
 $(A.deriveJSON A.options ''RegistrationState)
-$(A.deriveJSON A.options ''Registration)
