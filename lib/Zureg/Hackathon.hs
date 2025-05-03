@@ -17,13 +17,12 @@ data Hackathon = Hackathon
     , contactURL     :: T.Text
     -- | Total capacity of the event
     , capacity       :: Int
-    -- | When 'True', registrants can/must confirm their registration
-    -- TODO: change this to `Maybe Date`?
-    , confirmation   :: Bool
+    -- | When 'True', registrants can confirm their registration
+    , confirmation   :: Maybe Time.Day
     -- | Email to send from
     , emailFrom      :: T.Text
     -- | When T-shirt order is sent.
-    , tShirtDeadline :: Maybe Time.UTCTime
+    , tShirtDeadline :: Maybe Time.Day
     } deriving (Show)
 
 $(A.deriveJSON A.defaultOptions ''Hackathon)

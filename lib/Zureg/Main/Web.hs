@@ -16,6 +16,7 @@ import           Data.String                         (IsString (fromString))
 import qualified Data.Text                           as T
 import qualified Data.Text.Encoding                  as T
 import qualified Data.Text.Lazy.Encoding             as TL
+import           Data.Time                           (getCurrentTime, utctDay)
 import           Data.UUID                           (UUID)
 import qualified Data.UUID                           as UUID
 import qualified Network.HTTP.Client                 as Http
@@ -60,6 +61,7 @@ app Config.Config {..} db =
     Captcha.withHandle configCaptcha $ \captcha ->
     pure $ \req respond -> case Wai.pathInfo req of
         ["register"] -> do
+            now <- getCurrentTime
             reqBody <- TL.decodeUtf8 <$> Wai.strictRequestBody req
             when (Wai.requestMethod req == Http.methodPost) $ Captcha.verify
                 captcha
@@ -68,6 +70,7 @@ app Config.Config {..} db =
             (view, mbReg) <- runForm req reqBody "register" registerForm
             case mbReg of
                 Nothing -> respond . html $ Views.register
+                    now
                     configHackathon
                     (Captcha.clientHtml captcha)
                     view
@@ -106,13 +109,14 @@ app Config.Config {..} db =
                         respond . html $ Views.registerSuccess registration
 
         ["ticket"] | Wai.requestMethod req == Http.methodGet -> do
+            now <- getCurrentTime
             uuid <- getUuidParam req
             mbRegistration <- Database.withTransaction db $ \tx ->
                 Database.selectRegistration tx uuid
             case mbRegistration of
                 Nothing -> throwIO $ HttpException 404 "registration not found"
                 Just registration -> respond . html $
-                    Views.ticket configHackathon registration
+                    Views.ticket now configHackathon registration
 
         ["scanner"] | Wai.requestMethod req == Http.methodGet  ->
             scannerAuthorized req $
@@ -138,8 +142,12 @@ app Config.Config {..} db =
             url <- Discord.generateTempInviteUrl configDiscord welcomeChannel
             respond $ redirect url
 
-        ["confirm"] | Hackathon.confirmation configHackathon -> do
+        ["confirm"] -> do
+            now <- getCurrentTime
             uuid <- getUuidParam req
+            when (maybe True (utctDay now <) $ Hackathon.confirmation configHackathon) $
+                throwIO $ HttpException 400 "Confirmation (not yet) started"
+
             Database.withTransaction db $ \tx -> do
                 registrant <- Database.selectRegistration tx uuid
                 case rState <$> registrant of

@@ -25,6 +25,7 @@ import qualified Data.ByteString             as B
 import qualified Data.FileEmbed              as Embed
 import           Data.Maybe                  (fromMaybe)
 import qualified Data.Text                   as T
+import           Data.Time                   (UTCTime, utctDay)
 import           Data.UUID                   (UUID)
 import qualified Data.UUID                   as UUID
 import qualified Text.Blaze.Html5            as H
@@ -36,7 +37,7 @@ import qualified Zureg.Form                  as Form
 import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
 import           Zureg.Main.Badges           (Badge (..), registrantToBadge)
-import qualified Zureg.Main.Export as Export
+import qualified Zureg.Main.Export           as Export
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -94,10 +95,10 @@ template head' body = H.docTypeHtml $ do
         head'
     H.body body
 
-register :: Hackathon -> Captcha.ClientHtml -> D.View H.Html -> H.Html
-register hackathon captchaHtml view =
+register :: UTCTime -> Hackathon -> Captcha.ClientHtml -> D.View H.Html -> H.Html
+register now hackathon captchaHtml view =
     template (Captcha.chScript captchaHtml) $
-    Form.registerView hackathon captchaHtml view
+    Form.registerView now hackathon captchaHtml view
 
 registerSuccess :: Registration -> H.Html
 registerSuccess Registration {..} = template mempty $ do
@@ -112,8 +113,8 @@ registerWaitlist Registration {..} = template mempty $ do
     H.p $ H.toHtml rName <> ", your have been added to the waitlist."
     H.p $ "You will receive an email at " <> H.toHtml rEmail <> " soon."
 
-ticket :: Hackathon -> Registration -> H.Html
-ticket hackathon registration@Registration {..} = template
+ticket :: UTCTime -> Hackathon -> Registration -> H.Html
+ticket now hackathon registration@Registration {..} = template
     (H.style $ do
         "img.qr {"
         "  display: block;"
@@ -140,7 +141,9 @@ ticket hackathon registration@Registration {..} = template
                 H.input H.! A.type_ "submit"
                     H.! A.value "Take me back to the registration"
 
-        when (Hackathon.confirmation hackathon && rState == Registered) $ do
+        let showConfirmation = rState == Registered &&
+                maybe False (utctDay now >= ) (Hackathon.confirmation hackathon)
+        when showConfirmation $ do
             H.p "Please confirm your registration so we can get an accurate count of attendees for food, etc."
             H.form H.! A.method "GET" H.! A.action "confirm" $ do
                 H.input H.! A.type_ "hidden" H.! A.name "uuid"
@@ -245,7 +248,7 @@ scan hackathon registrant@Registration {..} = H.ul $ do
     H.li $ case rTShirtSize of
         Nothing   -> "No T-Shirt"
         Just size -> case rRegisteredAt of
-            at | maybe False (at >=) (Hackathon.tShirtDeadline hackathon) ->
+            at | maybe False (utctDay at >=) (Hackathon.tShirtDeadline hackathon) ->
                 H.p $ H.strong "Pick up T-Shirt later"
             _ -> do
                 "T-Shirt: "

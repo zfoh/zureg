@@ -11,8 +11,10 @@ module Zureg.Form
     , cancelView
     ) where
 
+import           Control.Monad               (when)
 import           Data.Maybe                  (isNothing)
 import qualified Data.Text                   as T
+import           Data.Time                   (UTCTime, utctDay)
 import           Data.UUID                   (UUID)
 import qualified Data.UUID                   as UUID
 import qualified Text.Blaze.Html5            as H
@@ -88,8 +90,9 @@ registerForm = (,)
         | isNothing (pfName p) && isNothing (pfShortDescription p) = Nothing
         | otherwise                                                = Just p
 
-registerView :: Hackathon -> Captcha.ClientHtml -> D.View H.Html -> H.Html
-registerView h captchaHtml view = DH.form view "?" $ do
+registerView
+    :: UTCTime -> Hackathon -> Captcha.ClientHtml -> D.View H.Html -> H.Html
+registerView now h captchaHtml view = DH.form view "?" $ do
     H.h1 $ H.toHtml (Hackathon.name h) <> " registration"
     H.div H.! A.class_ "errors" $ DH.childErrorList "" view
 
@@ -128,11 +131,10 @@ registerView h captchaHtml view = DH.form view "?" $ do
     H.h2 "Optional information"
 
     H.p $ H.strong "T-Shirt"
-    {-
-    H.p $ H.strong $ do
-        "Please note that we have ordered the T-Shirts and cannot guarantee "
-        "that you will receive one if you register at this time."
-    -}
+    when (maybe False (utctDay now >=) $ Hackathon.tShirtDeadline h) $
+        H.p $ H.strong $ do
+            "Please note that we have ordered the T-Shirts and cannot guarantee "
+            "that you will receive one if you register at this time."
     H.p $ "In what size would you like the free T-Shirt?"
 
     DH.label "registration.tshirtSize" view "Size"

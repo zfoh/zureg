@@ -4,11 +4,12 @@
     "baseURL": "https://zureg.zfoh.ch",
     "contactURL": "https://zfoh.ch/zurihac2025/#contact",
     "capacity": 500,
-    "confirmation": true,
     "emailFrom": "ZuriHac Registrations <zureg@zfoh.ch>"
+    "confirmation": "2025-05-10",
+    "tShirtDeadline": "2025-05-01"
   },
   "database": {
-    "connectionString": "postgresql://postgres:hunter2@localhost:5432/zureg",
+    "connectionString": "postgresql://postgres:hunter2@localhost:5433/zureg",
     "migrations": "lib/Zureg/Database/Migrations"
   },
   "scannerSecret": "monad",
@@ -27,6 +28,7 @@
     "secretKey": "**"
   },
   "web": {
+    "host": "127.0.0.1",
     "port": 8000
   }
 }
