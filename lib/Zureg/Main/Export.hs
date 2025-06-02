@@ -29,6 +29,7 @@ import           Zureg.Database.Models
 
 data ExportRegistration = ExportRegistration
     { erID         :: !UUID
+    , erConfirmed  :: !(Maybe Bool)  -- ^ work around mustache templating bullshit
     , erState      :: !RegistrationState
     , erRegistrant :: !ExportRegistrant
     , erProject    :: !(Maybe ExportProject)
@@ -62,6 +63,9 @@ fromModel :: Registration -> Maybe Project -> ExportRegistration
 fromModel registration mbProject = ExportRegistration
     { erID  = rID registration
     , erState = rState registration
+    , erConfirmed = case rState registration of
+        Confirmed -> Just True
+        _ -> Nothing
     , erRegistrant = ExportRegistrant
         { erName = rName registration
         , erBadgeName = rBadgeName registration
