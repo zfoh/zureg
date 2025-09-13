@@ -1,7 +1,0 @@
-.stack-work/
-.stack/
-build/
-.stack-work-docker/
-.idea/
-deploy/bucket
-deploy/zip

@@ -32,13 +32,13 @@ https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.
 
 This exports all attendees to a JSON file.  Usage:
 
-    stack exec zureg-export export.json
+    cabal run zureg-export export.json
 
 ### zureg-email
 
 This emails all attendees using a mustache template.  Usage:
 
-    stack exec zureg-email export.json template.txt statefile subject
+    cabal run zureg-email export.json template.txt statefile subject
 
 `statefile` is any file where we can write emails to that have already been sent
 -- this way we can make sure no double emails are sent if when there are any
