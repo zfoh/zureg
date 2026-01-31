@@ -10,10 +10,17 @@
     inputs.flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = inputs.nixpkgs.legacyPackages.${system};
-        haskell = pkgs.haskell.packages.ghc96;
-        package = haskell.callCabal2nix "zureg" ./. {
-          urlencoded = (pkgs.haskell.lib.doJailbreak haskell.urlencoded);
+
+        # amazonka is currently blocking ghc98 use
+        haskell = pkgs.haskell.packages.ghc96.override {
+          overrides = self: super: rec {
+            urlencoded = (pkgs.haskell.lib.doJailbreak super.urlencoded);
+            # https://github.com/alexkazik/qrcode/pull/9
+            qrcode-core = (pkgs.haskell.lib.doJailbreak super.qrcode-core);
+            qrcode-juicypixels = (pkgs.haskell.lib.doJailbreak super.qrcode-juicypixels);
+          };
         };
+        package = haskell.callCabal2nix "zureg" ./. {};
         packageExes = pkgs.haskell.lib.justStaticExecutables package;
         migrations = pkgs.stdenv.mkDerivation {
           name = "migrations";
