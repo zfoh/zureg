@@ -1,12 +1,12 @@
 {
   "hackathon": {
-    "name": "ZuriHac 2025",
+    "name": "ZuriHac 2026",
     "baseURL": "https://zureg.zfoh.ch",
-    "contactURL": "https://zfoh.ch/zurihac2025/#contact",
+    "contactURL": "https://zfoh.ch/zurihac2026/#contact",
     "capacity": 500,
-    "emailFrom": "ZuriHac Registrations <zureg@zfoh.ch>"
-    "confirmation": "2025-05-10",
-    "tShirtDeadline": "2025-05-01"
+    "emailFrom": "ZuriHac Registrations <zureg@zfoh.ch>",
+    "confirmation": "2026-05-10",
+    "tShirtDeadline": "2026-05-01"
   },
   "database": {
     "connectionString": "postgresql://postgres:hunter2@localhost:5433/zureg",
