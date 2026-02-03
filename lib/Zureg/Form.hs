@@ -187,16 +187,23 @@ registerView now h captchaHtml view = DH.form view "?" $ do
     DH.inputCheckbox "project.contributorLevelAdvanced" view H.! A.class_ "checkbox"
     DH.label "project.contributorLevelAdvanced" view $ "Advanced"
 
+    H.h2 $ "Donation"
+    H.p $ do
+        "ZuriHac is free for all participants, but it does require "
+        "resources to organize. "
+        "Please consider making a donation here if you can afford it."
+        " All donations go entirely towards event costs. "
+        "We can accept "
+        H.a H.! A.target "_blank" H.! A.href "https://zfoh.ch/donate" $
+            "online payments using credit cards"
+        " as well as "
+        H.a H.! A.target "_blank" H.! A.href "https://zfoh.ch/#donations" $
+            "wire transfers using IBAN"
+        "."
+
     H.h2 $ "Captcha (sorry)"
     Captcha.chForm captchaHtml
     H.br
-
-    H.p $ do
-        "ZuriHac is free for all participants, but it does require "
-        "resources to organize. Please consider "
-        H.a H.! A.target "_blank" H.! A.href "https://zfoh.ch/#donations" $ "making a donation"
-        " if you can afford it.  All donations go entirely towards event "
-        "costs."
 
     DH.inputSubmit "Register"
 
