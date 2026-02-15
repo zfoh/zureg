@@ -199,7 +199,8 @@ registerView now h captchaHtml view = DH.form view "?" $ do
         " as well as "
         H.a H.! A.target "_blank" H.! A.href "https://zfoh.ch/#donations" $
             "wire transfers using IBAN"
-        "."
+        ". Please include in the message if you opt-in to being included in "
+        "a thank-you list, and if so, under which name."
 
     H.h2 $ "Captcha (sorry)"
     Captcha.chForm captchaHtml
