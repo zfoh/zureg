@@ -14,7 +14,11 @@
         # amazonka is currently blocking ghc98 use
         haskell = pkgs.haskell.packages.ghc96.override {
           overrides = self: super: rec {
-            urlencoded = (pkgs.haskell.lib.doJailbreak super.urlencoded);
+            urlencoded = (pkgs.haskell.lib.doJailbreak
+              (super.urlencoded.overrideAttrs (old: {
+                meta = old.meta // { broken = false; };
+              }))
+            );
             # https://github.com/alexkazik/qrcode/pull/9
             qrcode-core = (pkgs.haskell.lib.doJailbreak super.qrcode-core);
             qrcode-juicypixels = (pkgs.haskell.lib.doJailbreak super.qrcode-juicypixels);
