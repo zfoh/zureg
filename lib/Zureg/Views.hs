@@ -114,7 +114,7 @@ registerWaitlist Registration {..} = template mempty $ do
     H.p $ "You will receive an email at " <> H.toHtml rEmail <> " soon."
 
 ticket :: UTCTime -> Hackathon -> Registration -> H.Html
-ticket now hackathon registration@Registration {..} = template
+ticket now hackathon Registration {..} = template
     (H.style $ do
         "img.qr {"
         "  display: block;"
@@ -132,9 +132,23 @@ ticket now hackathon registration@Registration {..} = template
         when (rState == Confirmed) $
             qrimg $ T.unpack $ UUID.toText rID
 
-        H.div $ do
+        H.div H.! A.style "margin-bottom: 1em" $ do
             H.h1 $ fst $ registrationState rState
-            registrantInfo registration  -- TODO: inline?
+            H.strong (H.toHtml rName ) <> H.br
+            H.toHtml rEmail <> H.br
+            case rTShirtSize of
+                Nothing -> "No T-Shirt" <> H.br
+                Just size  -> do
+                    "T-Shirt: "
+                    H.strong $ H.toHtml (show size)
+                    H.br
+                    case Hackathon.tShirtDeadline hackathon of
+                        Just deadline | utctDay rRegisteredAt > deadline -> do
+                            "You registered after we ordered the T-Shirts ("
+                            H.toHtml $ show deadline
+                            "), so please pick up your T-Shirt on the second day."
+                            H.br
+                        _ -> pure ()
 
         when (rState == Cancelled) $
             H.form H.! A.method "GET" H.! A.action "register" $ do
@@ -180,10 +194,6 @@ registrationState rs = case rs of
     Waitlisted -> ("⌛ on the waitlist", False)
     Spam       -> ("🥫 Spam", False)
 
-registrantInfo :: Registration -> H.Html
-registrantInfo Registration {..} = H.p $ do
-    H.strong (H.toHtml rName ) <> H.br
-    H.toHtml rEmail <> H.br
 
 cancel :: Maybe UUID -> D.View H.Html -> H.Html
 cancel mbUuid view = template mempty $
