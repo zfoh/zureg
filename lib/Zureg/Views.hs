@@ -259,7 +259,10 @@ scan hackathon registrant@Registration {..} = H.ul $ do
         Nothing   -> "No T-Shirt"
         Just size -> case rRegisteredAt of
             at | maybe False (utctDay at >=) (Hackathon.tShirtDeadline hackathon) ->
-                H.p $ H.strong "Pick up T-Shirt later"
+                H.p $ do
+                    "Pick up T-Shirt later ("
+                    H.strong $ H.toHtml (show size)
+                    ")"
             _ -> do
                 "T-Shirt: "
                 H.strong $ H.toHtml (show size)
