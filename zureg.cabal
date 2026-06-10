@@ -17,7 +17,7 @@ Tested-with:    GHC==9.6.4
 Extra-source-files:
   CHANGELOG.md
   README.md
-  static/jsQR-807b073.js
+  static/jsQR-8e6a036.js
   static/scanner.js
 
 Source-repository head

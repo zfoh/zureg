@@ -238,7 +238,7 @@ scanner = H.docTypeHtml $ do
 
 fileJsQr :: B.ByteString
 fileJsQr =
-    $(Embed.makeRelativeToProject "static/jsQR-807b073.js" >>= Embed.embedFile)
+    $(Embed.makeRelativeToProject "static/jsQR-8e6a036.js" >>= Embed.embedFile)
 
 fileScanner :: B.ByteString
 fileScanner =
