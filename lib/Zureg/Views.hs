@@ -38,6 +38,7 @@ import qualified Zureg.Hackathon             as Hackathon
 import           Zureg.Hackathon             (Hackathon)
 import           Zureg.Main.Badges           (Badge (..), registrantToBadge)
 import qualified Zureg.Main.Export           as Export
+import qualified Data.ByteString.Base64 as Base64
 
 template :: H.Html -> H.Html -> H.Html
 template head' body = H.docTypeHtml $ do
@@ -230,6 +231,13 @@ scanner = H.docTypeHtml $ do
             "}"
 
     H.body $ do
+        H.audio
+            H.! A.id "beep"
+            H.! A.src (
+                "data:audio/mpeg;base64," <>
+                H.unsafeByteStringValue (Base64.encode fileBeep)
+            )
+            $ ""
         H.script H.! A.type_ "text/JavaScript" $
             H.unsafeByteString fileJsQr
         H.script H.! A.type_ "text/JavaScript" $
@@ -243,6 +251,10 @@ fileJsQr =
 fileScanner :: B.ByteString
 fileScanner =
     $(Embed.makeRelativeToProject "static/scanner.js" >>= Embed.embedFile)
+
+fileBeep :: B.ByteString
+fileBeep =
+    $(Embed.makeRelativeToProject "static/beep.mp3" >>= Embed.embedFile)
 
 scan :: Hackathon -> Registration -> H.Html
 scan hackathon registrant@Registration {..} = H.ul $ do

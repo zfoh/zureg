@@ -13,13 +13,10 @@ import           Data.Foldable                   (for_)
 import           Data.List                       (sortOn)
 import           Data.Maybe                      (fromMaybe, mapMaybe)
 import qualified Data.Text                       as T
-import           System.Environment              (getArgs, getProgName)
-import           System.Exit                     (exitFailure)
-import qualified System.IO                       as IO
+import qualified Options.Applicative             as OA
 import qualified Text.Blaze.Html.Renderer.Pretty as H
 import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as HA
-import           Text.Read                       (readMaybe)
 import           Zureg.Database.Models
 import           Zureg.Main.Export               hiding (main)
 
@@ -35,10 +32,28 @@ registrantToBadge r
 
 -- | For 2023, we used 21 70mm 42.4mm
 data Options = Options
-    { oPerPage     :: Int
-    , oBadgeWidth  :: String
-    , oBadgeHeight :: String
+    { oBadgesPerPage :: Int
+    , oBadgeWidth    :: String
+    , oBadgeHeight   :: String
+    , oExport        :: FilePath
     } deriving (Show)
+
+parseOptions :: OA.Parser Options
+parseOptions = Options
+    <$> OA.option OA.auto (
+        OA.long    "badges-per-page" <>
+        OA.metavar "NUM")
+    <*> OA.strOption (
+        OA.long    "badge-width" <>
+        OA.help    "width of a badge, e.g. '70mm'" <>
+        OA.metavar "CSS")
+    <*> OA.strOption (
+        OA.long    "badge-height" <>
+        OA.help    "width of a badge, e.g. '42.4mm'" <>
+        OA.metavar "CSS")
+    <*> OA.strArgument (
+        OA.help    "json file containing registration data" <>
+        OA.metavar "INPUT")
 
 renderBadges :: Options -> [Badge] -> H.Html
 renderBadges options badges = H.docTypeHtml $ do
@@ -76,7 +91,7 @@ renderBadges options badges = H.docTypeHtml $ do
             "    padding-right: var(--badge-margin-side);"
             "    text-align: center;"
             "}"
-    H.body $ for_ (pages (oPerPage options) badges) $ \page ->
+    H.body $ for_ (pages (oBadgesPerPage options) badges) $ \page ->
         H.div H.! HA.class_ "page" $
             for_ page $ \(Badge badge) -> H.div H.! HA.class_ "badge" $
                 H.span $ H.toHtml badge
@@ -89,27 +104,12 @@ pages n ls = case splitAt n ls of
 
 main :: IO ()
 main = do
-    progName <- getProgName
-    args     <- getArgs
+    opts <- OA.execParser $ OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
 
-    case args of
-        [perPageStr, badgeWidth, badgeHeight, exportPath] | Just perPage <- readMaybe perPageStr -> do
-            let options = Options
-                    { oPerPage     = perPage
-                    , oBadgeWidth  = badgeWidth
-                    , oBadgeHeight = badgeHeight
-                    }
-            registrantsOrError <- A.eitherDecodeFileStrict exportPath
-            registrants <- either (fail . show) return registrantsOrError
-                :: IO [ExportRegistration]
-            putStrLn $ H.renderHtml $ renderBadges options $
-                sortOn (map toLower . unBadge) $
-                mapMaybe registrantToBadge registrants
-        _ -> do
-            IO.hPutStr IO.stderr $ unlines
-                [ "Usage: " ++ progName ++ " badges-per-page badge-width badge-height export.json"
-                , ""
-                , "export.json is a list of registrants as obtained by the"
-                , "export tool."
-                ]
-            exitFailure
+    registrantsOrError <- A.eitherDecodeFileStrict (oExport opts)
+    registrants <- either (fail . show) return registrantsOrError
+        :: IO [ExportRegistration]
+    putStrLn $ H.renderHtml $ renderBadges opts $
+        sortOn (map toLower . unBadge) $
+        mapMaybe registrantToBadge registrants
+

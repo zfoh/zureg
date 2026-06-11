@@ -101,8 +101,7 @@ parseOptions = Options
 
 main :: IO ()
 main = do
-    opts     <- OA.execParser $
-        OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
+    opts <- OA.execParser $ OA.info (parseOptions OA.<**> OA.helper) OA.fullDesc
 
     Config.Config {..} <- Config.load
 
